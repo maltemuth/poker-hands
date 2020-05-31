@@ -2,7 +2,6 @@ import { readFileSync } from "fs";
 import getBestHand from "../../src/model/hand/getBestHand";
 import { Suit, Value } from "../../src/model/card/Card";
 import { HandType } from "../../src/model/hand/Hand";
-import toString from "../../src/model/card/toString";
 
 describe("retrieve best hands", () => {
   test("retrieves nothing from nothing", () => {
@@ -88,14 +87,18 @@ describe("retrieve best hands", () => {
         };
       });
 
-    trainingLines.forEach(({ cards, handType }, lineNumber) => {
-      //   console.log(cards, "cards");
-      const cardString = cards.map((card) => toString(card)).join(", ");
-      expect({
-        type: getBestHand(cards).type,
-        cardString,
-        lineNumber,
-      }).toEqual({ type: handType, cardString, lineNumber });
+    const before = Date.now().valueOf();
+
+    trainingLines.forEach(({ cards, handType }) => {
+      expect(getBestHand(cards).type).toEqual(handType);
     });
+
+    const elapsed = Date.now().valueOf() - before;
+
+    console.log(
+      `${trainingLines.length} hands / ${elapsed} ms / ${
+        trainingLines.length / elapsed
+      } hands/ms`
+    );
   });
 });
