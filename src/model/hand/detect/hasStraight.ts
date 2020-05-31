@@ -7,7 +7,9 @@ import hasContiguousSubSetsOfLength5 from "../../card/hasContiguousSubSetsOfLeng
  * @param cards
  */
 const hasStraight: HandDetector = (cards) => {
-  const values = cards.map(({ value }) => value);
+  const values = cards
+    .map(({ value }) => value)
+    .filter((value, index, list) => list.indexOf(value) === index);
 
   // straights can also start with an ace, which is the same as counting an ace as 1
   const valuesWithAceAsOne = values.map((value) =>
