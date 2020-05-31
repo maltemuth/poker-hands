@@ -5,7 +5,7 @@ import { Card } from "./Card";
  * value is repeated in the given list of cards
  * @param cards
  */
-const valueCounts = (cards: Card[]): { [value: string]: number } =>
+const valueCounts = (cards: Card[]): { [value: number]: number } =>
   cards
     .map(({ value }) => value)
     .reduce((counts, value) => {

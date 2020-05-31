@@ -1,4 +1,4 @@
-import { Value } from "../card/Card";
+import { Value, Card } from "../card/Card";
 
 /**
  * all possible hand types, in order from lowest to highest
@@ -23,7 +23,8 @@ export interface HandInterface {
   type: HandType;
   value: Value;
   subvalue: Value | null;
-  kickers: Value[];
+  cards: Card[];
+  kickers: Card[];
 }
 
 /**
