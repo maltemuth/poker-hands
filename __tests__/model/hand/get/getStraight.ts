@@ -32,4 +32,10 @@ describe("retrieve straights", () => {
     );
     expect(straight).toBe(null);
   });
+
+  test("SJ HT S9 H8 S7 DT CT", () => {
+    const straight = getStraight(cards(..."SJ HT S9 H8 S7 DT CT".split(" ")));
+    expect(straight.type).toBe(HandType.Straight);
+    expect(straight.value).toEqual(Value.jack);
+  });
 });

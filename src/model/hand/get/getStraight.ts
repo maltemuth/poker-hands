@@ -17,7 +17,7 @@ const getStraight = (cards: Card[]): Hand<HandType.Straight> | null => {
     return true;
   });
 
-  const subsetsOfLength5 = sortedCards.map((card, index, list) =>
+  const subsetsOfLength5 = withoutDuplicateValues.map((card, index, list) =>
     [0, 1, 2, 3, 4].map((shift) => {
       // edge case - if we started from 5 then the last card will be undefined, but if the first is an ace, we have a straight anyway
       if (
