@@ -4,12 +4,9 @@ import hasFullHouse from "../detect/hasFullHouse";
 import getThreeOfAKind from "./getThreeOfAKind";
 import without from "../../card/without";
 import getPair from "./getPair";
-import assertUnique from "../../card/assertUnique";
 
 const getFullHouse = (cards: Card[]): Hand<HandType.FullHouse> | null => {
   if (!hasFullHouse(cards)) return null;
-
-  assertUnique(cards);
 
   const threeOfAKind = getThreeOfAKind(cards);
   const remainingCards = without(cards, ...threeOfAKind.cards);

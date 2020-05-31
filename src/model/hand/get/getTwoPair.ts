@@ -4,12 +4,9 @@ import hasTwoPair from "../detect/hasTwoPair";
 import getPair from "./getPair";
 import without from "../../card/without";
 import getKickers from "../getKickers";
-import assertUnique from "../../card/assertUnique";
 
 const getTwoPair = (cards: Card[]): Hand<HandType.TwoPair> | null => {
   if (!hasTwoPair(cards)) return null;
-
-  assertUnique(cards);
 
   const firstPair = getPair(cards);
   const remainingCards = without(cards, ...firstPair.cards);

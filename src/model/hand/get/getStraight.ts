@@ -1,13 +1,10 @@
 import { Card, Value } from "../../card/Card";
 import { Hand, HandType } from "../Hand";
 import hasStraight from "../detect/hasStraight";
-import assertUnique from "../../card/assertUnique";
 import sortByValue from "../../card/sortByValue";
 
 const getStraight = (cards: Card[]): Hand<HandType.Straight> | null => {
   if (!hasStraight(cards)) return null;
-
-  assertUnique(cards);
 
   const sortedCards = sortByValue(cards).reverse();
   const values: Value[] = [];

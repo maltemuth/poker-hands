@@ -1,15 +1,12 @@
 import { Card } from "../../card/Card";
 import { Hand, HandType } from "../Hand";
 import hasStraightFlush from "../detect/hasStraightFlush";
-import assertUnique from "../../card/assertUnique";
 import getStraight from "./getStraight";
 
 const getStraightFlush = (
   cards: Card[]
 ): Hand<HandType.StraightFlush> | null => {
   if (!hasStraightFlush(cards)) return null;
-
-  assertUnique(cards);
 
   const cardsBySuit: { [suit: string]: Card[] } = cards.reduce(
     (bySuit, card) => {

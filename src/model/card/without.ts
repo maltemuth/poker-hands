@@ -3,11 +3,15 @@ import toString from "./toString";
 import fromString from "./fromString";
 
 const without = (cards: Card[], ...removables: Card[]): Card[] => {
-  const cardString = cards.map(toString);
+  const cardStrings = cards.map(toString);
   const removableStrings = removables.map(toString);
 
-  return cardString
-    .filter((cardString) => !removableStrings.includes(cardString))
+  return removableStrings
+    .reduce((rest, removable) => {
+      const index = rest.indexOf(removable);
+      if (index > -1) rest.splice(index, 1);
+      return rest;
+    }, cardStrings)
     .map(fromString);
 };
 

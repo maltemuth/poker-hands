@@ -1,13 +1,10 @@
 import { Card, Value } from "../../card/Card";
 import { Hand, HandType } from "../Hand";
 import hasFlush from "../detect/hasFlush";
-import assertUnique from "../../card/assertUnique";
 import sortByValue from "../../card/sortByValue";
 
 const getFlush = (cards: Card[]): Hand<HandType.Flush> | null => {
   if (!hasFlush(cards)) return null;
-
-  assertUnique(cards);
 
   const cardsBySuit: { [suit: string]: Card[] } = cards.reduce((map, card) => {
     map[card.suit] = map[card.suit] || [];
