@@ -20,13 +20,8 @@ const hasRoyalFlush: HandDetector = (cards) => {
 
   const cardsAsString = cards.map(toString);
 
-  return (
-    royalFlushes.filter(
-      (royalFlush) =>
-        royalFlush.filter((royalFlushCard) =>
-          cardsAsString.includes(royalFlushCard)
-        ).length === 5
-    ).length >= 1
+  return royalFlushes.some((royalFlush) =>
+    royalFlush.every((royalFlushCard) => cardsAsString.includes(royalFlushCard))
   );
 };
 

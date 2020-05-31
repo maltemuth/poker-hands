@@ -9,10 +9,7 @@ const valueCounts = (cards: Card[]): { [value: number]: number } =>
   cards
     .map(({ value }) => value)
     .reduce((counts, value) => {
-      counts[value] = counts[value] || 0;
-
-      counts[value] += 1;
-
+      counts[value] = counts[value] + 1 || 1;
       return counts;
     }, {});
 

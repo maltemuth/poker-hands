@@ -1,12 +1,17 @@
 import { HandDetector } from "./HandDetector";
 import { Value } from "../../card/Card";
 import hasContiguousSubSetsOfLength5 from "../../card/hasContiguousSubSetsOfLength5";
+import hasFlush from "./hasFlush";
+import hasStraight from "./hasStraight";
 
 /**
  * returns true if a straight flush is contained within the given cards
  * @param cards
  */
 const hasStraightFlush: HandDetector = (cards) => {
+  if (!hasFlush(cards)) return false;
+  if (!hasStraight(cards)) return false;
+
   /**
    * an object with suits as keys where the corresponing value is the list of values of that suit in cards
    */
@@ -29,22 +34,19 @@ const hasStraightFlush: HandDetector = (cards) => {
 
   if (candidates.length === 0) return false;
 
-  // this will now give a list of straight flushes for each remaining suit
-  const candidatesWithStraights = candidates.filter(
-    hasContiguousSubSetsOfLength5
-  );
+  const flushCandidate = candidates[0];
+
+  if (hasContiguousSubSetsOfLength5(flushCandidate)) return true;
 
   // and a list of straight flushes starting with an ace for each remaining suit
-  const candidatesWithStraightsWhereAceHasBeenReplacedByOne = candidates
-    .map((candidate) =>
-      candidate.map((value) => (value === Value.ace ? 1 : value))
-    )
-    .filter(hasContiguousSubSetsOfLength5);
-
-  return (
-    candidatesWithStraights.length >= 1 ||
-    candidatesWithStraightsWhereAceHasBeenReplacedByOne.length >= 1
+  const candidateValuesWithAceReplaced = flushCandidate.map((value) =>
+    value === Value.ace ? 1 : value
   );
+
+  if (hasContiguousSubSetsOfLength5(candidateValuesWithAceReplaced))
+    return true;
+
+  return false;
 };
 
 export default hasStraightFlush;
