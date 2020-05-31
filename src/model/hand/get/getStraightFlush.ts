@@ -3,11 +3,13 @@ import { Hand, HandType } from "../Hand";
 import hasStraightFlush from "../detect/hasStraightFlush";
 import getStraight from "./getStraight";
 import purify from "../../../lib/purify";
+import { ValueCounts } from "../../card/valueCounts";
 
 const getStraightFlush = (
-  cards: Card[]
+  cards: Card[],
+  _: ValueCounts
 ): Hand<HandType.StraightFlush> | null => {
-  if (!hasStraightFlush(cards)) return null;
+  if (!hasStraightFlush(cards, _)) return null;
 
   const straight = purify(() => {
     const cardsBySuit: { [suit: string]: Card[] } = cards.reduce(
@@ -24,7 +26,7 @@ const getStraightFlush = (
       (candidate) => candidate.length >= 5
     )[0];
 
-    return getStraight(flushCandidate);
+    return getStraight(flushCandidate, _);
   });
 
   return {

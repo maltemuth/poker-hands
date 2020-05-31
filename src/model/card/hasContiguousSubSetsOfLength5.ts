@@ -5,10 +5,8 @@
 const hasContiguousSubSetsOfLength5 = (values: number[]): boolean =>
   values
     .sort((a, b) => a - b)
-    .filter(
-      (value, index, list) =>
-        [1, 2, 3, 4].filter((shift) => list[index + shift] === value + shift)
-          .length === 4
-    ).length >= 1;
+    .some((value, index, list) =>
+      [1, 2, 3, 4].every((shift) => list[index + shift] === value + shift)
+    );
 
 export default hasContiguousSubSetsOfLength5;

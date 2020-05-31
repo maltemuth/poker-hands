@@ -22,6 +22,6 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:full": "jest __tests__/full --testMatch",
-    "profile": "time ts-node __perf__/odds.ts"
+    "profile": "time ts-node -T __perf__/odds.ts"
   }
 }

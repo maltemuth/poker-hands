@@ -3,9 +3,13 @@ import { Hand, HandType } from "../Hand";
 import hasStraight from "../detect/hasStraight";
 import sortByValue from "../../card/sortByValue";
 import purify from "../../../lib/purify";
+import { ValueCounts } from "../../card/valueCounts";
 
-const getStraight = (cards: Card[]): Hand<HandType.Straight> | null => {
-  if (!hasStraight(cards)) return null;
+const getStraight = (
+  cards: Card[],
+  _: ValueCounts
+): Hand<HandType.Straight> | null => {
+  if (!hasStraight(cards, _)) return null;
 
   const straight = purify(() => {
     const sortedCards = sortByValue(cards).reverse();

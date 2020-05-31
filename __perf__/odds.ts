@@ -9,8 +9,8 @@ console.log(
   //   odds([cards("HA", "SA"), cards("DA", "CA")], cards("HT", "CT", "DT"))
   //   odds([cards("HA", "SA"), cards("DT", "CT")], cards("C7", "D7", "S6"))
   // odds([cards("CA", "DA"), cards("DT", "CT")], cards("S7", "H8", "HT", "S9"))
-  // odds([cards("CA", "CK"), cards("DT", "CT")])
-  odds([cards("CA", "CK"), cards("DT", "CT"), cards("D9", "H7")])
+  odds([cards("CA", "DA"), cards("DT", "CT")])
+  // odds([cards("CA", "CK"), cards("DT", "CT"), cards("D9", "H7")])
   // odds([cards("CA", "DA"), cards("DT", "CT")], [])
   //   odds([cards("HA", "SA"), cards("DT", "CT")])
 );

@@ -8,9 +8,9 @@ import hasStraight from "./hasStraight";
  * returns true if a straight flush is contained within the given cards
  * @param cards
  */
-const hasStraightFlush: HandDetector = (cards) => {
-  if (!hasFlush(cards)) return false;
-  if (!hasStraight(cards)) return false;
+const hasStraightFlush: HandDetector = (cards, _) => {
+  if (!hasFlush(cards, _)) return false;
+  if (!hasStraight(cards, _)) return false;
 
   /**
    * an object with suits as keys where the corresponing value is the list of values of that suit in cards

@@ -5,12 +5,19 @@ import ofValue from "../../card/ofValue";
 import getKickers from "../getKickers";
 import highestRepeatedValue from "../../card/highestRepeatedValue";
 import purify from "../../../lib/purify";
+import { ValueCounts } from "../../card/valueCounts";
 
-const getThreeOfAKind = (cards: Card[]): Hand<HandType.ThreeOfAKind> | null => {
-  if (!hasThreeOfAKind(cards)) return null;
+const getThreeOfAKind = (
+  cards: Card[],
+  precalculatedValueCounts: ValueCounts
+): Hand<HandType.ThreeOfAKind> | null => {
+  if (!hasThreeOfAKind(cards, precalculatedValueCounts)) return null;
 
   const threeOfAKind = purify(() =>
-    ofValue(cards, highestRepeatedValue(cards, 3)).slice(0, 3)
+    ofValue(
+      cards,
+      highestRepeatedValue(cards, 3, precalculatedValueCounts)
+    ).slice(0, 3)
   );
   const kickers = purify(() => getKickers(cards, threeOfAKind()));
 

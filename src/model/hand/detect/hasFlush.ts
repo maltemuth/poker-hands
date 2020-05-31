@@ -4,7 +4,7 @@ import { HandDetector } from "./HandDetector";
  * returns true if a flush is contained within the given cards
  * @param cards
  */
-const hasFlush: HandDetector = (cards) => {
+const hasFlush: HandDetector = (cards, _) => {
   const suits = cards.map(({ suit }) => suit);
 
   /**

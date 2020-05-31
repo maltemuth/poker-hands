@@ -10,9 +10,11 @@ import getThreeOfAKind from "./get/getThreeOfAKind";
 import getTwoPair from "./get/getTwoPair";
 import getPair from "./get/getPair";
 import getHighCard from "./get/getHighCard";
+import valueCounts from "../card/valueCounts";
 
-const getBestHand = (cards: Card[]): HandInterface | null =>
-  [
+const getBestHand = (cards: Card[]): HandInterface | null => {
+  const precalculatedValueCounts = valueCounts(cards);
+  return [
     getRoyalFlush,
     getStraightFlush,
     getFourOfAKind,
@@ -23,6 +25,9 @@ const getBestHand = (cards: Card[]): HandInterface | null =>
     getTwoPair,
     getPair,
     getHighCard,
-  ].reduce((hand: HandInterface, get) => hand || get(cards), null);
-
+  ].reduce(
+    (hand: HandInterface, get) => hand || get(cards, precalculatedValueCounts),
+    null
+  );
+};
 export default getBestHand;

@@ -6,7 +6,7 @@ import hasContiguousSubSetsOfLength5 from "../../card/hasContiguousSubSetsOfLeng
  * returns true if a straight is contained within the given cards
  * @param cards
  */
-const hasStraight: HandDetector = (cards) => {
+const hasStraight: HandDetector = (cards, _) => {
   const values = cards
     .map(({ value }) => value)
     .filter((value, index, list) => list.indexOf(value) === index);

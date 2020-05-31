@@ -1,5 +1,7 @@
 import { Card } from "./Card";
 
+export type ValueCounts = { [value: number]: number };
+
 /**
  * returns an object whose keys are card values and the corresponding values are counting how often the
  * value is repeated in the given list of cards

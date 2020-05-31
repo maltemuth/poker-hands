@@ -11,11 +11,13 @@ import valueCounts from "./valueCounts";
 const hasValueCount = (
   cards: Card[],
   minimumCount: number,
-  atLeast: number = 1
+  atLeast: number = 1,
+  precalculatedValueCounts = valueCounts(cards)
 ): boolean => {
   return (
-    Object.values(valueCounts(cards)).filter((value) => value >= minimumCount)
-      .length >= atLeast
+    Object.values(precalculatedValueCounts).filter(
+      (value) => value >= minimumCount
+    ).length >= atLeast
   );
 };
 

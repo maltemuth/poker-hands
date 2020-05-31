@@ -5,12 +5,19 @@ import ofValue from "../../card/ofValue";
 import getKickers from "../getKickers";
 import highestRepeatedValue from "../../card/highestRepeatedValue";
 import purify from "../../../lib/purify";
+import { ValueCounts } from "../../card/valueCounts";
 
-const getPair = (cards: Card[]): Hand<HandType.Pair> | null => {
-  if (!hasPair(cards)) return null;
+const getPair = (
+  cards: Card[],
+  precalculatedValueCounts: ValueCounts
+): Hand<HandType.Pair> | null => {
+  if (!hasPair(cards, precalculatedValueCounts)) return null;
 
   const pair = purify(() =>
-    ofValue(cards, highestRepeatedValue(cards, 2)).slice(0, 2)
+    ofValue(
+      cards,
+      highestRepeatedValue(cards, 2, precalculatedValueCounts)
+    ).slice(0, 2)
   );
   const kickers = purify(() => getKickers(cards, pair()));
 

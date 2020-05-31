@@ -15,7 +15,7 @@ const royalFlushes = [
  * returns true if a royal flush is contained within the given cards
  * @param cards
  */
-const hasRoyalFlush: HandDetector = (cards) => {
+const hasRoyalFlush: HandDetector = (cards, _) => {
   if (cards.length < 5) return false;
 
   const cardsAsString = cards.map(toString);
