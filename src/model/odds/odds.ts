@@ -37,12 +37,6 @@ const odds = (
     throw new Error("Cannot calculate odds without any holes.");
   }
 
-  const timings = {
-    combinations: 0,
-    getBestHand: 0,
-    isBetterThan: 0,
-  };
-
   const initialTime = Date.now().valueOf();
 
   const allCardsInHoles = holes.reduce((flat, hole) => flat.concat(hole), []);
@@ -62,8 +56,6 @@ const odds = (
     deckWithoutKnownBoard,
     5 - board.length
   );
-
-  timings.combinations = Date.now().valueOf() - initialTime;
 
   const totalAmountOfBoards = possibleRestBoards.length;
 
@@ -86,21 +78,16 @@ const odds = (
       id: holeIdentifier(hole),
       hand: getBestHand([...completeBoard, ...hole]),
     }));
-    timings.getBestHand += Date.now().valueOf() - beforeBestHand;
-
-    const beforeSort = Date.now().valueOf();
 
     const sortedHands = hands.sort((a, b) => {
       if (isBetterThan(a.hand, b.hand)) return -1;
-      if (isBetterThan(b.hand, a.hand)) return +1;
-      return 0;
+      if (hasEqualValue) return 0;
+      return +1;
     });
 
-    timings.isBetterThan += Date.now().valueOf() - beforeSort;
-
     const first = sortedHands[0];
-    const ties = sortedHands.filter(({ hand }) =>
-      hasEqualValue(first.hand, hand)
+    const ties = sortedHands.filter(
+      ({ hand }, index) => index === 0 || hasEqualValue(first.hand, hand)
     );
 
     if (ties.length === 1) {
@@ -123,8 +110,6 @@ const odds = (
     }),
     {}
   );
-
-  console.log(timings);
 
   return holes.map((hole) => ({
     hole,
