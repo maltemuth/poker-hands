@@ -21,10 +21,10 @@ export enum HandType {
  */
 export interface HandInterface {
   type: HandType;
-  value: Value;
-  subvalue: Value | null;
-  cards: Card[];
-  kickers: Card[];
+  value: () => Value;
+  subvalue: () => Value | null;
+  cards: () => Card[];
+  kickers: () => Card[];
 }
 
 /**

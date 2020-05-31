@@ -4,21 +4,25 @@ import hasTwoPair from "../detect/hasTwoPair";
 import getPair from "./getPair";
 import without from "../../card/without";
 import getKickers from "../getKickers";
+import purify from "../../../lib/purify";
 
 const getTwoPair = (cards: Card[]): Hand<HandType.TwoPair> | null => {
   if (!hasTwoPair(cards)) return null;
 
-  const firstPair = getPair(cards);
-  const remainingCards = without(cards, ...firstPair.cards);
-  const secondPair = getPair(remainingCards);
-  const twoPair = [...firstPair.cards, ...secondPair.cards];
-  const kickers = getKickers(cards, twoPair);
+  const firstPair = purify(() => getPair(cards));
+  const remainingCards = purify(() => without(cards, ...firstPair().cards()));
+  const secondPair = purify(() => getPair(remainingCards()));
+  const twoPair = purify(() => [
+    ...firstPair().cards(),
+    ...secondPair().cards(),
+  ]);
+  const kickers = purify(() => getKickers(cards, twoPair()));
 
   return {
     type: HandType.TwoPair,
     cards: twoPair,
-    value: firstPair.cards[0].value,
-    subvalue: secondPair.cards[0].value,
+    value: purify(() => firstPair().cards()[0].value),
+    subvalue: purify(() => secondPair().cards()[0].value),
     kickers,
   };
 };

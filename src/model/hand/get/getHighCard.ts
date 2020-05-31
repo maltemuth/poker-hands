@@ -10,10 +10,10 @@ const getHighCard = (cards: Card[]): Hand<HandType.HighCard> | null => {
 
   return {
     type: HandType.HighCard,
-    value: highCard.value,
-    subvalue: null,
-    cards: [highCard],
-    kickers,
+    value: () => highCard.value,
+    subvalue: () => null,
+    cards: () => [highCard],
+    kickers: () => kickers,
   };
 };
 
