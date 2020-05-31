@@ -1,7 +1,7 @@
 import { Hand } from "./Hand";
+import isBetterThan from "./isBetterThan";
 
-const hasEqualValue = (a: Hand<any>, b: Hand<any>): boolean => {
-    return a.type === b.type && a.value === b.value && a.subvalue === b.subvalue;
-}
+const hasEqualValue = (a: Hand<any>, b: Hand<any>): boolean =>
+  !isBetterThan(a, b) && !isBetterThan(b, a);
 
 export default hasEqualValue;
