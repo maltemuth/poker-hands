@@ -7,7 +7,7 @@ describe("detect straights", () => {
   });
 
   test("detect a straight", () => {
-    expect(hasStraight(cards("D2", "D3", "D4", "D5", "D6"))).toBe(true);
+    expect(hasStraight(cards("HJ", "HT", "HQ", "D8", "H9"))).toBe(true);
   });
 
   test("detect a straight starting from ace", () => {

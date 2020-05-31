@@ -4,7 +4,7 @@
  */
 const hasContiguousSubSetsOfLength5 = (values: number[]): boolean =>
   values
-    .sort()
+    .sort((a, b) => a - b)
     .filter(
       (value, index, list) =>
         [1, 2, 3, 4].filter((shift) => list[index + shift] === value + shift)
