@@ -1,6 +1,6 @@
 {
-  "name": "poker-hands",
-  "version": "0.0.0",
+  "name": "@malte.muth/poker-hands",
+  "version": "0.1.0",
   "main": "index.js",
   "author": "Malte Muth <malte.muth+poker-hands@googlemail.com>",
   "license": "MIT",
