@@ -3,7 +3,7 @@ import { Suit, Value } from "../../../../src/model/card/Card";
 
 describe("convert strings to cards", () => {
   test("ace of spades", () => {
-    expect(fromString("SA")).toEqual({
+    expect(fromString("As")).toEqual({
       suit: Suit.spades,
       value: Value.ace,
     });

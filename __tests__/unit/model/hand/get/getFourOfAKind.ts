@@ -6,12 +6,12 @@ import toString from "../../../../../src/model/card/toString";
 
 describe("retrieve four-of-a-kind", () => {
   test("three-of-a-kind is not four-of-a-kind", () => {
-    expect(getFourOfAKind(cards("DA", "SA", "HA"))).toBe(null);
+    expect(getFourOfAKind(cards("Ad", "As", "Ah"))).toBe(null);
   });
 
   test("retrieve four-of-a-kind", () => {
     const fourOfAKind = getFourOfAKind(
-      cards("DT", "HT", "CT", "HQ", "DQ", "ST")
+      cards("Td", "Th", "Tc", "Qh", "Qd", "Ts")
     );
 
     expect(fourOfAKind.type).toEqual(HandType.FourOfAKind);
@@ -20,13 +20,13 @@ describe("retrieve four-of-a-kind", () => {
 
   test("retrieve four-of-a-kind in the correct order from seven cards", () => {
     const fourOfAKind = getFourOfAKind(
-      cards("SQ", "DT", "HA", "HT", "HQ", "DQ", "CQ")
+      cards("Qs", "Td", "Ah", "Th", "Qh", "Qd", "Qc")
     );
 
     expect(fourOfAKind.type).toEqual(HandType.FourOfAKind);
     expect(fourOfAKind.value()).toEqual(Value.queen);
 
     expect(fourOfAKind.kickers().length).toBe(1);
-    expect(fourOfAKind.kickers().map(toString)).toEqual(["HA"]);
+    expect(fourOfAKind.kickers().map(toString)).toEqual(["Ah"]);
   });
 });

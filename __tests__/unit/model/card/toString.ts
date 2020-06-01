@@ -8,7 +8,7 @@ describe("convert cards to string", () => {
         suit: Suit.spades,
         value: Value.ace,
       })
-    ).toEqual("SA");
+    ).toEqual("As");
   });
 
   test("4 of diamonds", () => {
@@ -17,6 +17,6 @@ describe("convert cards to string", () => {
         suit: Suit.diamonds,
         value: Value.four,
       })
-    ).toEqual("D4");
+    ).toEqual("4d");
   });
 });

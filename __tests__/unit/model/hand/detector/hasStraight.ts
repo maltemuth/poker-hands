@@ -3,19 +3,19 @@ import cards from "../../../../../src/model/card/cards";
 
 describe("detect straights", () => {
   test("four cards are not a straight", () => {
-    expect(hasStraight(cards("D2", "D3", "D4", "D5"))).toBe(false);
+    expect(hasStraight(cards("2d", "3d", "4d", "5d"))).toBe(false);
   });
 
   test("detect a straight", () => {
-    expect(hasStraight(cards("HJ", "HT", "HQ", "D8", "H9"))).toBe(true);
+    expect(hasStraight(cards("Jh", "Th", "Qh", "8d", "9h"))).toBe(true);
   });
 
   test("detect a straight starting from ace", () => {
-    expect(hasStraight(cards("DA", "D2", "D3", "D4", "D5"))).toBe(true);
+    expect(hasStraight(cards("Ad", "2d", "3d", "4d", "5d"))).toBe(true);
   });
 
   test("detect a straight from seven cards, out of order", () => {
-    expect(hasStraight(cards("D8", "D7", "D4", "D5", "D6", "H2", "C9"))).toBe(
+    expect(hasStraight(cards("8d", "7d", "4d", "5d", "6d", "2h", "9c"))).toBe(
       true
     );
   });

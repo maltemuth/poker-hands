@@ -4,7 +4,7 @@ import { Value } from "../../../../src/model/card/Card";
 
 describe("count values in a list of cards", () => {
   test("three aces", () => {
-    expect(valueCounts(cards("SA", "HA", "DA"))).toEqual({
+    expect(valueCounts(cards("As", "Ah", "Ad"))).toEqual({
       [Value.ace]: 3,
     });
   });

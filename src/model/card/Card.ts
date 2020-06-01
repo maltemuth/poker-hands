@@ -2,10 +2,10 @@
  * all possible card suits, by name
  */
 export enum Suit {
-  hearts = "H",
-  diamonds = "D",
-  clubs = "C",
-  spades = "S",
+  hearts = "h",
+  diamonds = "d",
+  clubs = "c",
+  spades = "s",
 }
 
 /**

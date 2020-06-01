@@ -5,10 +5,10 @@ import toString from "../../card/toString";
  * the list of all 4 royal flushes
  */
 const royalFlushes = [
-  ["DA", "DK", "DQ", "DJ", "DT"],
-  ["CA", "CK", "CQ", "CJ", "CT"],
-  ["SA", "SK", "SQ", "SJ", "ST"],
-  ["HA", "HK", "HQ", "HJ", "HT"],
+  ["Ad", "Kd", "Qd", "Jd", "Td"],
+  ["Ac", "Kc", "Qc", "Jc", "Tc"],
+  ["As", "Ks", "Qs", "Js", "Ts"],
+  ["Ah", "Kh", "Qh", "Jh", "Th"],
 ];
 
 /**

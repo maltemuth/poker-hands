@@ -5,11 +5,11 @@ import { Value } from "../../../../../src/model/card/Card";
 
 describe("retrieve royal flushes", () => {
   test("a straight flush is not a royal flush", () => {
-    expect(getRoyalFlush(cards("H9", "HT", "HJ", "HQ", "HK"))).toBe(null);
+    expect(getRoyalFlush(cards("9h", "Th", "Jh", "Qh", "Kh"))).toBe(null);
   });
 
   test("retrieve a royal flush", () => {
-    const royalFlush = getRoyalFlush(cards("HT", "HJ", "HQ", "HK", "HA"));
+    const royalFlush = getRoyalFlush(cards("Th", "Jh", "Qh", "Kh", "Ah"));
     expect(royalFlush.type).toEqual(HandType.RoyalFlush);
     expect(royalFlush.value()).toEqual(Value.ace);
   });

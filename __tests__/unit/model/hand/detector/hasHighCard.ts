@@ -3,6 +3,6 @@ import cards from "../../../../../src/model/card/cards";
 
 describe("detect high cards", () => {
   test("every card is a high card", () => {
-    expect(hasHighCard(cards("SA"))).toBe(true);
+    expect(hasHighCard(cards("As"))).toBe(true);
   });
 });

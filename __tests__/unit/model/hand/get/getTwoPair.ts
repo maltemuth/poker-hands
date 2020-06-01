@@ -6,11 +6,11 @@ import toString from "../../../../../src/model/card/toString";
 
 describe("retrieve two pairs", () => {
   test("no two pairs with less than 4 cards", () => {
-    expect(getTwoPair(cards("DA", "SA", "HA"))).toBe(null);
+    expect(getTwoPair(cards("Ad", "As", "Ah"))).toBe(null);
   });
 
   test("retrieve two pair in the correct order", () => {
-    const twoPair = getTwoPair(cards("DT", "HT", "HQ", "DQ"));
+    const twoPair = getTwoPair(cards("Td", "Th", "Qh", "Qd"));
 
     expect(twoPair.type).toEqual(HandType.TwoPair);
     expect(twoPair.value()).toEqual(Value.queen);
@@ -18,13 +18,13 @@ describe("retrieve two pairs", () => {
   });
 
   test("retrieve two pair in the correct order from seven cards", () => {
-    const twoPair = getTwoPair(cards("H3", "DT", "HA", "HT", "HQ", "DQ", "D3"));
+    const twoPair = getTwoPair(cards("3h", "Td", "Ah", "Th", "Qh", "Qd", "3d"));
 
     expect(twoPair.type).toEqual(HandType.TwoPair);
     expect(twoPair.value()).toEqual(Value.queen);
     expect(twoPair.subvalue()).toEqual(Value.ten);
 
     expect(twoPair.kickers().length).toBe(1);
-    expect(twoPair.kickers().map(toString)).toEqual(["HA"]);
+    expect(twoPair.kickers().map(toString)).toEqual(["Ah"]);
   });
 });

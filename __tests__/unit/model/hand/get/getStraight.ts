@@ -5,22 +5,22 @@ import { Value } from "../../../../../src/model/card/Card";
 
 describe("retrieve straights", () => {
   test("four cards are no straight", () => {
-    expect(getStraight(cards("H2", "H3", "H4", "H5"))).toBe(null);
+    expect(getStraight(cards("2h", "3h", "4h", "5h"))).toBe(null);
   });
 
   test("retrieve a straight", () => {
-    const straight = getStraight(cards("H2", "H3", "H4", "H5", "H6"));
+    const straight = getStraight(cards("2h", "3h", "4h", "5h", "6h"));
     expect(straight.type).toEqual(HandType.Straight);
   });
 
   test("retrieve a straight from ace to 5", () => {
-    const straight = getStraight(cards("HA", "H2", "H3", "H4", "H5"));
+    const straight = getStraight(cards("Ah", "2h", "3h", "4h", "5h"));
     expect(straight.type).toEqual(HandType.Straight);
   });
 
   test("retrieves the highest straight", () => {
     const straight = getStraight(
-      cards("HA", "H2", "H3", "H4", "H5", "H6", "H7")
+      cards("Ah", "2h", "3h", "4h", "5h", "6h", "7h")
     );
     expect(straight.type).toEqual(HandType.Straight);
     expect(straight.value()).toEqual(Value.seven);
@@ -28,13 +28,13 @@ describe("retrieve straights", () => {
 
   test("ignores non-contiguous numbers straight", () => {
     const straight = getStraight(
-      cards("HA", "H2", "H3", "HT", "H5", "H6", "H7")
+      cards("Ah", "2h", "3h", "Th", "5h", "6h", "7h")
     );
     expect(straight).toBe(null);
   });
 
   test("SJ HT S9 H8 S7 DT CT", () => {
-    const straight = getStraight(cards(..."SJ HT S9 H8 S7 DT CT".split(" ")));
+    const straight = getStraight(cards(..."Js Th 9s 8h 7s Td Tc".split(" ")));
     expect(straight.type).toBe(HandType.Straight);
     expect(straight.value()).toEqual(Value.jack);
   });

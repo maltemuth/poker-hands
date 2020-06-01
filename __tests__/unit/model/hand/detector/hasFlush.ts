@@ -3,17 +3,17 @@ import cards from "../../../../../src/model/card/cards";
 
 describe("detect flushes", () => {
   test("detect a flush", () => {
-    expect(hasFlush(cards("D2", "D4", "DQ", "DJ", "DT"))).toBe(true);
+    expect(hasFlush(cards("2d", "4d", "Qd", "Jd", "Td"))).toBe(true);
   });
 
   test("detect a flush from seven cards", () => {
-    expect(hasFlush(cards("D2", "D4", "DQ", "DJ", "DT", "H3", "H2"))).toBe(
+    expect(hasFlush(cards("2d", "4d", "Qd", "Jd", "Td", "3h", "2h"))).toBe(
       true
     );
   });
 
   test("detect a flush from seven cards of equal suit", () => {
-    expect(hasFlush(cards("D2", "D4", "DQ", "DJ", "DT", "D3", "D5"))).toBe(
+    expect(hasFlush(cards("2d", "4d", "Qd", "Jd", "Td", "3d", "5d"))).toBe(
       true
     );
   });

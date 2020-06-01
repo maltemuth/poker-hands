@@ -10,17 +10,17 @@ describe("retrieve high cards", () => {
   });
 
   test("retrieve high card from one card", () => {
-    const highCard = getHighCard(cards("SA"));
+    const highCard = getHighCard(cards("As"));
     expect(highCard.type).toEqual(HandType.HighCard);
-    expect(highCard.cards().map(toString)).toEqual(["SA"]);
+    expect(highCard.cards().map(toString)).toEqual(["As"]);
     expect(highCard.value()).toEqual(Value.ace);
     expect(highCard.subvalue()).toBe(null);
   });
 
   test("retrieve high card with one kicker", () => {
-    const highCard = getHighCard(cards("S7", "S5"));
-    expect(highCard.cards().map(toString)).toEqual(["S7"]);
-    expect(highCard.kickers().map(toString)).toEqual(["S5"]);
+    const highCard = getHighCard(cards("7s", "5s"));
+    expect(highCard.cards().map(toString)).toEqual(["7s"]);
+    expect(highCard.kickers().map(toString)).toEqual(["5s"]);
     expect(highCard.value()).toEqual(Value.seven);
   });
 });

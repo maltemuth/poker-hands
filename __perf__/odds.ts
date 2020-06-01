@@ -6,13 +6,13 @@ import * as profiler from "v8-profiler-next";
 const id = Date.now() + ".profile";
 profiler.startProfiling(id);
 console.log(
-  //   odds([cards("HA", "SA"), cards("DA", "CA")], cards("HT", "CT", "DT"))
-  //   odds([cards("HA", "SA"), cards("DT", "CT")], cards("C7", "D7", "S6"))
-  // odds([cards("CA", "DA"), cards("DT", "CT")], cards("S7", "H8", "HT", "S9"))
-  odds([cards("CA", "DA"), cards("DT", "CT")])
-  // odds([cards("CA", "CK"), cards("DT", "CT"), cards("D9", "H7")])
-  // odds([cards("CA", "DA"), cards("DT", "CT")], [])
-  //   odds([cards("HA", "SA"), cards("DT", "CT")])
+  //   odds([cards("Ah", "As"), cards("Ad", "Ac")], cards("Th", "Tc", "Td"))
+  //   odds([cards("Ah", "As"), cards("Td", "Tc")], cards("7c", "7d", "6s"))
+  // odds([cards("Ac", "Ad"), cards("Td", "Tc")], cards("7s", "8h", "Th", "9s"))
+  odds([cards("Ac", "Ad"), cards("Td", "Tc")])
+  // odds([cards("Ac", "Kc"), cards("Td", "Tc"), cards("9d", "7h")])
+  // odds([cards("Ac", "Ad"), cards("Td", "Tc")], [])
+  //   odds([cards("Ah", "As"), cards("Td", "Tc")])
 );
 
 // start profiling

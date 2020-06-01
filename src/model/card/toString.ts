@@ -6,6 +6,6 @@ import valueToString from "./valueToString";
  * @param card
  */
 const toString = (card: Card): string =>
-  `${card.suit}${valueToString(card.value)}`;
+  `${valueToString(card.value)}${card.suit}`;
 
 export default toString;

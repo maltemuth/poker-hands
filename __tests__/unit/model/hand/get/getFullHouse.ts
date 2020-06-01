@@ -5,11 +5,11 @@ import { Value } from "../../../../../src/model/card/Card";
 
 describe("retrieve full house", () => {
   test("three-of-a-kind is not a full house", () => {
-    expect(getFullHouse(cards("DA", "SA", "HA"))).toBe(null);
+    expect(getFullHouse(cards("Ad", "As", "Ah"))).toBe(null);
   });
 
   test("retrieve full house", () => {
-    const fullHouse = getFullHouse(cards("DT", "HT", "CT", "HQ", "DQ", "ST"));
+    const fullHouse = getFullHouse(cards("Td", "Th", "Tc", "Qh", "Qd", "Ts"));
 
     expect(fullHouse.type).toEqual(HandType.FullHouse);
     expect(fullHouse.value()).toEqual(Value.ten);
@@ -18,7 +18,7 @@ describe("retrieve full house", () => {
 
   test("retrieve full house in the correct order from seven cards", () => {
     const fullHouse = getFullHouse(
-      cards("SQ", "DT", "HA", "HT", "HQ", "DQ", "CQ")
+      cards("Qs", "Td", "Ah", "Th", "Qh", "Qd", "Qc")
     );
 
     expect(fullHouse.type).toEqual(HandType.FullHouse);

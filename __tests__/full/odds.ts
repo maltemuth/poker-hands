@@ -4,7 +4,7 @@ import odds from "../../src/model/odds/odds";
 // tested against http://www.propokertools.com/simulations
 describe("calculate odds", () => {
   test("equal value have equal win chance", () => {
-    const results = odds([cards("HA", "SA"), cards("DA", "CA")]);
+    const results = odds([cards("Ah", "As"), cards("Ad", "Ac")]);
 
     expect(results[0].wins).toEqual(results[1].wins);
     expect(results[0].ties).toEqual(results[1].ties);
@@ -13,7 +13,7 @@ describe("calculate odds", () => {
   });
 
   test("pocket rockets versus double 10", () => {
-    const results = odds([cards("HA", "SA"), cards("DT", "CT")]);
+    const results = odds([cards("Ah", "As"), cards("Td", "Tc")]);
 
     expect(results[0].winChance).toBeCloseTo(0.8008);
     expect(results[1].winChance).toBeCloseTo(0.1992);

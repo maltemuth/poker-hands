@@ -3,7 +3,7 @@ import { Suit, Value } from "../../../../src/model/card/Card";
 
 describe("convert a list of strings to cards", () => {
   test("convert 3 cards", () => {
-    expect(cards("DQ", "C3", "SA", "H7")).toEqual([
+    expect(cards("Qd", "3c", "As", "7h")).toEqual([
       {
         suit: Suit.diamonds,
         value: Value.queen,

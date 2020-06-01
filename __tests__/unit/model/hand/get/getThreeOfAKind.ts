@@ -6,11 +6,11 @@ import toString from "../../../../../src/model/card/toString";
 
 describe("retrieve three-of-a-kind", () => {
   test("do not detect any three cards as three-of-a-kind", () => {
-    expect(getThreeOfAKind(cards("DA", "SA", "HQ"))).toBe(null);
+    expect(getThreeOfAKind(cards("Ad", "As", "Qh"))).toBe(null);
   });
 
   test("retrieve three-of-a-kind in the correct order", () => {
-    const threeOfAKind = getThreeOfAKind(cards("DT", "HT", "CT", "HQ", "DQ"));
+    const threeOfAKind = getThreeOfAKind(cards("Td", "Th", "Tc", "Qh", "Qd"));
 
     expect(threeOfAKind.type).toEqual(HandType.ThreeOfAKind);
     expect(threeOfAKind.value()).toEqual(Value.ten);
@@ -18,13 +18,13 @@ describe("retrieve three-of-a-kind", () => {
 
   test("retrieve three-of-a-kind in the correct order from seven cards", () => {
     const threeOfAKind = getThreeOfAKind(
-      cards("H3", "DT", "HA", "HT", "HQ", "DQ", "SQ")
+      cards("3h", "Td", "Ah", "Th", "Qh", "Qd", "Qs")
     );
 
     expect(threeOfAKind.type).toEqual(HandType.ThreeOfAKind);
     expect(threeOfAKind.value()).toEqual(Value.queen);
 
     expect(threeOfAKind.kickers().length).toBe(2);
-    expect(threeOfAKind.kickers().map(toString)).toEqual(["HA", "HT"]);
+    expect(threeOfAKind.kickers().map(toString)).toEqual(["Ah", "Th"]);
   });
 });
