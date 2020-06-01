@@ -20,7 +20,7 @@ const handTypes = [
   "royalFlush",
 ];
 
-interface HandPercentages {
+export interface HandPercentages {
   [key: string]: {
     count: number;
     percentage: number;

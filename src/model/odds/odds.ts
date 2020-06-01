@@ -8,9 +8,9 @@ import isBetterThan from "../hand/isBetterThan";
 import hasEqualValue from "../hand/hasEqualValue";
 import assertUnique from "../card/assertUnique";
 
-type Hole = Card[];
+export type Hole = Card[];
 
-interface HoleOdds {
+export interface HoleOdds {
   hole: Hole;
   wins: number;
   ties: number;
