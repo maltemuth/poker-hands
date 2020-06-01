@@ -1,6 +1,5 @@
 import { Card } from "../../card/Card";
 import { HandType, Hand } from "../Hand";
-import hasThreeOfAKind from "../detect/hasThreeOfAKind";
 import ofValue from "../../card/ofValue";
 import getKickers from "../getKickers";
 import highestRepeatedValue from "../../card/highestRepeatedValue";
@@ -11,11 +10,8 @@ import sortedValues from "../../card/sortedValues";
 const getThreeOfAKind = (
   cards: Card[],
   presortedValues = sortedValues(cards),
-  _ = null,
   precalculatedValueCounts = valueCounts(cards, presortedValues)
 ): Hand<HandType.ThreeOfAKind> | null => {
-  if (!hasThreeOfAKind(cards, presortedValues)) return null;
-
   const threeOfAKind = purify(() =>
     ofValue(
       cards,

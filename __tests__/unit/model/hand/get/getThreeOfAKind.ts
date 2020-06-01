@@ -5,10 +5,6 @@ import { Value } from "../../../../../src/model/card/Card";
 import toString from "../../../../../src/model/card/toString";
 
 describe("retrieve three-of-a-kind", () => {
-  test("do not detect any three cards as three-of-a-kind", () => {
-    expect(getThreeOfAKind(cards("Ad", "As", "Qh"))).toBe(null);
-  });
-
   test("retrieve three-of-a-kind in the correct order", () => {
     const threeOfAKind = getThreeOfAKind(cards("Td", "Th", "Tc", "Qh", "Qd"));
 

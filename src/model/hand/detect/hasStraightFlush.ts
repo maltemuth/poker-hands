@@ -12,10 +12,12 @@ import sortedSuits from "../../card/sortedSuits";
 const hasStraightFlush = (
   cards: Card[],
   presortedValues = sortedValues(cards),
-  presortedSuits = sortedSuits(cards)
+  presortedSuits = sortedSuits(cards),
+  alreadyHasFlush = hasFlush(cards, presortedSuits),
+  alreadyHasStraight = hasStraight(cards, presortedValues)
 ) => {
-  if (!hasFlush(cards, presortedSuits)) return false;
-  if (!hasStraight(cards, presortedValues)) return false;
+  if (!alreadyHasFlush) return false;
+  if (!alreadyHasStraight) return false;
 
   /**
    * an object with suits as keys where the corresponing value is the list of values of that suit in cards

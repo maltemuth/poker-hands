@@ -19,4 +19,10 @@ describe("detect straights", () => {
       true
     );
   });
+
+  test("ignores non-contiguous numbers straight", () => {
+    expect(hasStraight(cards("Ah", "2h", "3h", "Th", "5h", "6h", "7h"))).toBe(
+      false
+    );
+  });
 });

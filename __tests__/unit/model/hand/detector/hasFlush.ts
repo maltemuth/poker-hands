@@ -6,6 +6,10 @@ describe("detect flushes", () => {
     expect(hasFlush(cards("2d", "4d", "Qd", "Jd", "Td"))).toBe(true);
   });
 
+  test("no flush with less than 5 cards", () => {
+    expect(hasFlush(cards("2s", "3s", "4s", "5s"))).toBe(false);
+  });
+
   test("detect a flush from seven cards", () => {
     expect(hasFlush(cards("2d", "4d", "Qd", "Jd", "Td", "3h", "2h"))).toBe(
       true

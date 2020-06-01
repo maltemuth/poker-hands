@@ -12,18 +12,10 @@ import sortedSuits from "../../card/sortedSuits";
 const getFullHouse = (
   cards: Card[],
   presortedValues = sortedValues(cards),
-  presortedSuits = sortedSuits(cards),
   precalculatedValueCounts = valueCounts(cards, presortedValues)
 ): Hand<HandType.FullHouse> | null => {
-  if (!hasFullHouse(cards, presortedValues)) return null;
-
   const threeOfAKind = purify(() =>
-    getThreeOfAKind(
-      cards,
-      presortedValues,
-      presortedSuits,
-      precalculatedValueCounts
-    )
+    getThreeOfAKind(cards, presortedValues, precalculatedValueCounts)
   );
   const remainingCards = purify(() =>
     without(cards, ...threeOfAKind().cards())

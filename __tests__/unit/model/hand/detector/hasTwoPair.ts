@@ -10,6 +10,10 @@ describe("detect pairs", () => {
     expect(hasTwoPair(cards("As", "Ah"))).toBe(false);
   });
 
+  test("no two pairs with less than 4 cards", () => {
+    expect(hasTwoPair(cards("Ad", "As", "Ah"))).toBe(false);
+  });
+
   test("two pair from seven cards", () => {
     expect(hasTwoPair(cards("As", "Ah", "7h", "7d", "3d", "4d", "2c"))).toBe(
       true

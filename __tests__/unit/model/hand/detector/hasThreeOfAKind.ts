@@ -6,6 +6,10 @@ describe("detect three-of-a-kind", () => {
     expect(hasThreeOfAKind(cards("As", "Ah"))).toBe(false);
   });
 
+  test("do not detect any three cards as three-of-a-kind", () => {
+    expect(hasThreeOfAKind(cards("Ad", "As", "Qh"))).toBe(false);
+  });
+
   test("detects three-of-a-kind", () => {
     expect(hasThreeOfAKind(cards("As", "Ah", "Ad"))).toBe(true);
   });

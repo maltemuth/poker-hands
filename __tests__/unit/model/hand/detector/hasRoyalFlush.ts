@@ -9,4 +9,8 @@ describe("detect royal flushes", () => {
   test("a non-suited high straight is not a royal flush", () => {
     expect(hasRoyalFlush(cards("Ad", "Kd", "Qd", "Jd", "Th"))).toBe(false);
   });
+
+  test("a straight flush is not a royal flush", () => {
+    expect(hasRoyalFlush(cards("9h", "Th", "Jh", "Qh", "Kh"))).toBe(false);
+  });
 });

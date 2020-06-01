@@ -4,10 +4,6 @@ import { HandType } from "../../../../../src/model/hand/Hand";
 import { Value } from "../../../../../src/model/card/Card";
 
 describe("retrieve full house", () => {
-  test("three-of-a-kind is not a full house", () => {
-    expect(getFullHouse(cards("Ad", "As", "Ah"))).toBe(null);
-  });
-
   test("retrieve full house", () => {
     const fullHouse = getFullHouse(cards("Td", "Th", "Tc", "Qh", "Qd", "Ts"));
 

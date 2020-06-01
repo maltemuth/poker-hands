@@ -23,18 +23,29 @@ import hasThreeOfAKind from "./detect/hasThreeOfAKind";
 import hasTwoPair from "./detect/hasTwoPair";
 
 const getBestHand = (cards: Card[]): HandInterface | null => {
-  if (hasRoyalFlush(cards)) return getRoyalFlush(cards);
-
   const presortedSuits = sortedSuits(cards);
   const presortedValues = sortedValues(cards);
-  if (hasFlush(cards, presortedSuits)) {
-    if (hasStraightFlush(cards, presortedValues, presortedSuits)) {
-      return getStraightFlush(cards, presortedValues, presortedSuits);
+
+  const flushPossible = hasFlush(cards, presortedSuits);
+  const straightPossible = hasStraight(cards, presortedValues);
+
+  if (flushPossible) {
+    if (
+      hasStraightFlush(
+        cards,
+        presortedValues,
+        presortedSuits,
+        true,
+        straightPossible
+      )
+    ) {
+      if (hasRoyalFlush(cards)) return getRoyalFlush(cards);
+      return getStraightFlush(cards);
     }
 
     if (!hasPair(cards, presortedValues)) {
       // no pair means no full house and no four-of-a-kind either, so flush is the best possible card
-      return getFlush(cards, presortedSuits);
+      return getFlush(cards);
     } else {
       if (hasFourOfAkind(cards, presortedValues)) {
         return getFourOfAKind(cards, presortedValues);
@@ -43,15 +54,15 @@ const getBestHand = (cards: Card[]): HandInterface | null => {
         return getFullHouse(cards, presortedValues);
       }
       // no full house and no four-of-a-kind means flush is highest again
-      return getFlush(cards, presortedSuits);
+      return getFlush(cards);
     }
   } else {
     // no flush
-    if (hasStraight(cards, presortedValues)) {
+    if (straightPossible) {
       if (!hasPair(cards, presortedValues)) {
         // no full house and no four-of-a-kind means straig is highest
         // since no flush already, we also can't get the straight flush
-        return getStraight(cards, presortedValues);
+        return getStraight(cards);
       }
 
       if (hasFourOfAkind(cards, presortedValues)) {
@@ -63,7 +74,7 @@ const getBestHand = (cards: Card[]): HandInterface | null => {
       }
 
       // if no full house and no four-of-a-kind, straight is highest again
-      return getStraight(cards, presortedValues);
+      return getStraight(cards);
     }
 
     // from here on: no flush, no straight; only card combos remain

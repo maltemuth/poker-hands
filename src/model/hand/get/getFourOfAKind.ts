@@ -7,15 +7,12 @@ import hasFourOfAkind from "../detect/hasFourOfAKind";
 import purify from "../../../lib/purify";
 import valueCounts from "../../card/valueCounts";
 import sortedValues from "../../card/sortedValues";
-import sortedSuits from "../../card/sortedSuits";
 
 const getFourOfAKind = (
   cards: Card[],
   presortedValues = sortedValues(cards),
   precalculatedValueCounts = valueCounts(cards, presortedValues)
 ): Hand<HandType.FourOfAKind> | null => {
-  if (!hasFourOfAkind(cards, presortedValues)) return null;
-
   const fourOfAKind = purify(() =>
     ofValue(
       cards,

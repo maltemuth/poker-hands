@@ -5,10 +5,6 @@ import { Value } from "../../../../../src/model/card/Card";
 import toString from "../../../../../src/model/card/toString";
 
 describe("retrieve flushes", () => {
-  test("no flush with less than 5 cards", () => {
-    expect(getFlush(cards("2s", "3s", "4s", "5s"))).toBe(null);
-  });
-
   test("retrieve flush", () => {
     const flush = getFlush(cards("7h", "Th", "Qh", "Jh", "3h"));
 

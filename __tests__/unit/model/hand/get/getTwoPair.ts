@@ -5,10 +5,6 @@ import { Value } from "../../../../../src/model/card/Card";
 import toString from "../../../../../src/model/card/toString";
 
 describe("retrieve two pairs", () => {
-  test("no two pairs with less than 4 cards", () => {
-    expect(getTwoPair(cards("Ad", "As", "Ah"))).toBe(null);
-  });
-
   test("retrieve two pair in the correct order", () => {
     const twoPair = getTwoPair(cards("Td", "Th", "Qh", "Qd"));
 

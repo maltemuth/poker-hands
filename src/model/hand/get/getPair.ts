@@ -13,8 +13,6 @@ const getPair = (
   presortedValues = sortedValues(cards),
   precalculatedValueCounts = valueCounts(cards, presortedValues)
 ): Hand<HandType.Pair> | null => {
-  if (!hasPair(cards, presortedValues)) return null;
-
   const pair = purify(() =>
     ofValue(
       cards,

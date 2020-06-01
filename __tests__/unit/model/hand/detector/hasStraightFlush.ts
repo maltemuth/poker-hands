@@ -1,8 +1,8 @@
 import hasStraightFlush from "../../../../../src/model/hand/detect/hasStraightFlush";
 import cards from "../../../../../src/model/card/cards";
 
-describe("detect straights", () => {
-  test("four cards are not a straight", () => {
+describe("detect straight flushes", () => {
+  test("four cards are not a straight flush", () => {
     expect(hasStraightFlush(cards("2d", "3d", "4d", "5d"))).toBe(false);
   });
 
@@ -22,5 +22,17 @@ describe("detect straights", () => {
     expect(
       hasStraightFlush(cards("8d", "7d", "4d", "5d", "6d", "2h", "9c"))
     ).toBe(true);
+  });
+
+  test("ignores non-contiguous numbers straight", () => {
+    expect(
+      hasStraightFlush(cards("Ah", "2h", "3h", "Th", "5h", "6h", "7h"))
+    ).toBe(false);
+  });
+
+  test("ignores non-suited straights", () => {
+    expect(
+      hasStraightFlush(cards("Ah", "2h", "3h", "4d", "5h", "6h", "7h"))
+    ).toBe(false);
   });
 });

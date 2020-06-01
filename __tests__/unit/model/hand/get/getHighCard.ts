@@ -5,10 +5,6 @@ import toString from "../../../../../src/model/card/toString";
 import { Value } from "../../../../../src/model/card/Card";
 
 describe("retrieve high cards", () => {
-  test("no high card without cards", () => {
-    expect(getHighCard([])).toBe(null);
-  });
-
   test("retrieve high card from one card", () => {
     const highCard = getHighCard(cards("As"));
     expect(highCard.type).toEqual(HandType.HighCard);

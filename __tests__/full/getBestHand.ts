@@ -4,10 +4,6 @@ import { Suit, Value } from "../../src/model/card/Card";
 import { HandType } from "../../src/model/hand/Hand";
 
 describe("retrieve best hands", () => {
-  test("retrieves nothing from nothing", () => {
-    expect(getBestHand([])).toBe(null);
-  });
-
   test("success on training data", () => {
     const trainingDataRaw = readFileSync(
       __dirname + "/poker-hand-testing.data"

@@ -5,10 +5,6 @@ import { Value } from "../../../../../src/model/card/Card";
 import toString from "../../../../../src/model/card/toString";
 
 describe("retrieve pairs", () => {
-  test("no pair with less than two cards", () => {
-    expect(getPair(cards("As"))).toBe(null);
-  });
-
   test("retrieve a pair", () => {
     const pair = getPair(cards("As", "Ad"));
     expect(pair.type).toEqual(HandType.Pair);

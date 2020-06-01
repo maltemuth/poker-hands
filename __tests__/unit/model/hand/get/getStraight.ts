@@ -4,10 +4,6 @@ import { HandType } from "../../../../../src/model/hand/Hand";
 import { Value } from "../../../../../src/model/card/Card";
 
 describe("retrieve straights", () => {
-  test("four cards are no straight", () => {
-    expect(getStraight(cards("2h", "3h", "4h", "5h"))).toBe(null);
-  });
-
   test("retrieve a straight", () => {
     const straight = getStraight(cards("2h", "3h", "4h", "5h", "6h"));
     expect(straight.type).toEqual(HandType.Straight);
@@ -24,13 +20,6 @@ describe("retrieve straights", () => {
     );
     expect(straight.type).toEqual(HandType.Straight);
     expect(straight.value()).toEqual(Value.seven);
-  });
-
-  test("ignores non-contiguous numbers straight", () => {
-    const straight = getStraight(
-      cards("Ah", "2h", "3h", "Th", "5h", "6h", "7h")
-    );
-    expect(straight).toBe(null);
   });
 
   test("SJ HT S9 H8 S7 DT CT", () => {

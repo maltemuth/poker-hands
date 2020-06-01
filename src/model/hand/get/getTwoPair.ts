@@ -13,8 +13,6 @@ const getTwoPair = (
   presortedValues = sortedValues(cards),
   precalculatedValueCounts = valueCounts(cards, presortedValues)
 ): Hand<HandType.TwoPair> | null => {
-  if (!hasTwoPair(cards, presortedValues)) return null;
-
   const firstPair = purify(() =>
     getPair(cards, presortedValues, precalculatedValueCounts)
   );
