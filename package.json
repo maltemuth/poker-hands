@@ -2,7 +2,7 @@
   "name": "poker-hands",
   "version": "0.0.0",
   "main": "index.js",
-  "author": "Malte Muth",
+  "author": "Malte Muth <malte.muth+poker-hands@googlemail.com>",
   "license": "MIT",
   "private": false,
   "devDependencies": {
