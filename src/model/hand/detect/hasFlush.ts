@@ -5,7 +5,7 @@ import { Card } from "../../card/Card";
  * returns true if a flush is contained within the given cards
  * @param cards
  */
-const hasFlush = (cards: Card[], _, presortedSuits = sortedSuits(cards)) => {
+const hasFlush = (cards: Card[], presortedSuits = sortedSuits(cards)) => {
   const counts = {};
 
   for (let i = 0; i < presortedSuits.length; i++) {

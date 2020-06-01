@@ -14,7 +14,7 @@ const hasStraightFlush = (
   presortedValues = sortedValues(cards),
   presortedSuits = sortedSuits(cards)
 ) => {
-  if (!hasFlush(cards, presortedValues, presortedSuits)) return false;
+  if (!hasFlush(cards, presortedSuits)) return false;
   if (!hasStraight(cards, presortedValues)) return false;
 
   /**

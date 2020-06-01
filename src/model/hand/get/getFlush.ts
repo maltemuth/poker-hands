@@ -1,18 +1,15 @@
 import { Card } from "../../card/Card";
-import { HandType } from "../Hand";
+import { HandType, Hand } from "../Hand";
 import hasFlush from "../detect/hasFlush";
 import sortByValue from "../../card/sortByValue";
 import purify from "../../../lib/purify";
-import { HandGetter } from "./HandGetter";
-import sortedValues from "../../card/sortedValues";
 import sortedSuits from "../../card/sortedSuits";
 
-const getFlush: HandGetter<HandType.Flush> = (
+const getFlush = (
   cards: Card[],
-  presortedValues = sortedValues(cards),
   presortedSuits = sortedSuits(cards)
-) => {
-  if (!hasFlush(cards, presortedValues, presortedSuits)) return null;
+): Hand<HandType.Flush> | null => {
+  if (!hasFlush(cards, presortedSuits)) return null;
 
   const flush = purify(() => {
     const cardsBySuit: { [suit: string]: Card[] } = cards.reduce(

@@ -1,10 +1,9 @@
 import { Card } from "../../card/Card";
-import { HandType } from "../Hand";
+import { HandType, Hand } from "../Hand";
 import hasHighCard from "../detect/hasHighCard";
 import sortByValue from "../../card/sortByValue";
-import { HandGetter } from "./HandGetter";
 
-const getHighCard: HandGetter<HandType.HighCard> = (cards: Card[]) => {
+const getHighCard = (cards: Card[]): Hand<HandType.HighCard> | null => {
   if (!hasHighCard(cards)) return null;
 
   const [highCard, ...kickers] = sortByValue(cards).reverse();

@@ -10,30 +10,105 @@ import getThreeOfAKind from "./get/getThreeOfAKind";
 import getTwoPair from "./get/getTwoPair";
 import getPair from "./get/getPair";
 import getHighCard from "./get/getHighCard";
-import valueCounts from "../card/valueCounts";
 import sortedValues from "../card/sortedValues";
 import sortedSuits from "../card/sortedSuits";
+import hasRoyalFlush from "./detect/hasRoyalFlush";
+import hasFlush from "./detect/hasFlush";
+import hasStraight from "./detect/hasStraight";
+import hasStraightFlush from "./detect/hasStraightFlush";
+import hasPair from "./detect/hasPair";
+import hasFourOfAkind from "./detect/hasFourOfAKind";
+import hasFullHouse from "./detect/hasFullHouse";
+import hasThreeOfAKind from "./detect/hasThreeOfAKind";
+import hasTwoPair from "./detect/hasTwoPair";
 
 const getBestHand = (cards: Card[]): HandInterface | null => {
-  const presortedValues = sortedValues(cards);
-  const precalculatedValueCounts = valueCounts(cards, presortedValues);
+  if (hasRoyalFlush(cards)) return getRoyalFlush(cards);
+
   const presortedSuits = sortedSuits(cards);
-  return [
-    getRoyalFlush,
-    getStraightFlush,
-    getFourOfAKind,
-    getFullHouse,
-    getFlush,
-    getStraight,
-    getThreeOfAKind,
-    getTwoPair,
-    getPair,
-    getHighCard,
-  ].reduce(
-    (hand: HandInterface, get) =>
-      hand ||
-      get(cards, presortedValues, presortedSuits, precalculatedValueCounts),
-    null
-  );
+  const presortedValues = sortedValues(cards);
+  if (hasFlush(cards, presortedSuits)) {
+    if (hasStraightFlush(cards, presortedValues, presortedSuits)) {
+      return getStraightFlush(cards, presortedValues, presortedSuits);
+    }
+
+    if (!hasPair(cards, presortedValues)) {
+      // no pair means no full house and no four-of-a-kind either, so flush is the best possible card
+      return getFlush(cards, presortedSuits);
+    } else {
+      if (hasFourOfAkind(cards, presortedValues)) {
+        return getFourOfAKind(cards, presortedValues);
+      }
+      if (hasFullHouse(cards, presortedValues)) {
+        return getFullHouse(cards, presortedValues);
+      }
+      // no full house and no four-of-a-kind means flush is highest again
+      return getFlush(cards, presortedSuits);
+    }
+  } else {
+    // no flush
+    if (hasStraight(cards, presortedValues)) {
+      if (!hasPair(cards, presortedValues)) {
+        // no full house and no four-of-a-kind means straig is highest
+        // since no flush already, we also can't get the straight flush
+        return getStraight(cards, presortedValues);
+      }
+
+      if (hasFourOfAkind(cards, presortedValues)) {
+        return getFourOfAKind(cards, presortedValues);
+      }
+
+      if (hasFullHouse(cards, presortedValues)) {
+        return getFullHouse(cards, presortedValues);
+      }
+
+      // if no full house and no four-of-a-kind, straight is highest again
+      return getStraight(cards, presortedValues);
+    }
+
+    // from here on: no flush, no straight; only card combos remain
+
+    if (!hasPair(cards, presortedValues)) {
+      return getHighCard(cards);
+    }
+
+    if (!hasThreeOfAKind(cards, presortedValues)) {
+      // a pair, but no three-of-a-kind means there is only a two-pair is still possible
+      if (hasTwoPair(cards, presortedValues)) {
+        return getTwoPair(cards, presortedValues);
+      }
+
+      return getPair(cards, presortedValues);
+    }
+
+    // now, the usual is possible
+    if (hasFourOfAkind(cards, presortedValues)) {
+      return getFourOfAKind(cards, presortedValues);
+    }
+
+    if (hasFullHouse(cards, presortedValues)) {
+      return getFullHouse(cards, presortedValues);
+    }
+
+    return getThreeOfAKind(cards, presortedValues);
+  }
+
+  // return [
+  //   getRoyalFlush,
+  //   getStraightFlush,
+  //   getFourOfAKind,
+  //   getFullHouse,
+  //   getFlush,
+  //   getStraight,
+  //   getThreeOfAKind,
+  //   getTwoPair,
+  //   getPair,
+  //   getHighCard,
+  // ].reduce(
+  //   (hand: HandInterface, get) =>
+  //     hand ||
+  //     get(cards, presortedValues, presortedSuits, precalculatedValueCounts),
+  //   null
+  // );
 };
 export default getBestHand;
