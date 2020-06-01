@@ -6,5 +6,5 @@ import { ValueCounts } from "../../card/valueCounts";
  */
 export type HandDetector = (
   cards: Card[],
-  precalulatedValueCounts: ValueCounts
+  precalulatedValueCounts?: ValueCounts
 ) => boolean;

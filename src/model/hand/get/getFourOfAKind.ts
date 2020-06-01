@@ -5,11 +5,11 @@ import getKickers from "../getKickers";
 import highestRepeatedValue from "../../card/highestRepeatedValue";
 import hasFourOfAkind from "../detect/hasFourOfAKind";
 import purify from "../../../lib/purify";
-import { ValueCounts } from "../../card/valueCounts";
+import valueCounts, { ValueCounts } from "../../card/valueCounts";
 
 const getFourOfAKind = (
   cards: Card[],
-  precalculatedValueCounts: ValueCounts
+  precalculatedValueCounts: ValueCounts = valueCounts(cards)
 ): Hand<HandType.FourOfAKind> | null => {
   if (!hasFourOfAkind(cards, precalculatedValueCounts)) return null;
 

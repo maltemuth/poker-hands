@@ -5,11 +5,11 @@ import ofValue from "../../card/ofValue";
 import getKickers from "../getKickers";
 import highestRepeatedValue from "../../card/highestRepeatedValue";
 import purify from "../../../lib/purify";
-import { ValueCounts } from "../../card/valueCounts";
+import valueCounts, { ValueCounts } from "../../card/valueCounts";
 
 const getPair = (
   cards: Card[],
-  precalculatedValueCounts: ValueCounts
+  precalculatedValueCounts: ValueCounts = valueCounts(cards)
 ): Hand<HandType.Pair> | null => {
   if (!hasPair(cards, precalculatedValueCounts)) return null;
 

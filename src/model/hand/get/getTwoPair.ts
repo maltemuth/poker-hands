@@ -9,7 +9,7 @@ import valueCounts, { ValueCounts } from "../../card/valueCounts";
 
 const getTwoPair = (
   cards: Card[],
-  precalculatedValueCounts: ValueCounts
+  precalculatedValueCounts: ValueCounts = valueCounts(cards)
 ): Hand<HandType.TwoPair> | null => {
   if (!hasTwoPair(cards, precalculatedValueCounts)) return null;
 

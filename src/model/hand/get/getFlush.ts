@@ -3,11 +3,11 @@ import { Hand, HandType } from "../Hand";
 import hasFlush from "../detect/hasFlush";
 import sortByValue from "../../card/sortByValue";
 import purify from "../../../lib/purify";
-import { ValueCounts } from "../../card/valueCounts";
+import valueCounts, { ValueCounts } from "../../card/valueCounts";
 
 const getFlush = (
   cards: Card[],
-  _: ValueCounts
+  _: ValueCounts = valueCounts(cards)
 ): Hand<HandType.Flush> | null => {
   if (!hasFlush(cards, _)) return null;
 

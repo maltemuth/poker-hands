@@ -3,11 +3,11 @@ import { Hand, HandType } from "../Hand";
 import hasStraightFlush from "../detect/hasStraightFlush";
 import getStraight from "./getStraight";
 import purify from "../../../lib/purify";
-import { ValueCounts } from "../../card/valueCounts";
+import valueCounts, { ValueCounts } from "../../card/valueCounts";
 
 const getStraightFlush = (
   cards: Card[],
-  _: ValueCounts
+  _: ValueCounts = valueCounts(cards)
 ): Hand<HandType.StraightFlush> | null => {
   if (!hasStraightFlush(cards, _)) return null;
 

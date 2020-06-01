@@ -3,11 +3,11 @@ import { Hand, HandType } from "../Hand";
 import hasStraight from "../detect/hasStraight";
 import sortByValue from "../../card/sortByValue";
 import purify from "../../../lib/purify";
-import { ValueCounts } from "../../card/valueCounts";
+import valueCounts, { ValueCounts } from "../../card/valueCounts";
 
 const getStraight = (
   cards: Card[],
-  _: ValueCounts
+  _: ValueCounts = valueCounts(cards)
 ): Hand<HandType.Straight> | null => {
   if (!hasStraight(cards, _)) return null;
 

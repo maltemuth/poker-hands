@@ -9,7 +9,7 @@ import valueCounts, { ValueCounts } from "../../card/valueCounts";
 
 const getFullHouse = (
   cards: Card[],
-  precalculatedValueCounts: ValueCounts
+  precalculatedValueCounts: ValueCounts = valueCounts(cards)
 ): Hand<HandType.FullHouse> | null => {
   if (!hasFullHouse(cards, precalculatedValueCounts)) return null;
 
