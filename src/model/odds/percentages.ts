@@ -53,9 +53,7 @@ const percentages = (hole: Card[], board: Card[] = []): HandPercentages => {
   });
 
   handTypes.forEach((type) => {
-    results[type].percentage =
-      Math.round((100 * 100 * results[type].count) / totalNumberOfSimulations) /
-      100;
+    results[type].percentage = results[type].count / totalNumberOfSimulations;
   });
 
   return results;
