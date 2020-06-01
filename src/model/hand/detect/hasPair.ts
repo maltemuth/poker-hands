@@ -1,12 +1,12 @@
 import hasValueCount from "../../card/hasValueCount";
-import sortedValues from "../../card/sortedValues";
 import { Card } from "../../card/Card";
+import sortValueCounts from "../../card/sortValueCounts";
 
 /**
  * returns true if a pair is contained within the given cards
  * @param cards
  */
-const hasPair = (cards: Card[], presortedValues = sortedValues(cards)) =>
-  hasValueCount(cards, 2, 1, presortedValues);
+const hasPair = (cards: Card[], sortedValueCounts = sortValueCounts(cards)) =>
+  hasValueCount(cards, 2, 1, sortedValueCounts);
 
 export default hasPair;

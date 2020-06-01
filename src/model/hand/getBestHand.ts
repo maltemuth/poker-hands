@@ -21,6 +21,7 @@ import hasFourOfAkind from "./detect/hasFourOfAKind";
 import hasFullHouse from "./detect/hasFullHouse";
 import hasThreeOfAKind from "./detect/hasThreeOfAKind";
 import hasTwoPair from "./detect/hasTwoPair";
+import sortValueCounts from "../card/sortValueCounts";
 
 const getBestHand = (cards: Card[]): HandInterface | null => {
   const presortedSuits = sortedSuits(cards);
@@ -43,14 +44,16 @@ const getBestHand = (cards: Card[]): HandInterface | null => {
       return getStraightFlush(cards);
     }
 
-    if (!hasPair(cards, presortedValues)) {
+    const sortedValueCounts = sortValueCounts(cards);
+
+    if (!hasPair(cards, sortedValueCounts)) {
       // no pair means no full house and no four-of-a-kind either, so flush is the best possible card
       return getFlush(cards);
     } else {
-      if (hasFourOfAkind(cards, presortedValues)) {
+      if (hasFourOfAkind(cards, sortedValueCounts)) {
         return getFourOfAKind(cards, presortedValues);
       }
-      if (hasFullHouse(cards, presortedValues)) {
+      if (hasFullHouse(cards, sortedValueCounts)) {
         return getFullHouse(cards, presortedValues);
       }
       // no full house and no four-of-a-kind means flush is highest again
@@ -58,18 +61,19 @@ const getBestHand = (cards: Card[]): HandInterface | null => {
     }
   } else {
     // no flush
+    const sortedValueCounts = sortValueCounts(cards);
     if (straightPossible) {
-      if (!hasPair(cards, presortedValues)) {
+      if (!hasPair(cards, sortedValueCounts)) {
         // no full house and no four-of-a-kind means straig is highest
         // since no flush already, we also can't get the straight flush
         return getStraight(cards);
       }
 
-      if (hasFourOfAkind(cards, presortedValues)) {
+      if (hasFourOfAkind(cards, sortedValueCounts)) {
         return getFourOfAKind(cards, presortedValues);
       }
 
-      if (hasFullHouse(cards, presortedValues)) {
+      if (hasFullHouse(cards, sortedValueCounts)) {
         return getFullHouse(cards, presortedValues);
       }
 
@@ -79,13 +83,13 @@ const getBestHand = (cards: Card[]): HandInterface | null => {
 
     // from here on: no flush, no straight; only card combos remain
 
-    if (!hasPair(cards, presortedValues)) {
+    if (!hasPair(cards, sortedValueCounts)) {
       return getHighCard(cards);
     }
 
-    if (!hasThreeOfAKind(cards, presortedValues)) {
+    if (!hasThreeOfAKind(cards, sortedValueCounts)) {
       // a pair, but no three-of-a-kind means there is only a two-pair is still possible
-      if (hasTwoPair(cards, presortedValues)) {
+      if (hasTwoPair(cards, sortedValueCounts)) {
         return getTwoPair(cards, presortedValues);
       }
 
@@ -93,33 +97,15 @@ const getBestHand = (cards: Card[]): HandInterface | null => {
     }
 
     // now, the usual is possible
-    if (hasFourOfAkind(cards, presortedValues)) {
+    if (hasFourOfAkind(cards, sortedValueCounts)) {
       return getFourOfAKind(cards, presortedValues);
     }
 
-    if (hasFullHouse(cards, presortedValues)) {
+    if (hasFullHouse(cards, sortedValueCounts)) {
       return getFullHouse(cards, presortedValues);
     }
 
     return getThreeOfAKind(cards, presortedValues);
   }
-
-  // return [
-  //   getRoyalFlush,
-  //   getStraightFlush,
-  //   getFourOfAKind,
-  //   getFullHouse,
-  //   getFlush,
-  //   getStraight,
-  //   getThreeOfAKind,
-  //   getTwoPair,
-  //   getPair,
-  //   getHighCard,
-  // ].reduce(
-  //   (hand: HandInterface, get) =>
-  //     hand ||
-  //     get(cards, presortedValues, presortedSuits, precalculatedValueCounts),
-  //   null
-  // );
 };
 export default getBestHand;
