@@ -1,4 +1,5 @@
 import { Card } from "./Card";
+import sortedValues from "./sortedValues";
 
 export type ValueCounts = { [value: number]: number };
 
@@ -7,12 +8,13 @@ export type ValueCounts = { [value: number]: number };
  * value is repeated in the given list of cards
  * @param cards
  */
-const valueCounts = (cards: Card[]): { [value: number]: number } =>
-  cards
-    .map(({ value }) => value)
-    .reduce((counts, value) => {
-      counts[value] = counts[value] + 1 || 1;
-      return counts;
-    }, {});
+const valueCounts = (
+  cards: Card[],
+  presortedValues = sortedValues(cards)
+): ValueCounts =>
+  presortedValues.reduce((counts, value) => {
+    counts[value] = counts[value] + 1 || 1;
+    return counts;
+  }, {});
 
 export default valueCounts;

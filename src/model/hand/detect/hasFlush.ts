@@ -1,22 +1,19 @@
-import { HandDetector } from "./HandDetector";
-import valueCounts from "../../card/valueCounts";
+import sortedSuits from "../../card/sortedSuits";
+import { Card } from "../../card/Card";
 
 /**
  * returns true if a flush is contained within the given cards
  * @param cards
  */
-const hasFlush: HandDetector = (cards, _ = valueCounts(cards)) => {
-  const suits = cards.map(({ suit }) => suit);
+const hasFlush = (cards: Card[], _, presortedSuits = sortedSuits(cards)) => {
+  const counts = {};
 
-  /**
-   * an object with suits as keys, where the corresponding value counts how often the suit is repeated
-   * in the cards
-   */
-  const suitCounts = suits.reduce((counts, suit) => {
+  for (let i = 0; i < presortedSuits.length; i++) {
+    const suit = presortedSuits[i];
     counts[suit] = counts[suit] + 1 || 1;
-    return counts;
-  }, {});
-  return Object.values(suitCounts).some((value) => value >= 5);
+    if (counts[suit] >= 5) return true;
+  }
+  return false;
 };
 
 export default hasFlush;

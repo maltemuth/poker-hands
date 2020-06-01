@@ -1,17 +1,21 @@
 import { Card } from "../../card/Card";
-import { HandType, Hand } from "../Hand";
+import { HandType } from "../Hand";
 import hasPair from "../detect/hasPair";
 import ofValue from "../../card/ofValue";
 import getKickers from "../getKickers";
 import highestRepeatedValue from "../../card/highestRepeatedValue";
 import purify from "../../../lib/purify";
-import valueCounts, { ValueCounts } from "../../card/valueCounts";
+import valueCounts from "../../card/valueCounts";
+import { HandGetter } from "./HandGetter";
+import sortedValues from "../../card/sortedValues";
 
-const getPair = (
+const getPair: HandGetter<HandType.Pair> = (
   cards: Card[],
-  precalculatedValueCounts: ValueCounts = valueCounts(cards)
-): Hand<HandType.Pair> | null => {
-  if (!hasPair(cards, precalculatedValueCounts)) return null;
+  presortedValues = sortedValues(cards),
+  _,
+  precalculatedValueCounts = valueCounts(cards, presortedValues)
+) => {
+  if (!hasPair(cards, presortedValues)) return null;
 
   const pair = purify(() =>
     ofValue(

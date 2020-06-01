@@ -1,5 +1,5 @@
 import { Card } from "./Card";
-import valueCounts from "./valueCounts";
+import sortedValues from "./sortedValues";
 
 /**
  * returns true if any value is repeated at least minimumCount times in the given list of cards
@@ -12,13 +12,20 @@ const hasValueCount = (
   cards: Card[],
   minimumCount: number,
   atLeast: number = 1,
-  precalculatedValueCounts = valueCounts(cards)
+  presortedValues = sortedValues(cards)
 ): boolean => {
-  return (
-    Object.values(precalculatedValueCounts).filter(
-      (value) => value >= minimumCount
-    ).length >= atLeast
-  );
+  const counts = {};
+  const foundTargets = [];
+  for (let i = 0; i < presortedValues.length; i++) {
+    const value = presortedValues[i];
+    counts[value] = counts[value] + 1 || 1;
+    if (counts[value] >= minimumCount) {
+      if (!foundTargets.includes(value)) foundTargets.push(value);
+      if (foundTargets.length >= atLeast) return true;
+    }
+  }
+
+  return false;
 };
 
 export default hasValueCount;

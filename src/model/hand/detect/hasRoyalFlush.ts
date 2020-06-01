@@ -1,5 +1,5 @@
-import { HandDetector } from "./HandDetector";
 import toString from "../../card/toString";
+import { Card } from "../../card/Card";
 
 /**
  * the list of all 4 royal flushes
@@ -15,7 +15,7 @@ const royalFlushes = [
  * returns true if a royal flush is contained within the given cards
  * @param cards
  */
-const hasRoyalFlush: HandDetector = (cards, _) => {
+const hasRoyalFlush = (cards: Card[]): boolean => {
   if (cards.length < 5) return false;
 
   const cardsAsString = cards.map(toString);

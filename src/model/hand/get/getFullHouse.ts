@@ -6,22 +6,30 @@ import without from "../../card/without";
 import getPair from "./getPair";
 import purify from "../../../lib/purify";
 import valueCounts, { ValueCounts } from "../../card/valueCounts";
+import { HandGetter } from "./HandGetter";
+import sortedValues from "../../card/sortedValues";
+import sortedSuits from "../../card/sortedSuits";
 
-const getFullHouse = (
+const getFullHouse: HandGetter<HandType.FullHouse> = (
   cards: Card[],
-  precalculatedValueCounts: ValueCounts = valueCounts(cards)
-): Hand<HandType.FullHouse> | null => {
-  if (!hasFullHouse(cards, precalculatedValueCounts)) return null;
+  presortedValues = sortedValues(cards),
+  presortedSuits = sortedSuits(cards),
+  precalculatedValueCounts = valueCounts(cards, presortedValues)
+) => {
+  if (!hasFullHouse(cards, presortedValues)) return null;
 
   const threeOfAKind = purify(() =>
-    getThreeOfAKind(cards, precalculatedValueCounts)
+    getThreeOfAKind(
+      cards,
+      presortedValues,
+      presortedSuits,
+      precalculatedValueCounts
+    )
   );
   const remainingCards = purify(() =>
     without(cards, ...threeOfAKind().cards())
   );
-  const pair = purify(() =>
-    getPair(remainingCards(), valueCounts(remainingCards()))
-  );
+  const pair = purify(() => getPair(remainingCards()));
   const fullHouse = purify(() => [
     ...threeOfAKind().cards(),
     ...pair().cards(),

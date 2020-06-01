@@ -1,17 +1,29 @@
 import { Card } from "../../card/Card";
-import { Hand, HandType } from "../Hand";
+import { HandType } from "../Hand";
 import hasRoyalFlush from "../detect/hasRoyalFlush";
 import getStraightFlush from "./getStraightFlush";
 import purify from "../../../lib/purify";
-import valueCounts, { ValueCounts } from "../../card/valueCounts";
+import valueCounts from "../../card/valueCounts";
+import { HandGetter } from "./HandGetter";
+import sortedValues from "../../card/sortedValues";
+import sortedSuits from "../../card/sortedSuits";
 
-const getRoyalFlush = (
+const getRoyalFlush: HandGetter<HandType.RoyalFlush> = (
   cards: Card[],
-  _: ValueCounts = valueCounts(cards)
-): Hand<HandType.RoyalFlush> | null => {
-  if (!hasRoyalFlush(cards, _)) return null;
+  presortedValues = sortedValues(cards),
+  presortedSuits = sortedSuits(cards),
+  precalculatedValueCounts = valueCounts(cards, presortedValues)
+) => {
+  if (!hasRoyalFlush(cards)) return null;
 
-  const straightFlush = purify(() => getStraightFlush(cards, _));
+  const straightFlush = purify(() =>
+    getStraightFlush(
+      cards,
+      presortedValues,
+      presortedSuits,
+      precalculatedValueCounts
+    )
+  );
 
   return {
     ...straightFlush(),

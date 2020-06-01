@@ -1,11 +1,12 @@
 import { Hand } from "./Hand";
 import valueToString from "../card/valueToString";
 import { Card } from "../card/Card";
+import numericalSort from "../../lib/numericalSort";
 
 const serializeValues = (cards: Card[]): string =>
   cards
     .map(({ value }) => value)
-    .sort((x, y) => x - y)
+    .sort(numericalSort)
     .map(valueToString)
     .join("");
 

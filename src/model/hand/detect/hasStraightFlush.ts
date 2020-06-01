@@ -1,16 +1,21 @@
-import { HandDetector } from "./HandDetector";
-import { Value } from "../../card/Card";
+import { Value, Card } from "../../card/Card";
 import hasContiguousSubSetsOfLength5 from "../../card/hasContiguousSubSetsOfLength5";
 import hasFlush from "./hasFlush";
 import hasStraight from "./hasStraight";
+import sortedValues from "../../card/sortedValues";
+import sortedSuits from "../../card/sortedSuits";
 
 /**
  * returns true if a straight flush is contained within the given cards
  * @param cards
  */
-const hasStraightFlush: HandDetector = (cards, _) => {
-  if (!hasFlush(cards, _)) return false;
-  if (!hasStraight(cards, _)) return false;
+const hasStraightFlush = (
+  cards: Card[],
+  presortedValues = sortedValues(cards),
+  presortedSuits = sortedSuits(cards)
+) => {
+  if (!hasFlush(cards, presortedValues, presortedSuits)) return false;
+  if (!hasStraight(cards, presortedValues)) return false;
 
   /**
    * an object with suits as keys where the corresponing value is the list of values of that suit in cards

@@ -11,9 +11,13 @@ import getTwoPair from "./get/getTwoPair";
 import getPair from "./get/getPair";
 import getHighCard from "./get/getHighCard";
 import valueCounts from "../card/valueCounts";
+import sortedValues from "../card/sortedValues";
+import sortedSuits from "../card/sortedSuits";
 
 const getBestHand = (cards: Card[]): HandInterface | null => {
-  const precalculatedValueCounts = valueCounts(cards);
+  const presortedValues = sortedValues(cards);
+  const precalculatedValueCounts = valueCounts(cards, presortedValues);
+  const presortedSuits = sortedSuits(cards);
   return [
     getRoyalFlush,
     getStraightFlush,
@@ -26,7 +30,9 @@ const getBestHand = (cards: Card[]): HandInterface | null => {
     getPair,
     getHighCard,
   ].reduce(
-    (hand: HandInterface, get) => hand || get(cards, precalculatedValueCounts),
+    (hand: HandInterface, get) =>
+      hand ||
+      get(cards, presortedValues, presortedSuits, precalculatedValueCounts),
     null
   );
 };

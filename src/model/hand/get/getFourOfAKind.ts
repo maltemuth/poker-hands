@@ -1,17 +1,22 @@
 import { Card } from "../../card/Card";
-import { Hand, HandType } from "../Hand";
+import { HandType } from "../Hand";
 import ofValue from "../../card/ofValue";
 import getKickers from "../getKickers";
 import highestRepeatedValue from "../../card/highestRepeatedValue";
 import hasFourOfAkind from "../detect/hasFourOfAKind";
 import purify from "../../../lib/purify";
-import valueCounts, { ValueCounts } from "../../card/valueCounts";
+import valueCounts from "../../card/valueCounts";
+import { HandGetter } from "./HandGetter";
+import sortedValues from "../../card/sortedValues";
+import sortedSuits from "../../card/sortedSuits";
 
-const getFourOfAKind = (
+const getFourOfAKind: HandGetter<HandType.FourOfAKind> = (
   cards: Card[],
-  precalculatedValueCounts: ValueCounts = valueCounts(cards)
-): Hand<HandType.FourOfAKind> | null => {
-  if (!hasFourOfAkind(cards, precalculatedValueCounts)) return null;
+  presortedValues = sortedValues(cards),
+  _ = sortedSuits(cards),
+  precalculatedValueCounts = valueCounts(cards, presortedValues)
+) => {
+  if (!hasFourOfAkind(cards, presortedValues)) return null;
 
   const fourOfAKind = purify(() =>
     ofValue(

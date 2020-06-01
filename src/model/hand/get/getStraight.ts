@@ -1,15 +1,16 @@
 import { Card, Value } from "../../card/Card";
-import { Hand, HandType } from "../Hand";
+import { HandType } from "../Hand";
 import hasStraight from "../detect/hasStraight";
 import sortByValue from "../../card/sortByValue";
 import purify from "../../../lib/purify";
-import valueCounts, { ValueCounts } from "../../card/valueCounts";
+import { HandGetter } from "./HandGetter";
+import sortedValues from "../../card/sortedValues";
 
-const getStraight = (
+const getStraight: HandGetter<HandType.Straight> = (
   cards: Card[],
-  _: ValueCounts = valueCounts(cards)
-): Hand<HandType.Straight> | null => {
-  if (!hasStraight(cards, _)) return null;
+  presortedValues = sortedValues(cards)
+) => {
+  if (!hasStraight(cards, presortedValues)) return null;
 
   const straight = purify(() => {
     const sortedCards = sortByValue(cards).reverse();

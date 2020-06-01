@@ -6,18 +6,23 @@ import without from "../../card/without";
 import getKickers from "../getKickers";
 import purify from "../../../lib/purify";
 import valueCounts, { ValueCounts } from "../../card/valueCounts";
+import { HandGetter } from "./HandGetter";
+import sortedValues from "../../card/sortedValues";
+import sortedSuits from "../../card/sortedSuits";
 
-const getTwoPair = (
+const getTwoPair: HandGetter<HandType.TwoPair> = (
   cards: Card[],
-  precalculatedValueCounts: ValueCounts = valueCounts(cards)
-): Hand<HandType.TwoPair> | null => {
-  if (!hasTwoPair(cards, precalculatedValueCounts)) return null;
+  presortedValues = sortedValues(cards),
+  presortedSuits = sortedSuits(cards),
+  precalculatedValueCounts = valueCounts(cards, presortedValues)
+) => {
+  if (!hasTwoPair(cards, presortedValues)) return null;
 
-  const firstPair = purify(() => getPair(cards, precalculatedValueCounts));
-  const remainingCards = purify(() => without(cards, ...firstPair().cards()));
-  const secondPair = purify(() =>
-    getPair(remainingCards(), valueCounts(remainingCards()))
+  const firstPair = purify(() =>
+    getPair(cards, presortedValues, presortedSuits, precalculatedValueCounts)
   );
+  const remainingCards = purify(() => without(cards, ...firstPair().cards()));
+  const secondPair = purify(() => getPair(remainingCards()));
   const twoPair = purify(() => [
     ...firstPair().cards(),
     ...secondPair().cards(),
