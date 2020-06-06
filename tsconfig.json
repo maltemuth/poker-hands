@@ -2,7 +2,8 @@
   "compilerOptions": {
     "module": "commonjs",
     "outDir": "dist",
-    "declaration": true
+    "declaration": true,
+    "rootDir": "src"
   },
-  "files": ["index.ts"]
+  "files": ["src/index.ts"]
 }
