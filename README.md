@@ -1,6 +1,6 @@
 # poker-hands
 
-A library of functinos for handling texas hold-em poker games and more.
+A library of functions for handling texas hold-em poker games and more.
 
 ## Why?
 
