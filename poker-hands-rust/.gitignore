@@ -1,0 +1,24 @@
+# Compiled binary
+/target/
+
+# Cargo.lock is auto-generated and should be included in VCS, but not for sub-crates
+# /Cargo.lock
+
+# Generated documentation
+/doc/
+
+# Package build artifacts
+/pkg/
+
+# Log files
+*.log
+
+# Output of `cargo fmt`
+/fmt_diff_*.rs
+
+# IDE-specific files
+.idea/
+.vscode/
+
+# Build artifacts from cargo-outdated
+/cargo-outdated.toml
