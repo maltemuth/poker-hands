@@ -1,3 +1,36 @@
+# Node.js
 node_modules
 dist
+
+# Performance profiles
 __perf__/*.cpuprofile
+
+# Rust
+/src/rust/target/
+
+# Examples
+/examples/node-card-example/node_modules/
+
+# Tests
+/__tests__/full/poker-hand-testing.data
+
+# IDE and build artifacts
+*.swp
+*.swo
+.DS_Store
+.vscode/
+.idea/
+*.iml
+*.iws
+*.ipr
+*.classpath
+*.project
+*.settings/
+*.log
+*.tmp
+*.bak
+*.old
+*.orig
+*.rej
+*.patch
+*.diff
