@@ -931,32 +931,32 @@ For each detector and getter function, follow this template:
 #### 2. hasStraight and getStraight
 
 - Implement `hasStraight` in Rust
-- Rebuild the wasm using `npm run build:wasm-node`
-- Showcase the new function in `examples/node-wasm/index.ts`
-- Run the example using `npm run example:node` successfully
-- Write Rust tests for the new function
-- Run the Rust tests
-- Implement `getStraight` in Rust
-- Rebuild the wasm using `npm run build:wasm-node`
-- Showcase the new function in `examples/node-wasm/index.ts`
-- Run the example using `npm run example:node` successfully
-- Write Rust tests for the new function
-- Run the Rust tests
+- [x] Rebuild the wasm using `npm run build:wasm-node`
+- [x] Showcase the new function in `examples/node-wasm/index.ts`
+- [x] Run the example using `npm run example:node` successfully
+- [x] Write Rust tests for the new function
+- [x] Run the Rust tests
+- [x] Implement `getStraight` in Rust
+- [x] Rebuild the wasm using `npm run build:wasm-node`
+- [x] Showcase the new function in `examples/node-wasm/index.ts`
+- [x] Run the example using `npm run example:node` successfully
+- [x] Write Rust tests for the new function
+- [x] Run the Rust tests
 
 #### 3. hasStraightFlush and getStraightFlush
 
-- Implement `hasStraightFlush` in Rust
-- Rebuild the wasm using `npm run build:wasm-node`
-- Showcase the new function in `examples/node-wasm/index.ts`
-- Run the example using `npm run example:node` successfully
-- Write Rust tests for the new function
-- Run the Rust tests
-- Implement `getStraightFlush` in Rust
-- Rebuild the wasm using `npm run build:wasm-node`
-- Showcase the new function in `examples/node-wasm/index.ts`
-- Run the example using `npm run example:node` successfully
-- Write Rust tests for the new function
-- Run the Rust tests
+- [x] Implement `hasStraightFlush` in Rust
+- [x] Rebuild the wasm using `npm run build:wasm-node`
+- [x] Showcase the new function in `examples/node-wasm/index.ts`
+- [x] Run the example using `npm run example:node` successfully
+- [x] Write Rust tests for the new function
+- [x] Run the Rust tests
+- [x] Implement `getStraightFlush` in Rust
+- [x] Rebuild the wasm using `npm run build:wasm-node`
+- [x] Showcase the new function in `examples/node-wasm/index.ts`
+- [x] Run the example using `npm run example:node` successfully
+- [x] Write Rust tests for the new function
+- [x] Run the Rust tests
 
 #### 4. hasFourOfAKind and getFourOfAKind
 

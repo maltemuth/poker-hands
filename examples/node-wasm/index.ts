@@ -33,6 +33,18 @@ async function run() {
   console.log(
     `Straight cards: ${straight.map((card) => card.to_string()).join(", ")}`
   );
+
+  // Check for a straight flush
+  const hasStraightFlush = hand.has_straight_flush();
+  const straightFlush = hand.get_straight_flush();
+
+  // Output the result
+  console.log(`Has Straight Flush: ${hasStraightFlush}`);
+  console.log(
+    `Straight Flush cards: ${straightFlush
+      .map((card) => card.to_string())
+      .join(", ")}`
+  );
 }
 
 run().catch(console.error);

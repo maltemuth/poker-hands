@@ -3,8 +3,10 @@ use wasm_bindgen::prelude::*;
 
 pub mod get_flush;
 pub mod get_straight;
+pub mod get_straight_flush;
 pub mod has_flush;
 pub mod has_straight;
+pub mod has_straight_flush;
 
 #[wasm_bindgen]
 pub struct Hand {
