@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WASM Card Example</title>
+</head>
+<body>
+  <h1>WASM Card Example</h1>
+  <div id="card-details"></div>
+
+  <script>
+    async function loadWasm() {
+      const response = await fetch('/path/to/poker_hands_bg.wasm');
+      const buffer = await response.arrayBuffer();
+      const wasmModule = await WebAssembly.instantiate(buffer, {
+        // Import any necessary JS functions here
+      });
+
+      // Create a card using the Rust implementation
+      const card = wasmModule.exports.Card.new(wasmModule.exports.Suit.Hearts, wasmModule.exports.Value.Ace);
+
+      // Output the card details
+      const cardDetails = document.getElementById('card-details');
+      cardDetails.innerHTML = `
+        <p>Card: ${card.toString()}</p>
+        <p>Suit: ${card.suit()}</p>
+        <p>Value: ${card.value()}</p>
+      `;
+    }
+
+    loadWasm();
+  </script>
+</body>
+</html>

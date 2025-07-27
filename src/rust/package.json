@@ -1,0 +1,13 @@
+{
+  "name": "poker-hands-rust",
+  "version": "0.1.0",
+  "description": "Rust WASM implementation of poker-hands library",
+  "scripts": {
+    "build": "npm run build:node && npm run build:web",
+    "build:node": "wasm-pack build --target nodejs --out-dir node",
+    "build:web": "wasm-pack build --target web --out-dir web"
+  },
+  "devDependencies": {
+    "wasm-pack": "^0.9"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "browser-wasm",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "http-server"
+  },
+  "devDependencies": {
+    "http-server": "^0.14.1"
+  }
+}
