@@ -8,6 +8,7 @@ async function run() {
     Card.from_str("Kh"),
     Card.from_str("Qh"),
     Card.from_str("Jh"),
+    Card.from_str("Th"),
     Card.from_str("9h"),
     Card.from_str("8s"),
   ];
@@ -21,6 +22,16 @@ async function run() {
   console.log(`Has Flush: ${hasFlush}`);
   console.log(
     `Flush cards: ${flush.map((card) => card.to_string()).join(", ")}`
+  );
+
+  // Check for a straight
+  const hasStraight = hand.has_straight();
+  const straight = hand.get_straight();
+
+  // Output the result
+  console.log(`Has Straight: ${hasStraight}`);
+  console.log(
+    `Straight cards: ${straight.map((card) => card.to_string()).join(", ")}`
   );
 }
 

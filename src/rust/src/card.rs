@@ -14,7 +14,7 @@ pub enum Suit {
 
 /// Represents a value of a card
 #[wasm_bindgen]
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, Hash)]
 pub enum Value {
     Two = 2,
     Three = 3,
@@ -29,6 +29,31 @@ pub enum Value {
     Queen = 12,
     King = 13,
     Ace = 14,
+}
+
+impl Value {
+    pub fn to_u8(self) -> u8 {
+        self.clone() as u8
+    }
+
+    pub fn from_u8(value: u8) -> Self {
+        match value {
+            2 => Value::Two,
+            3 => Value::Three,
+            4 => Value::Four,
+            5 => Value::Five,
+            6 => Value::Six,
+            7 => Value::Seven,
+            8 => Value::Eight,
+            9 => Value::Nine,
+            10 => Value::Ten,
+            11 => Value::Jack,
+            12 => Value::Queen,
+            13 => Value::King,
+            14 => Value::Ace,
+            _ => panic!("Invalid card value"),
+        }
+    }
 }
 
 /// Represents a value of a card as a string

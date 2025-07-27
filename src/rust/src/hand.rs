@@ -2,7 +2,9 @@ use crate::card::Card;
 use wasm_bindgen::prelude::*;
 
 pub mod get_flush;
+pub mod get_straight;
 pub mod has_flush;
+pub mod has_straight;
 
 #[wasm_bindgen]
 pub struct Hand {
