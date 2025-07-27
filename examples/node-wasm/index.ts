@@ -1,4 +1,4 @@
-import init, { Card, Suit, Value } from "../../src/rust/node/poker_hands";
+import { Card } from "../../src/rust/node/poker_hands";
 
 // Initialize the WASM module
 async function run() {
