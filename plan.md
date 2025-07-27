@@ -495,3 +495,123 @@ tests/
 - `__tests__/full/getBestHand.ts`: Integration tests for hand evaluation
 - `__tests__/full/odds.ts`: Integration tests for odds calculation
 - `__tests__/full/poker-hand-testing.data`: Test data for poker hand testing
+
+## Rust Function Implementation Plan
+
+### Template for Each Function
+
+For each detector and getter function, follow this template:
+
+- Implement function in Rust
+- Rebuild the wasm using `npm run build:wasm-node`
+- Showcase the new function in `examples/node-wasm/index.ts`
+- Run the example using `npm run example:node` successfully
+- Write Rust tests for the new function
+- Run the Rust tests
+
+### Function Implementation Order
+
+#### 1. hasFlush and getFlush
+
+- Implement `hasFlush` in Rust
+- Rebuild the wasm using `npm run build:wasm-node`
+- Showcase the new function in `examples/node-wasm/index.ts`
+- Run the example using `npm run example:node` successfully
+- Write Rust tests for the new function
+- Run the Rust tests
+- Implement `getFlush` in Rust
+- Rebuild the wasm using `npm run build:wasm-node`
+- Showcase the new function in `examples/node-wasm/index.ts`
+- Run the example using `npm run example:node` successfully
+- Write Rust tests for the new function
+- Run the Rust tests
+
+#### 2. hasStraight and getStraight
+
+- Implement `hasStraight` in Rust
+- Rebuild the wasm using `npm run build:wasm-node`
+- Showcase the new function in `examples/node-wasm/index.ts`
+- Run the example using `npm run example:node` successfully
+- Write Rust tests for the new function
+- Run the Rust tests
+- Implement `getStraight` in Rust
+- Rebuild the wasm using `npm run build:wasm-node`
+- Showcase the new function in `examples/node-wasm/index.ts`
+- Run the example using `npm run example:node` successfully
+- Write Rust tests for the new function
+- Run the Rust tests
+
+#### 3. hasStraightFlush and getStraightFlush
+
+- Implement `hasStraightFlush` in Rust
+- Rebuild the wasm using `npm run build:wasm-node`
+- Showcase the new function in `examples/node-wasm/index.ts`
+- Run the example using `npm run example:node` successfully
+- Write Rust tests for the new function
+- Run the Rust tests
+- Implement `getStraightFlush` in Rust
+- Rebuild the wasm using `npm run build:wasm-node`
+- Showcase the new function in `examples/node-wasm/index.ts`
+- Run the example using `npm run example:node` successfully
+- Write Rust tests for the new function
+- Run the Rust tests
+
+#### 4. hasFourOfAKind and getFourOfAKind
+
+- Implement `hasFourOfAKind` in Rust
+- Rebuild the wasm using `npm run build:wasm-node`
+- Showcase the new function in `examples/node-wasm/index.ts`
+- Run the example using `npm run example:node` successfully
+- Write Rust tests for the new function
+- Run the Rust tests
+- Implement `getFourOfAKind` in Rust
+- Rebuild the wasm using `npm run build:wasm-node`
+- Showcase the new function in `examples/node-wasm/index.ts`
+- Run the example using `npm run example:node` successfully
+- Write Rust tests for the new function
+- Run the Rust tests
+
+#### 5. hasFullHouse and getFullHouse
+
+- Implement `hasFullHouse` in Rust
+- Rebuild the wasm using `npm run build:wasm-node`
+- Showcase the new function in `examples/node-wasm/index.ts`
+- Run the example using `npm run example:node` successfully
+- Write Rust tests for the new function
+- Run the Rust tests
+- Implement `getFullHouse` in Rust
+- Rebuild the wasm using `npm run build:wasm-node`
+- Showcase the new function in `examples/node-wasm/index.ts`
+- Run the example using `npm run example:node` successfully
+- Write Rust tests for the new function
+- Run the Rust tests
+
+#### 6. hasThreeOfAKind and getThreeOfAKind
+
+- Implement `hasThreeOfAKind` in Rust
+- Rebuild the wasm using `npm run build:wasm-node`
+- Showcase the new function in `examples/node-wasm/index.ts`
+- Run the example using `npm run example:node` successfully
+- Write Rust tests for the new function
+- Run the Rust tests
+- Implement `getThreeOfAKind` in Rust
+- Rebuild the wasm using `npm run build:wasm-node`
+- Showcase the new function in `examples/node-wasm/index.ts`
+- Run the example using `npm run example:node` successfully
+- Write Rust tests for the new function
+- Run the Rust tests
+
+#### 7. hasTwoPair and getTwoPair
+
+- Implement `hasTwoPair` in Rust
+- Rebuild the wasm using `npm run build:wasm-node`
+- Showcase the new function in `examples/node-wasm/index.ts`
+- Run the example using `npm run example:node` successfully
+- Write Rust tests for the new function
+- Run the Rust tests
+- Implement `getTwoPair` in Rust
+- Rebuild the wasm using `npm run build:wasm-node`
+- Showcase the new function in `examples/node-wasm/index.ts`
+- Run the example using `npm run example:node` successfully
+- Write Rust tests for the new function
+- Run the Rust tests
