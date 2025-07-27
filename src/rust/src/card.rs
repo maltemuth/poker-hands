@@ -5,29 +5,48 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Suit {
-    Hearts,
-    Diamonds,
-    Clubs,
-    Spades,
+    hearts = "h",
+    diamonds = "d",
+    clubs = "c",
+    spades = "s",
 }
 
 /// Represents a value of a card
 #[wasm_bindgen]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Value {
-    Two,
-    Three,
-    Four,
-    Five,
-    Six,
-    Seven,
-    Eight,
-    Nine,
-    Ten,
-    Jack,
-    Queen,
-    King,
-    Ace,
+    two = 2,
+    three = 3,
+    four = 4,
+    five = 5,
+    six = 6,
+    seven = 7,
+    eight = 8,
+    nine = 9,
+    ten = 10,
+    jack = 11,
+    queen = 12,
+    king = 13,
+    ace = 14,
+}
+
+/// Represents a value of a card as a string
+#[wasm_bindgen]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum ValueAsString {
+    two = "2",
+    three = "3",
+    four = "4",
+    five = "5",
+    six = "6",
+    seven = "7",
+    eight = "8",
+    nine = "9",
+    ten = "T",
+    jack = "J",
+    queen = "Q",
+    king = "K",
+    ace = "A",
 }
 
 /// Represents a playing card
@@ -57,34 +76,44 @@ impl Card {
 
     /// Creates a card from a string representation
     pub fn from_str(s: &str) -> Result<Card, String> {
-        let parts: Vec<&str> = s.split_whitespace().collect();
-        if parts.len() != 2 {
+        if s.len() != 2 {
             return Err(format!("Invalid card string: {}", s));
         }
 
-        let suit = match parts[1] {
-            "Hearts" => Suit::Hearts,
-            "Diamonds" => Suit::Diamonds,
-            "Clubs" => Suit::Clubs,
-            "Spades" => Suit::Spades,
-            _ => return Err(format!("Invalid suit: {}", parts[1])),
+        let suit_char = s
+            .chars()
+            .nth(1)
+            .ok_or_else(|| format!("Invalid card string: {}", s))?;
+        let value_str = s
+            .chars()
+            .nth(0)
+            .ok_or_else(|| format!("Invalid card string: {}", s))?;
+
+        // Check if the suit is valid
+        let suit = match suit_char {
+            'h' => Suit::hearts,
+            'd' => Suit::diamonds,
+            'c' => Suit::clubs,
+            's' => Suit::spades,
+            _ => return Err(format!("Invalid suit: {}", suit_char)),
         };
 
-        let value = match parts[0] {
-            "2" => Value::Two,
-            "3" => Value::Three,
-            "4" => Value::Four,
-            "5" => Value::Five,
-            "6" => Value::Six,
-            "7" => Value::Seven,
-            "8" => Value::Eight,
-            "9" => Value::Nine,
-            "10" => Value::Ten,
-            "Jack" => Value::Jack,
-            "Queen" => Value::Queen,
-            "King" => Value::King,
-            "Ace" => Value::Ace,
-            _ => return Err(format!("Invalid value: {}", parts[0])),
+        // Check if the value is valid
+        let value = match value_str {
+            '2' => Value::two,
+            '3' => Value::three,
+            '4' => Value::four,
+            '5' => Value::five,
+            '6' => Value::six,
+            '7' => Value::seven,
+            '8' => Value::eight,
+            '9' => Value::nine,
+            'T' => Value::ten,
+            'J' => Value::jack,
+            'Q' => Value::queen,
+            'K' => Value::king,
+            'A' => Value::ace,
+            _ => return Err(format!("Invalid value: {}", value_str)),
         };
 
         Ok(Card { suit, value })
@@ -92,7 +121,32 @@ impl Card {
 
     /// Returns a string representation of the card
     pub fn to_string(&self) -> String {
-        format!("{:?} of {:?}", self.value, self.suit)
+        // Get the value as a string
+        let value_str = match self.value {
+            Value::two => "2",
+            Value::three => "3",
+            Value::four => "4",
+            Value::five => "5",
+            Value::six => "6",
+            Value::seven => "7",
+            Value::eight => "8",
+            Value::nine => "9",
+            Value::ten => "T",
+            Value::jack => "J",
+            Value::queen => "Q",
+            Value::king => "K",
+            Value::ace => "A",
+        };
+
+        // Get the suit as a string
+        let suit_str = match self.suit {
+            Suit::hearts => "h",
+            Suit::diamonds => "d",
+            Suit::clubs => "c",
+            Suit::spades => "s",
+        };
+
+        format!("{}{}", value_str, suit_str)
     }
 }
 
@@ -102,21 +156,21 @@ mod tests {
 
     #[test]
     fn test_card_creation() {
-        let card = Card::new(Suit::Hearts, Value::Ace);
-        assert_eq!(card.suit(), Suit::Hearts);
-        assert_eq!(card.value(), Value::Ace);
+        let card = Card::new(Suit::spades, Value::ace);
+        assert_eq!(card.suit(), Suit::spades);
+        assert_eq!(card.value(), Value::ace);
     }
 
     #[test]
     fn test_card_from_str() {
-        let card = Card::from_str("Ace Hearts").unwrap();
-        assert_eq!(card.suit(), Suit::Hearts);
-        assert_eq!(card.value(), Value::Ace);
+        let card = Card::from_str("As").unwrap();
+        assert_eq!(card.suit(), Suit::spades);
+        assert_eq!(card.value(), Value::ace);
     }
 
     #[test]
     fn test_card_to_string() {
-        let card = Card::new(Suit::Spades, Value::King);
-        assert_eq!(card.to_string(), "King of Spades");
+        let card = Card::new(Suit::spades, Value::king);
+        assert_eq!(card.to_string(), "Ks");
     }
 }
