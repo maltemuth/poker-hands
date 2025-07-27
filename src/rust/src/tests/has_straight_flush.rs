@@ -57,3 +57,92 @@ fn test_has_straight_flush() {
     let hand = Hand::new(cards);
     assert!(!hand.has_straight_flush());
 }
+
+#[test]
+fn test_has_straight_flush_with_ace_low() {
+    let cards = vec![
+        Card::new(Suit::Hearts, Value::Ace),
+        Card::new(Suit::Hearts, Value::Two),
+        Card::new(Suit::Hearts, Value::Three),
+        Card::new(Suit::Hearts, Value::Four),
+        Card::new(Suit::Hearts, Value::Five),
+    ];
+
+    let hand = Hand::new(cards);
+    assert!(hand.has_straight_flush());
+}
+
+#[test]
+fn test_has_straight_flush_with_ace_high() {
+    let cards = vec![
+        Card::new(Suit::Hearts, Value::Ace),
+        Card::new(Suit::Hearts, Value::King),
+        Card::new(Suit::Hearts, Value::Queen),
+        Card::new(Suit::Hearts, Value::Jack),
+        Card::new(Suit::Hearts, Value::Ten),
+    ];
+
+    let hand = Hand::new(cards);
+    assert!(hand.has_straight_flush());
+}
+
+#[test]
+fn test_has_straight_flush_with_multiple_suits() {
+    let cards = vec![
+        Card::new(Suit::Hearts, Value::Two),
+        Card::new(Suit::Diamonds, Value::Three),
+        Card::new(Suit::Clubs, Value::Four),
+        Card::new(Suit::Spades, Value::Five),
+        Card::new(Suit::Hearts, Value::Six),
+        Card::new(Suit::Diamonds, Value::Seven),
+    ];
+
+    let hand = Hand::new(cards);
+    assert!(!hand.has_straight_flush());
+}
+
+#[test]
+fn test_has_straight_flush_with_gaps() {
+    let cards = vec![
+        Card::new(Suit::Hearts, Value::Two),
+        Card::new(Suit::Hearts, Value::Four),
+        Card::new(Suit::Hearts, Value::Seven),
+        Card::new(Suit::Hearts, Value::Nine),
+        Card::new(Suit::Hearts, Value::Ace),
+    ];
+
+    let hand = Hand::new(cards);
+    assert!(!hand.has_straight_flush());
+}
+
+#[test]
+fn test_has_straight_flush_with_wrap_around() {
+    let cards = vec![
+        Card::new(Suit::Hearts, Value::Ace),
+        Card::new(Suit::Hearts, Value::Two),
+        Card::new(Suit::Hearts, Value::Three),
+        Card::new(Suit::Hearts, Value::Four),
+        Card::new(Suit::Hearts, Value::Five),
+        Card::new(Suit::Hearts, Value::Six),
+    ];
+
+    let hand = Hand::new(cards);
+    assert!(hand.has_straight_flush());
+}
+
+#[test]
+fn test_has_straight_flush_with_wrap_around_reversed() {
+    let cards = vec![
+        Card::new(Suit::Hearts, Value::Ten),
+        Card::new(Suit::Hearts, Value::Jack),
+        Card::new(Suit::Hearts, Value::Queen),
+        Card::new(Suit::Hearts, Value::King),
+        Card::new(Suit::Hearts, Value::Ace),
+        Card::new(Suit::Hearts, Value::Two),
+    ];
+
+    let hand = Hand::new(cards);
+    assert!(hand.has_straight_flush());
+}
+</content>
+<line_count>130</line_count>

@@ -67,3 +67,118 @@ fn test_get_straight_flush() {
     let straight_flush = hand.get_straight_flush();
     assert!(straight_flush.is_empty());
 }
+
+#[test]
+fn test_get_straight_flush_with_ace_low() {
+    let cards = vec![
+        Card::new(Suit::Hearts, Value::Ace),
+        Card::new(Suit::Hearts, Value::Two),
+        Card::new(Suit::Hearts, Value::Three),
+        Card::new(Suit::Hearts, Value::Four),
+        Card::new(Suit::Hearts, Value::Five),
+    ];
+
+    let hand = Hand::new(cards);
+    let straight_flush = hand.get_straight_flush();
+    assert_eq!(straight_flush.len(), 5);
+    assert_eq!(straight_flush[0].value(), Value::Ace);
+    assert_eq!(straight_flush[1].value(), Value::Two);
+    assert_eq!(straight_flush[2].value(), Value::Three);
+    assert_eq!(straight_flush[3].value(), Value::Four);
+    assert_eq!(straight_flush[4].value(), Value::Five);
+}
+
+#[test]
+fn test_get_straight_flush_with_ace_high() {
+    let cards = vec![
+        Card::new(Suit::Hearts, Value::Ace),
+        Card::new(Suit::Hearts, Value::King),
+        Card::new(Suit::Hearts, Value::Queen),
+        Card::new(Suit::Hearts, Value::Jack),
+        Card::new(Suit::Hearts, Value::Ten),
+    ];
+
+    let hand = Hand::new(cards);
+    let straight_flush = hand.get_straight_flush();
+    assert_eq!(straight_flush.len(), 5);
+    assert_eq!(straight_flush[0].value(), Value::Ace);
+    assert_eq!(straight_flush[1].value(), Value::King);
+    assert_eq!(straight_flush[2].value(), Value::Queen);
+    assert_eq!(straight_flush[3].value(), Value::Jack);
+    assert_eq!(straight_flush[4].value(), Value::Ten);
+}
+
+#[test]
+fn test_get_straight_flush_with_multiple_suits() {
+    let cards = vec![
+        Card::new(Suit::Hearts, Value::Two),
+        Card::new(Suit::Diamonds, Value::Three),
+        Card::new(Suit::Clubs, Value::Four),
+        Card::new(Suit::Spades, Value::Five),
+        Card::new(Suit::Hearts, Value::Six),
+        Card::new(Suit::Diamonds, Value::Seven),
+    ];
+
+    let hand = Hand::new(cards);
+    let straight_flush = hand.get_straight_flush();
+    assert!(straight_flush.is_empty());
+}
+
+#[test]
+fn test_get_straight_flush_with_gaps() {
+    let cards = vec![
+        Card::new(Suit::Hearts, Value::Two),
+        Card::new(Suit::Hearts, Value::Four),
+        Card::new(Suit::Hearts, Value::Seven),
+        Card::new(Suit::Hearts, Value::Nine),
+        Card::new(Suit::Hearts, Value::Ace),
+    ];
+
+    let hand = Hand::new(cards);
+    let straight_flush = hand.get_straight_flush();
+    assert!(straight_flush.is_empty());
+}
+
+#[test]
+fn test_get_straight_flush_with_wrap_around() {
+    let cards = vec![
+        Card::new(Suit::Hearts, Value::Ace),
+        Card::new(Suit::Hearts, Value::Two),
+        Card::new(Suit::Hearts, Value::Three),
+        Card::new(Suit::Hearts, Value::Four),
+        Card::new(Suit::Hearts, Value::Five),
+        Card::new(Suit::Hearts, Value::Six),
+    ];
+
+    let hand = Hand::new(cards);
+    let straight_flush = hand.get_straight_flush();
+    assert_eq!(straight_flush.len(), 5);
+    assert_eq!(straight_flush[0].value(), Value::Ace);
+    assert_eq!(straight_flush[1].value(), Value::Two);
+    assert_eq!(straight_flush[2].value(), Value::Three);
+    assert_eq!(straight_flush[3].value(), Value::Four);
+    assert_eq!(straight_flush[4].value(), Value::Five);
+}
+
+#[test]
+fn test_get_straight_flush_with_wrap_around_reversed() {
+    let cards = vec![
+        Card::new(Suit::Hearts, Value::Ten),
+        Card::new(Suit::Hearts, Value::Jack),
+        Card::new(Suit::Hearts, Value::Queen),
+        Card::new(Suit::Hearts, Value::King),
+        Card::new(Suit::Hearts, Value::Ace),
+        Card::new(Suit::Hearts, Value::Two),
+    ];
+
+    let hand = Hand::new(cards);
+    let straight_flush = hand.get_straight_flush();
+    assert_eq!(straight_flush.len(), 5);
+    assert_eq!(straight_flush[0].value(), Value::Ace);
+    assert_eq!(straight_flush[1].value(), Value::King);
+    assert_eq!(straight_flush[2].value(), Value::Queen);
+    assert_eq!(straight_flush[3].value(), Value::Jack);
+    assert_eq!(straight_flush[4].value(), Value::Ten);
+}
+</content>
+<line_count>150</line_count>
