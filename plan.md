@@ -9,6 +9,120 @@
   - Combinatorics utilities (`combinations.ts`)
   - Deck management (`deck/create.ts`, `shuffle.ts`)
 
+### Findings:
+
+- **Card-related functionality**:
+
+  - `src/model/card/Card.ts`: Main card class
+  - `src/model/card/fromString.ts`: Card creation from string
+  - `src/model/card/hasValueCount.ts`: Value count checking
+  - `src/model/card/sortValueCounts.ts`: Sorting value counts
+  - `src/model/card/valueCounts.ts`: Value count calculations
+  - `src/model/card/toString.ts`: String representation
+  - `src/model/card/without.ts`: Card removal
+  - `src/model/card/assertUnique.ts`: Assert card uniqueness
+  - `src/model/card/hasBetterValues.ts`: Compare card values
+  - `src/model/card/hasContiguousSubSetsOfLength5.ts`: Check for contiguous subsets
+  - `src/model/card/highestRepeatedValue.ts`: Find highest repeated value
+  - `src/model/card/isValidSuit.ts`: Validate card suit
+  - `src/model/card/ofValue.ts`: Get cards of a specific value
+  - `src/model/card/sortByValue.ts`: Sort cards by value
+  - `src/model/card/sortedSuits.ts`: Get sorted suits
+  - `src/model/card/sortedValues.ts`: Get sorted values
+  - `src/model/card/valueFromString.ts`: Convert string to value
+  - `src/model/card/valueToString.ts`: Convert value to string
+
+- **Hand-related functionality**:
+
+  - `src/model/hand/Hand.ts`: Main hand class
+  - `src/model/hand/getBestHand.ts`: Get best hand from cards
+  - `src/model/hand/getKickers.ts`: Get kickers from hand
+  - `src/model/hand/hasEqualValue.ts`: Check for equal values
+  - `src/model/hand/isBetterThan.ts`: Compare hands
+  - `src/model/hand/detect/hasPair.ts`: Pair detection
+  - `src/model/hand/detect/hasFlush.ts`: Flush detection
+  - `src/model/hand/detect/hasFourOfAKind.ts`: Four of a kind detection
+  - `src/model/hand/detect/hasFullHouse.ts`: Full house detection
+  - `src/model/hand/detect/hasHighCard.ts`: High card detection
+  - `src/model/hand/detect/hasRoyalFlush.ts`: Royal flush detection
+  - `src/model/hand/detect/hasStraight.ts`: Straight detection
+  - `src/model/hand/detect/hasStraightFlush.ts`: Straight flush detection
+  - `src/model/hand/detect/hasThreeOfAKind.ts`: Three of a kind detection
+  - `src/model/hand/detect/hasTwoPair.ts`: Two pair detection
+  - `src/model/hand/get/getFlush.ts`: Get flush from hand
+  - `src/model/hand/get/getFourOfAKind.ts`: Get four of a kind from hand
+  - `src/model/hand/get/getFullHouse.ts`: Get full house from hand
+  - `src/model/hand/get/getHighCard.ts`: Get high card from hand
+  - `src/model/hand/get/getPair.ts`: Get pair from hand
+  - `src/model/hand/get/getRoyalFlush.ts`: Get royal flush from hand
+  - `src/model/hand/get/getStraight.ts`: Get straight from hand
+  - `src/model/hand/get/getStraightFlush.ts`: Get straight flush from hand
+  - `src/model/hand/get/getThreeOfAKind.ts`: Get three of a kind from hand
+  - `src/model/hand/get/getTwoPair.ts`: Get two pair from hand
+
+- **Combinatorics utilities**:
+
+  - `src/model/combinatorics/combinations.ts`: Combinatorial functions
+
+- **Deck management**:
+
+  - `src/model/deck/create.ts`: Deck creation
+  - `src/model/deck/shuffle.ts`: Deck shuffling
+
+- **Test suites**:
+
+  - Card tests in `__tests__/unit/model/card/`
+    - `cards.ts`
+    - `fromString.ts`
+    - `hasValueCount.ts`
+    - `isValidSuit.ts`
+    - `toString.ts`
+    - `valueCounts.ts`
+    - `valueFromString.ts`
+    - `valueToString.ts`
+  - Hand tests in `__tests__/unit/model/hand/`
+    - `hasEqualValues.ts`
+    - `isBetterThan.ts`
+    - `detector/hasFlush.ts`
+    - `detector/hasFourOfAKind.ts`
+    - `detector/hasFullHouse.ts`
+    - `detector/hasHighCard.ts`
+    - `detector/hasPair.ts`
+    - `detector/hasRoyalFlush.ts`
+    - `detector/hasStraight.ts`
+    - `detector/hasStraightFlush.ts`
+    - `detector/hasThreeOfAKind.ts`
+    - `detector/hasTwoPair.ts`
+    - `get/getFlush.ts`
+    - `get/getFourOfAKind.ts`
+    - `get/getFullHouse.ts`
+    - `get/getHighCard.ts`
+    - `get/getPair.ts`
+    - `get/getRoyalFlush.ts`
+    - `get/getStraight.ts`
+    - `get/getStraightFlush.ts`
+    - `get/getThreeOfAKind.ts`
+    - `get/getTwoPair.ts`
+  - Combinatorics tests in `__tests__/unit/model/combinatorics/`
+    - `combinations.ts`
+  - Deck tests in `__tests__/unit/model/deck/`
+    - `shuffle.ts`
+
+- **Additional utilities**:
+
+  - `src/lib/numericalSort.ts`: Numerical sorting functions
+  - `src/lib/purify.ts`: Purification functions
+
+- **Odds calculation**:
+
+  - `src/model/odds/odds.ts`: Odds calculation functions
+  - `src/model/odds/percentages.ts`: Percentage calculation functions
+
+- **Performance tests**:
+  - `__perf__/odds.ts`: Performance tests for odds calculation
+  - `__perf__/percentages.ts`: Performance tests for percentage calculations
+  - `__perf__/withProfiling.ts`: Profiling performance tests
+
 ## 2. Design Rust/WASM Architecture
 
 - Use Rust's type system for strict card/hand representations.
@@ -21,6 +135,44 @@
 - Performance considerations:
   - Zero-copy data transfer between JS/WASM
   - Memory-safe card comparisons using Rust's ownership model
+
+### Architecture Design
+
+1. **Module Structure**:
+
+   - `card.rs`: Card data structure and operations
+   - `hand.rs`: Hand data structure and detection algorithms
+   - `combinatorics.rs`: Combinatorial functions
+   - `deck.rs`: Deck creation and shuffling
+
+2. **WASM Integration**:
+
+   - Use `wasm-bindgen` for FFI between JavaScript and Rust
+   - Define public APIs with `#[wasm_bindgen]` attributes
+   - Implement error handling with `Result` types
+
+3. **Data Structures**:
+
+   - `Card`: Representation of a playing card with suit and value
+   - `Hand`: Collection of cards with detection methods
+   - `Deck`: Collection of cards with shuffling capabilities
+
+4. **Performance Optimization**:
+
+   - Use bitflags for efficient suit/value representation
+   - Implement bitwise operations for hand detection
+   - Minimize memory allocations with stack-based data structures
+
+5. **Testing Strategy**:
+
+   - Unit tests for individual components
+   - Integration tests for cross-language functionality
+   - Performance benchmarks for critical paths
+
+6. **Build Configuration**:
+   - Configure `Cargo.toml` for WASM target
+   - Set up build scripts for generating JS bindings
+   - Implement CI/CD pipeline for automated testing and deployment
 
 ### Architecture Diagram (Mermaid)
 
@@ -329,3 +481,17 @@ tests/
    - Maintain parallel TypeScript implementation in `src/ts/`
    - Create abstraction layer in `src/common/` for shared interfaces
    - Use feature flags in package.json to switch implementations
+
+## Performance and Integration Tests
+
+### Performance Tests
+
+- `__perf__/odds.ts`: Performance tests for odds calculation
+- `__perf__/percentages.ts`: Performance tests for percentage calculations
+- `__perf__/withProfiling.ts`: Profiling performance tests
+
+### Integration Tests
+
+- `__tests__/full/getBestHand.ts`: Integration tests for hand evaluation
+- `__tests__/full/odds.ts`: Integration tests for odds calculation
+- `__tests__/full/poker-hand-testing.data`: Test data for poker hand testing
