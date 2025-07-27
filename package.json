@@ -1,39 +1,31 @@
 {
-  "name": "@malte.muth/poker-hands",
-  "version": "0.3.1",
-  "author": "Malte Muth <malte.muth+poker-hands@googlemail.com>",
-  "license": "MIT",
-  "private": false,
-  "types": "dist/index.d.ts",
-  "main": "dist/index.js",
-  "devDependencies": {
-    "@babel/core": "^7.28.0",
-    "@babel/preset-env": "^7.28.0",
-    "@babel/preset-typescript": "^7.27.1",
-    "@types/jest": "^30.0.0",
-    "@typescript-eslint/eslint-plugin": "^8.38.0",
-    "@typescript-eslint/parser": "^8.38.0",
-    "babel-jest": "^26.0.1",
-    "eslint": "^9.32.0",
-    "jest": "^30.0.5",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.8.3",
-    "v8-profiler-next": "^1.10.0",
-    "wasm-pack": "^0.13.1"
-  },
+  "name": "poker-hands",
+  "version": "1.0.0",
+  "description": "A TypeScript project for analyzing poker hands",
+  "main": "src/index.ts",
   "scripts": {
-    "prepack": "rm -rf dist && yarn build",
     "build": "tsc",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:full": "jest __tests__/full --testMatch",
-    "profile": "yarn profile:odds",
-    "profile:odds": "time ts-node -T __perf__/odds.ts",
-    "profile:percentages": "time ts-node -T __perf__/percentages.ts",
-    "build:wasm": "cd src/rust && npm run build",
-    "build:wasm:node": "cd src/rust && npm run build:node",
-    "build:wasm:web": "cd src/rust && npm run build:web",
-    "example:node": "cd examples/node-wasm && ts-node index.ts",
-    "example:browser": "cd examples/browser-wasm && npm run start"
+    "test": "npm run build && jest",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "ts-jest": "^29.0.3",
+    "typescript": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.2.3",
+    "@types/node": "^18.11.18",
+    "jest": "^29.3.1",
+    "ts-jest": "^29.0.3"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/src/$1"
+    },
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    }
   }
 }
