@@ -170,6 +170,13 @@ mod tests {
     }
 
     #[test]
+    fn test_card_from_str_hearts() {
+        let card = Card::from_str("Ah").unwrap();
+        assert_eq!(card.suit(), Suit::Hearts);
+        assert_eq!(card.value(), Value::Ace);
+    }
+
+    #[test]
     fn test_card_to_string() {
         let card = Card::new(Suit::Spades, Value::King);
         assert_eq!(card.to_string(), "Ks");
