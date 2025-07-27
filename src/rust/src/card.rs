@@ -1,9 +1,10 @@
 use serde::{Deserialize, Serialize};
+use std::hash::Hash;
 use wasm_bindgen::prelude::*;
 
 /// Represents a suit of a card
 #[wasm_bindgen]
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Suit {
     Hearts = "h",
     Diamonds = "d",

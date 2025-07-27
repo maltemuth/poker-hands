@@ -1,14 +1,27 @@
-import { Card } from "../../src/rust/node/poker_hands";
+import { Card, Hand } from "../../src/rust/node/poker_hands";
 
 // Initialize the WASM module
 async function run() {
-  // Create a card using the Rust implementation
-  const card = Card.from_str("Ah");
+  // Create cards using the Rust implementation
+  const cards = [
+    Card.from_str("Ah"),
+    Card.from_str("Kh"),
+    Card.from_str("Qh"),
+    Card.from_str("Jh"),
+    Card.from_str("9h"),
+    Card.from_str("8s"),
+  ];
 
-  // Output the card details
-  console.log(`Card: ${card.to_string()}`);
-  console.log(`Suit: ${card.suit()}`);
-  console.log(`Value: ${card.value()}`);
+  // Create a hand and check for a flush
+  const hand = Hand.new(cards);
+  const hasFlush = hand.has_flush();
+  const flush = hand.get_flush();
+
+  // Output the result
+  console.log(`Has Flush: ${hasFlush}`);
+  console.log(
+    `Flush cards: ${flush.map((card) => card.to_string()).join(", ")}`
+  );
 }
 
 run().catch(console.error);

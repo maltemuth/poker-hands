@@ -14,7 +14,4 @@ serde = { version = "1.0", features = ["derive"] }
 wasm-bindgen-test = "0.3.50"
 
 [package.metadata.wasm-pack.profile.release]
-wasm-opt = false
-
-[package.metadata.wasm-pack.build]
-target = ["nodejs", "web"]
+wasm-opt = true
