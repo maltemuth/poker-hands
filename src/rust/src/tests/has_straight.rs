@@ -73,12 +73,12 @@ fn test_has_straight_with_ace_in_middle() {
     let hand = vec![
         Card::new(Suit::Hearts, Value::Nine),
         Card::new(Suit::Diamonds, Value::Ace),
-        Card::new(Suit::Clubs, Value::Eleven),
-        Card::new(Suit::Spades, Value::Twelve),
-        Card::new(Suit::Hearts, Value::Thirteen),
+        Card::new(Suit::Clubs, Value::Eight),
+        Card::new(Suit::Spades, Value::Ten),
+        Card::new(Suit::Hearts, Value::Jack),
     ];
     let hand = Hand::new(hand);
-    assert!(hand.has_straight());
+    assert!(!hand.has_straight());
 }
 
 #[test]

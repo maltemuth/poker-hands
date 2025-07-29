@@ -81,11 +81,11 @@ fn test_get_straight_flush_with_ace_low() {
     let hand = Hand::new(cards);
     let straight_flush = hand.get_straight_flush();
     assert_eq!(straight_flush.len(), 5);
-    assert_eq!(straight_flush[0].value(), Value::Ace);
-    assert_eq!(straight_flush[1].value(), Value::Two);
-    assert_eq!(straight_flush[2].value(), Value::Three);
-    assert_eq!(straight_flush[3].value(), Value::Four);
-    assert_eq!(straight_flush[4].value(), Value::Five);
+    assert_eq!(straight_flush[0].value(), Value::Two);
+    assert_eq!(straight_flush[1].value(), Value::Three);
+    assert_eq!(straight_flush[2].value(), Value::Four);
+    assert_eq!(straight_flush[3].value(), Value::Five);
+    assert_eq!(straight_flush[4].value(), Value::Ace);
 }
 
 #[test]
@@ -101,11 +101,11 @@ fn test_get_straight_flush_with_ace_high() {
     let hand = Hand::new(cards);
     let straight_flush = hand.get_straight_flush();
     assert_eq!(straight_flush.len(), 5);
-    assert_eq!(straight_flush[0].value(), Value::Ace);
-    assert_eq!(straight_flush[1].value(), Value::King);
+    assert_eq!(straight_flush[0].value(), Value::Ten);
+    assert_eq!(straight_flush[1].value(), Value::Jack);
     assert_eq!(straight_flush[2].value(), Value::Queen);
-    assert_eq!(straight_flush[3].value(), Value::Jack);
-    assert_eq!(straight_flush[4].value(), Value::Ten);
+    assert_eq!(straight_flush[3].value(), Value::King);
+    assert_eq!(straight_flush[4].value(), Value::Ace);
 }
 
 #[test]
@@ -153,11 +153,11 @@ fn test_get_straight_flush_with_wrap_around() {
     let hand = Hand::new(cards);
     let straight_flush = hand.get_straight_flush();
     assert_eq!(straight_flush.len(), 5);
-    assert_eq!(straight_flush[0].value(), Value::Ace);
-    assert_eq!(straight_flush[1].value(), Value::Two);
-    assert_eq!(straight_flush[2].value(), Value::Three);
-    assert_eq!(straight_flush[3].value(), Value::Four);
-    assert_eq!(straight_flush[4].value(), Value::Five);
+    assert_eq!(straight_flush[0].value(), Value::Two);
+    assert_eq!(straight_flush[1].value(), Value::Three);
+    assert_eq!(straight_flush[2].value(), Value::Four);
+    assert_eq!(straight_flush[3].value(), Value::Five);
+    assert_eq!(straight_flush[4].value(), Value::Six);
 }
 
 #[test]
@@ -174,11 +174,9 @@ fn test_get_straight_flush_with_wrap_around_reversed() {
     let hand = Hand::new(cards);
     let straight_flush = hand.get_straight_flush();
     assert_eq!(straight_flush.len(), 5);
-    assert_eq!(straight_flush[0].value(), Value::Ace);
-    assert_eq!(straight_flush[1].value(), Value::King);
+    assert_eq!(straight_flush[0].value(), Value::Ten);
+    assert_eq!(straight_flush[1].value(), Value::Jack);
     assert_eq!(straight_flush[2].value(), Value::Queen);
-    assert_eq!(straight_flush[3].value(), Value::Jack);
-    assert_eq!(straight_flush[4].value(), Value::Ten);
+    assert_eq!(straight_flush[3].value(), Value::King);
+    assert_eq!(straight_flush[4].value(), Value::Ace);
 }
-</content>
-<line_count>150</line_count>

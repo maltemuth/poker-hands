@@ -168,5 +168,3 @@ fn test_get_straight_with_wrap_around_reversed() {
     assert_eq!(straight[3].value(), Value::Jack);
     assert_eq!(straight[4].value(), Value::Ten);
 }
-</content>
-<line_count>150</line_count>

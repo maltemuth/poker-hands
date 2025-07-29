@@ -144,5 +144,3 @@ fn test_has_straight_flush_with_wrap_around_reversed() {
     let hand = Hand::new(cards);
     assert!(hand.has_straight_flush());
 }
-</content>
-<line_count>130</line_count>

@@ -31,18 +31,18 @@ impl Hand {
 
         // Check for a straight with Ace as 1
         if let Some(ace_index) = values.iter().position(|c| c.value() == Value::Ace) {
-            for i in 0..values.len() - 4 {
+            for i in 0..values.len() - 3 {
                 if i == ace_index {
                     continue;
                 }
                 let value = values[i].value();
-                if value.to_u8() - 4 == values[(i + 4) % values.len()].value().to_u8() {
+                if value.to_u8() - 3 == values[i + 3].value().to_u8() {
                     return vec![
                         values[i].clone(),
-                        values[(i + 1) % values.len()].clone(),
-                        values[(i + 2) % values.len()].clone(),
-                        values[(i + 3) % values.len()].clone(),
-                        values[(i + 4) % values.len()].clone(),
+                        values[i + 1].clone(),
+                        values[i + 2].clone(),
+                        values[i + 3].clone(),
+                        values[ace_index].clone(),
                     ];
                 }
             }
