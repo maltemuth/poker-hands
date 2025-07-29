@@ -89,6 +89,26 @@ async function run() {
       .map((card) => card.to_string())
       .join(", ")}`
   );
+
+  // Create a hand with two pair
+  const twoPairCards = [
+    Card.from_str("2h"),
+    Card.from_str("2d"),
+    Card.from_str("3c"),
+    Card.from_str("3s"),
+    Card.from_str("4h"),
+  ];
+  const twoPairHand = Hand.new(twoPairCards);
+  const hasTwoPair = twoPairHand.has_two_pair();
+  const twoPair = twoPairHand.get_two_pair();
+
+  // Output the result
+  console.log(`Has Two Pair: ${hasTwoPair}`);
+  console.log(
+    `Two Pair cards: ${twoPair
+      .map((card: Card) => card.to_string())
+      .join(", ")}`
+  );
 }
 
 run().catch(console.error);

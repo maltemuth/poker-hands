@@ -1005,15 +1005,15 @@ For each detector and getter function, follow this template:
 
 #### 7. hasTwoPair and getTwoPair
 
-- Implement `hasTwoPair` in Rust
-- Rebuild the wasm using `npm run build:wasm-node`
-- Showcase the new function in `examples/node-wasm/index.ts`
-- Run the example using `npm run example:node` successfully
-- Write Rust tests for the new function
-- Run the Rust tests
-- Implement `getTwoPair` in Rust
-- Rebuild the wasm using `npm run build:wasm-node`
-- Showcase the new function in `examples/node-wasm/index.ts`
-- Run the example using `npm run example:node` successfully
-- Write Rust tests for the new function
-- Run the Rust tests
+- [x] Implement `hasTwoPair` in Rust
+- [x] Rebuild the wasm using `npm run build:wasm-node`
+- [x] Showcase the new function in `examples/node-wasm/index.ts`
+- [x] Run the example using `npm run example:node` successfully
+- [x] Write Rust tests for the new function
+- [x] Run the Rust tests
+- [x] Implement `getTwoPair` in Rust
+- [x] Rebuild the wasm using `npm run build:wasm-node`
+- [x] Showcase the new function in `examples/node-wasm/index.ts`
+- [x] Run the example using `npm run example:node` successfully
+- [x] Write Rust tests for the new function
+- [x] Run the Rust tests
