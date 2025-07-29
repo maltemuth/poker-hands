@@ -16,6 +16,7 @@ impl Hand {
 
         values.sort_by(|a, b| b.value().cmp(&a.value()));
 
+        // Check for a straight in descending order
         for i in 0..values.len() - 4 {
             let value = values[i].value();
             if value.to_u8() - 4 == values[i + 4].value().to_u8() {
@@ -29,7 +30,7 @@ impl Hand {
             }
         }
 
-        // Check for a straight with Ace as 1
+        // Check for a straight with Ace as 1 (low)
         if let Some(ace_index) = values.iter().position(|c| c.value() == Value::Ace) {
             for i in 0..values.len() - 3 {
                 if i == ace_index {

@@ -7,10 +7,10 @@ async function run() {
     Card.from_str("Ah"),
     Card.from_str("Kh"),
     Card.from_str("Qh"),
-    Card.from_str("Jh"),
+    Card.from_str("As"),
     Card.from_str("Th"),
-    Card.from_str("9h"),
-    Card.from_str("8s"),
+    Card.from_str("Ad"),
+    Card.from_str("Ac"),
   ];
 
   // Create a hand and check for a flush
@@ -42,6 +42,18 @@ async function run() {
   console.log(`Has Straight Flush: ${hasStraightFlush}`);
   console.log(
     `Straight Flush cards: ${straightFlush
+      .map((card) => card.to_string())
+      .join(", ")}`
+  );
+
+  // Check for a four of a kind
+  const hasFourOfAKind = hand.has_four_of_a_kind();
+  const fourOfAKind = hand.get_four_of_a_kind();
+
+  // Output the result
+  console.log(`Has Four of a Kind: ${hasFourOfAKind}`);
+  console.log(
+    `Four of a Kind cards: ${fourOfAKind
       .map((card) => card.to_string())
       .join(", ")}`
   );
