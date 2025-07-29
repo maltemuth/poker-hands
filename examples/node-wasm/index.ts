@@ -77,6 +77,18 @@ async function run() {
       .map((card: Card) => card.to_string())
       .join(", ")}`
   );
+
+  // Check for a three of a kind
+  const hasThreeOfAKind = hand.has_three_of_a_kind();
+  const threeOfAKind = hand.get_three_of_a_kind();
+
+  // Output the result
+  console.log(`Has Three of a Kind: ${hasThreeOfAKind}`);
+  console.log(
+    `Three of a Kind cards: ${threeOfAKind
+      .map((card) => card.to_string())
+      .join(", ")}`
+  );
 }
 
 run().catch(console.error);

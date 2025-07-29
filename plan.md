@@ -990,18 +990,18 @@ For each detector and getter function, follow this template:
 
 #### 6. hasThreeOfAKind and getThreeOfAKind
 
-- Implement `hasThreeOfAKind` in Rust
-- Rebuild the wasm using `npm run build:wasm-node`
-- Showcase the new function in `examples/node-wasm/index.ts`
-- Run the example using `npm run example:node` successfully
-- Write Rust tests for the new function
-- Run the Rust tests
-- Implement `getThreeOfAKind` in Rust
-- Rebuild the wasm using `npm run build:wasm-node`
-- Showcase the new function in `examples/node-wasm/index.ts`
-- Run the example using `npm run example:node` successfully
-- Write Rust tests for the new function
-- Run the Rust tests
+- [x] Implement `hasThreeOfAKind` in Rust
+- [x] Rebuild the wasm using `npm run build:wasm-node`
+- [x] Showcase the new function in `examples/node-wasm/index.ts`
+- [x] Run the example using `npm run example:node` successfully
+- [x] Write Rust tests for the new function
+- [x] Run the Rust tests
+- [x] Implement `getThreeOfAKind` in Rust
+- [x] Rebuild the wasm using `npm run build:wasm-node`
+- [x] Showcase the new function in `examples/node-wasm/index.ts`
+- [x] Run the example using `npm run example:node` successfully
+- [x] Write Rust tests for the new function
+- [x] Run the Rust tests
 
 #### 7. hasTwoPair and getTwoPair
 
