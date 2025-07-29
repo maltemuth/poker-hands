@@ -57,6 +57,26 @@ async function run() {
       .map((card) => card.to_string())
       .join(", ")}`
   );
+
+  // Create a hand with a full house
+  const fullHouseCards = [
+    Card.from_str("Th"),
+    Card.from_str("Tc"),
+    Card.from_str("Td"),
+    Card.from_str("Jh"),
+    Card.from_str("Jd"),
+  ];
+  const fullHouseHand = Hand.new(fullHouseCards);
+  const hasFullHouse = fullHouseHand.has_full_house();
+  const fullHouse = fullHouseHand.get_full_house();
+
+  // Output the result
+  console.log(`Has Full House: ${hasFullHouse}`);
+  console.log(
+    `Full House cards: ${fullHouse
+      .map((card: Card) => card.to_string())
+      .join(", ")}`
+  );
 }
 
 run().catch(console.error);
