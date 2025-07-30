@@ -5,7 +5,8 @@
   "main": "src/index.ts",
   "scripts": {
     "build": "tsc",
-    "test": "npm run build && jest",
+    "test": "npm run build && jest --testPathIgnorePatterns='__tests__/full/'",
+    "test:full": "npm run build && jest",
     "test:rust": "cd src/rust && cargo test",
     "start": "node dist/index.js",
     "build:wasm": "cd src/rust && npm run build",
