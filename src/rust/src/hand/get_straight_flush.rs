@@ -2,6 +2,108 @@ use crate::hand::hand_types::HandType;
 use crate::hand::{Hand, HandResult};
 use wasm_bindgen::prelude::*;
 
+/// Extracts the highest straight flush from the hand and returns hand metadata.
+///
+/// This function analyzes the provided cards to find the best possible straight flush
+/// (5 consecutive cards of the same suit) and returns a structured HandResult containing
+/// the straight flush cards and associated metadata. It handles both regular straight flushes,
+/// royal flushes (A-K-Q-J-10), and Ace-low straight flushes (A-2-3-4-5).
+///
+/// # Arguments
+/// * `&self` - Reference to the Hand struct containing cards
+///
+/// # Returns
+/// * `HandResult` - Struct containing hand metadata if straight flush found
+/// * Returns `HandType::HighCard` with empty cards if no straight flush found
+///
+/// The HandResult struct has the following structure:
+/// ```rust
+/// pub struct HandResult {
+///     hand_type: HandType,    // HandType::StraightFlush
+///     cards: Vec<Card>,       // The 5 cards that form the straight flush
+///     kickers: Vec<Card>,     // Remaining cards (empty for straight flushes)
+/// }
+/// ```
+///
+/// # Examples
+///
+/// ```rust
+/// // Regular straight flush
+/// let cards = vec![
+///     Card::new(Suit::Hearts, Value::Five),
+///     Card::new(Suit::Hearts, Value::Six),
+///     Card::new(Suit::Hearts, Value::Seven),
+///     Card::new(Suit::Hearts, Value::Eight),
+///     Card::new(Suit::Hearts, Value::Nine),
+///     Card::new(Suit::Hearts, Value::Ten),
+///     Card::new(Suit::Hearts, Value::Jack),
+/// ];
+/// let hand = Hand::new(cards);
+/// let result = hand.get_straight_flush();
+/// result.hand_type(); // HandType::StraightFlush
+/// result.cards().len(); // 5
+/// // Contains the highest possible straight flush: [Jack, Ten, Nine, Eight, Seven]
+/// ```
+///
+/// ```rust
+/// // Royal flush
+/// let cards = vec![
+///     Card::new(Suit::Hearts, Value::Ten),
+///     Card::new(Suit::Hearts, Value::Jack),
+///     Card::new(Suit::Hearts, Value::Queen),
+///     Card::new(Suit::Hearts, Value::King),
+///     Card::new(Suit::Hearts, Value::Ace),
+/// ];
+/// let hand = Hand::new(cards);
+/// let result = hand.get_straight_flush();
+/// result.hand_type(); // HandType::StraightFlush
+/// result.cards().len(); // 5
+/// // Contains: [Ace, King, Queen, Jack, Ten]
+/// ```
+///
+/// ```rust
+/// // Ace-low straight flush
+/// let cards = vec![
+///     Card::new(Suit::Hearts, Value::Ace),
+///     Card::new(Suit::Hearts, Value::Two),
+///     Card::new(Suit::Hearts, Value::Three),
+///     Card::new(Suit::Hearts, Value::Four),
+///     Card::new(Suit::Hearts, Value::Five),
+/// ];
+/// let hand = Hand::new(cards);
+/// let result = hand.get_straight_flush();
+/// result.hand_type(); // HandType::StraightFlush
+/// result.cards().len(); // 5
+/// // Contains: [Ace, Five, Four, Three, Two]
+/// ```
+///
+/// ```rust
+/// // No straight flush
+/// let cards = vec![
+///     Card::new(Suit::Hearts, Value::Five),
+///     Card::new(Suit::Diamonds, Value::Six),
+///     Card::new(Suit::Clubs, Value::Seven),
+///     Card::new(Suit::Spades, Value::Eight),
+///     Card::new(Suit::Hearts, Value::Nine),
+/// ];
+/// let hand = Hand::new(cards);
+/// let result = hand.get_straight_flush();
+/// result.hand_type(); // HandType::HighCard (fallback)
+/// result.cards().len(); // 0
+/// ```
+///
+/// # Performance
+///
+/// * Time Complexity: O(n log n) for sorting and analysis
+/// * Space Complexity: O(n) for suit-grouped arrays
+///
+/// # Edge Cases
+///
+/// * Returns the highest possible straight flush when multiple exist
+/// * Correctly identifies royal flushes (A-K-Q-J-10) as a type of straight flush
+/// * Properly handles Ace-low straight flushes (A-2-3-4-5)
+/// * Only checks suits with 5+ cards for straight flush potential
+/// * Works with 5, 6, or 7 card hands to find the best 5-card straight flush
 #[wasm_bindgen]
 impl Hand {
     pub fn get_straight_flush(&self) -> HandResult {
