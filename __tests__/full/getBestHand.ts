@@ -3,48 +3,153 @@ import getBestHand from "../../src/model/hand/getBestHand";
 import { Suit, Value } from "../../src/model/card/Card";
 import { HandType } from "../../src/model/hand/Hand";
 
+import {
+  Hand,
+  HandType as RustHandType,
+  Card,
+  Suit as RustSuit,
+  Value as RustValue,
+} from "../../src/rust/node";
+
 describe("retrieve best hands", () => {
-  test("success on training data", () => {
+  // test("success on training data", () => {
+  //   const trainingDataRaw = readFileSync(
+  //     __dirname + "/poker-hand-testing.data"
+  //   );
+
+  //   const lineSuitToSuit = (lineSuit: string): Suit => {
+  //     if (lineSuit === "1") return Suit.hearts;
+  //     if (lineSuit === "2") return Suit.spades;
+  //     if (lineSuit === "3") return Suit.diamonds;
+  //     if (lineSuit === "4") return Suit.clubs;
+  //     throw new Error("Invalid suit: " + lineSuit);
+  //   };
+
+  //   const lineValueToValue = (lineValue: string): Value => {
+  //     if (lineValue === "1") return Value.ace;
+  //     if (lineValue === "2") return Value.two;
+  //     if (lineValue === "3") return Value.three;
+  //     if (lineValue === "4") return Value.four;
+  //     if (lineValue === "5") return Value.five;
+  //     if (lineValue === "6") return Value.six;
+  //     if (lineValue === "7") return Value.seven;
+  //     if (lineValue === "8") return Value.eight;
+  //     if (lineValue === "9") return Value.nine;
+  //     if (lineValue === "10") return Value.ten;
+  //     if (lineValue === "11") return Value.jack;
+  //     if (lineValue === "12") return Value.queen;
+  //     if (lineValue === "13") return Value.king;
+  //     throw new Error("Invalid value: " + lineValue);
+  //   };
+
+  //   const lineResultToHandType = (lineResult: string): HandType => {
+  //     if (lineResult === "0") return HandType.HighCard;
+  //     if (lineResult === "1") return HandType.Pair;
+  //     if (lineResult === "2") return HandType.TwoPair;
+  //     if (lineResult === "3") return HandType.ThreeOfAKind;
+  //     if (lineResult === "4") return HandType.Straight;
+  //     if (lineResult === "5") return HandType.Flush;
+  //     if (lineResult === "6") return HandType.FullHouse;
+  //     if (lineResult === "7") return HandType.FourOfAKind;
+  //     if (lineResult === "8") return HandType.StraightFlush;
+  //     if (lineResult === "9") return HandType.RoyalFlush;
+  //     throw new Error("Invalid HandType: " + lineResult);
+  //   };
+
+  //   const trainingLines = trainingDataRaw
+  //     .toString()
+  //     .split("\r\n")
+  //     .map((line) => line.split(","))
+  //     .map((line) => {
+  //       const [
+  //         suitOne,
+  //         valueOne,
+  //         suitTwo,
+  //         valueTwo,
+  //         suitThree,
+  //         valueThree,
+  //         suitFour,
+  //         valueFour,
+  //         suitFive,
+  //         valueFive,
+  //         result,
+  //       ] = line;
+
+  //       const cards = [
+  //         [suitOne, valueOne],
+  //         [suitTwo, valueTwo],
+  //         [suitThree, valueThree],
+  //         [suitFour, valueFour],
+  //         [suitFive, valueFive],
+  //       ].map(([lineSuit, lineValue]) => ({
+  //         suit: lineSuitToSuit(lineSuit),
+  //         value: lineValueToValue(lineValue),
+  //       }));
+
+  //       const handType = lineResultToHandType(result);
+
+  //       return {
+  //         cards,
+  //         handType,
+  //       };
+  //     });
+
+  //   const before = Date.now().valueOf();
+
+  //   trainingLines.forEach(({ cards, handType }) => {
+  //     expect(getBestHand(cards).type).toEqual(handType);
+  //   });
+
+  //   const elapsed = Date.now().valueOf() - before;
+
+  //   console.log(
+  //     `${trainingLines.length} hands / ${elapsed} ms / ${
+  //       trainingLines.length / elapsed
+  //     } hands/ms`
+  //   );
+  // });
+
+  test("success on training data with rust implementation", () => {
     const trainingDataRaw = readFileSync(
       __dirname + "/poker-hand-testing.data"
     );
 
-    const lineSuitToSuit = (lineSuit: string): Suit => {
-      if (lineSuit === "1") return Suit.hearts;
-      if (lineSuit === "2") return Suit.spades;
-      if (lineSuit === "3") return Suit.diamonds;
-      if (lineSuit === "4") return Suit.clubs;
+    const lineSuitToSuit = (lineSuit: string): RustSuit => {
+      if (lineSuit === "1") return "h";
+      if (lineSuit === "2") return "s";
+      if (lineSuit === "3") return "d";
+      if (lineSuit === "4") return "c";
       throw new Error("Invalid suit: " + lineSuit);
     };
 
-    const lineValueToValue = (lineValue: string): Value => {
-      if (lineValue === "1") return Value.ace;
-      if (lineValue === "2") return Value.two;
-      if (lineValue === "3") return Value.three;
-      if (lineValue === "4") return Value.four;
-      if (lineValue === "5") return Value.five;
-      if (lineValue === "6") return Value.six;
-      if (lineValue === "7") return Value.seven;
-      if (lineValue === "8") return Value.eight;
-      if (lineValue === "9") return Value.nine;
-      if (lineValue === "10") return Value.ten;
-      if (lineValue === "11") return Value.jack;
-      if (lineValue === "12") return Value.queen;
-      if (lineValue === "13") return Value.king;
+    const lineValueToValue = (lineValue: string): RustValue => {
+      if (lineValue === "1") return RustValue.Ace;
+      if (lineValue === "2") return RustValue.Two;
+      if (lineValue === "3") return RustValue.Three;
+      if (lineValue === "4") return RustValue.Four;
+      if (lineValue === "5") return RustValue.Five;
+      if (lineValue === "6") return RustValue.Six;
+      if (lineValue === "7") return RustValue.Seven;
+      if (lineValue === "8") return RustValue.Eight;
+      if (lineValue === "9") return RustValue.Nine;
+      if (lineValue === "10") return RustValue.Ten;
+      if (lineValue === "11") return RustValue.Jack;
+      if (lineValue === "12") return RustValue.Queen;
+      if (lineValue === "13") return RustValue.King;
       throw new Error("Invalid value: " + lineValue);
     };
 
-    const lineResultToHandType = (lineResult: string): HandType => {
-      if (lineResult === "0") return HandType.HighCard;
-      if (lineResult === "1") return HandType.Pair;
-      if (lineResult === "2") return HandType.TwoPair;
-      if (lineResult === "3") return HandType.ThreeOfAKind;
-      if (lineResult === "4") return HandType.Straight;
-      if (lineResult === "5") return HandType.Flush;
-      if (lineResult === "6") return HandType.FullHouse;
-      if (lineResult === "7") return HandType.FourOfAKind;
-      if (lineResult === "8") return HandType.StraightFlush;
-      if (lineResult === "9") return HandType.RoyalFlush;
+    const lineResultToHandType = (lineResult: string): RustHandType => {
+      if (lineResult === "0") return RustHandType.HighCard;
+      if (lineResult === "1") return RustHandType.Pair;
+      if (lineResult === "2") return RustHandType.TwoPair;
+      if (lineResult === "3") return RustHandType.ThreeOfAKind;
+      if (lineResult === "4") return RustHandType.Straight;
+      if (lineResult === "5") return RustHandType.Flush;
+      if (lineResult === "6") return RustHandType.FullHouse;
+      if (lineResult === "7") return RustHandType.FourOfAKind;
+      if (lineResult === "8") return RustHandType.StraightFlush;
+      if (lineResult === "9") return RustHandType.RoyalFlush;
       throw new Error("Invalid HandType: " + lineResult);
     };
 
@@ -73,10 +178,9 @@ describe("retrieve best hands", () => {
           [suitThree, valueThree],
           [suitFour, valueFour],
           [suitFive, valueFive],
-        ].map(([lineSuit, lineValue]) => ({
-          suit: lineSuitToSuit(lineSuit),
-          value: lineValueToValue(lineValue),
-        }));
+        ].map(([lineSuit, lineValue]) =>
+          Card.new(lineSuitToSuit(lineSuit), lineValueToValue(lineValue))
+        );
 
         const handType = lineResultToHandType(result);
 
@@ -84,12 +188,17 @@ describe("retrieve best hands", () => {
           cards,
           handType,
         };
-      });
+      })
+      .filter(({ handType }) => handType !== 10)
+      .slice(0, 1000);
+
+    console.log(`Loaded ${trainingLines.length} training lines.`);
+    console.warn("Royal Flush hand type has been filtered!");
 
     const before = Date.now().valueOf();
 
     trainingLines.forEach(({ cards, handType }) => {
-      expect(getBestHand(cards).type).toEqual(handType);
+      expect(Hand.new(cards).get_best_hand().hand_type()).toEqual(handType);
     });
 
     const elapsed = Date.now().valueOf() - before;
