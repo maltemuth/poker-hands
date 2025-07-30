@@ -23,7 +23,7 @@ import hasThreeOfAKind from "./detect/hasThreeOfAKind";
 import hasTwoPair from "./detect/hasTwoPair";
 import sortValueCounts from "../card/sortValueCounts";
 
-const getBestHand = (cards: Card[]): HandInterface | null => {
+const getBestHand = (cards: Card[]): HandInterface => {
   const presortedSuits = sortedSuits(cards);
   const presortedValues = sortedValues(cards);
 

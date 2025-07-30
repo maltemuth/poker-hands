@@ -14,6 +14,7 @@ describe("retrieve best hands", () => {
       if (lineSuit === "2") return Suit.spades;
       if (lineSuit === "3") return Suit.diamonds;
       if (lineSuit === "4") return Suit.clubs;
+      throw new Error("Invalid suit: " + lineSuit);
     };
 
     const lineValueToValue = (lineValue: string): Value => {
@@ -30,6 +31,7 @@ describe("retrieve best hands", () => {
       if (lineValue === "11") return Value.jack;
       if (lineValue === "12") return Value.queen;
       if (lineValue === "13") return Value.king;
+      throw new Error("Invalid value: " + lineValue);
     };
 
     const lineResultToHandType = (lineResult: string): HandType => {
@@ -43,6 +45,7 @@ describe("retrieve best hands", () => {
       if (lineResult === "7") return HandType.FourOfAKind;
       if (lineResult === "8") return HandType.StraightFlush;
       if (lineResult === "9") return HandType.RoyalFlush;
+      throw new Error("Invalid HandType: " + lineResult);
     };
 
     const trainingLines = trainingDataRaw
