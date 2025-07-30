@@ -1,33 +1,37 @@
 use crate::card::Card;
-use crate::hand::Hand;
+use crate::hand::hand_types::HandType;
+use crate::hand::{Hand, HandResult};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 impl Hand {
-    pub fn get_four_of_a_kind(&self) -> Vec<Card> {
+    pub fn get_four_of_a_kind(&self) -> HandResult {
         let mut value_counts = std::collections::HashMap::new();
-        let mut cards_by_value = std::collections::HashMap::new();
 
-        // First, count occurrences of each value and collect cards by value
         for card in &self.cards() {
             let value = card.value();
             *value_counts.entry(value).or_insert(0) += 1;
-            cards_by_value
-                .entry(value)
-                .or_insert_with(Vec::new)
-                .push(card.clone());
         }
 
-        // Find the value with exactly 4 cards
-        if let Some((value, _)) = value_counts.iter().find(|(_, &count)| count >= 4) {
-            if let Some(cards) = cards_by_value.get(&value) {
-                let mut four_of_a_kind = cards.clone();
-                four_of_a_kind.sort_by(|a, b| b.value().cmp(&a.value()));
-                four_of_a_kind.truncate(4);
-                return four_of_a_kind;
+        for (value, count) in &value_counts {
+            if *count >= 4 {
+                let mut four_of_a_kind = Vec::new();
+
+                for card in &self.cards() {
+                    if card.value() == *value {
+                        four_of_a_kind.push(card.clone());
+                        if four_of_a_kind.len() == 4 {
+                            break;
+                        }
+                    }
+                }
+
+                let kickers = self.get_kickers(four_of_a_kind.clone());
+                return HandResult::new(HandType::FourOfAKind, four_of_a_kind, kickers);
             }
         }
 
-        Vec::new()
+        // If no four of a kind is found, return an empty HandResult
+        HandResult::new(HandType::HighCard, Vec::new(), Vec::new())
     }
 }

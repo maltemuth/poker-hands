@@ -500,3 +500,27 @@ tests/
 - `__tests__/full/getBestHand.ts`: Integration tests for hand evaluation
 - `__tests__/full/odds.ts`: Integration tests for odds calculation
 - `__tests__/full/poker-hand-testing.data`: Test data for poker hand testing
+
+## Rust Hand Getter Implementation Updates
+
+### Todo List
+
+- [x] Analyze the current Rust implementation
+- [x] Create a todo list for updating the Rust hand getter implementations
+- [x] Update the Rust `Hand` struct to include hand type information
+  - [x] Define a HandType enum in Rust
+  - [x] Update the Hand struct to include hand type and kickers
+- [x] Create a new `get_kickers.rs` file to handle kickers in Rust
+  - [x] Implement the get_kickers function in Rust
+- [x] Update all hand getter functions to return a struct with hand type, cards, and kickers
+  - [x] Update get_pair.rs
+  - [x] Update get_two_pair.rs
+  - [x] Update get_three_of_a_kind.rs
+  - [x] Update get_straight.rs
+  - [x] Update get_flush.rs
+  - [x] Update get_full_house.rs
+  - [x] Update get_four_of_a_kind.rs
+  - [x] Update get_straight_flush.rs
+  - [x] Update get_royal_flush.rs
+- [x] Update the `get_best_hand.rs` file to return a struct with hand type information
+- [x] Add the todo list to plan.md

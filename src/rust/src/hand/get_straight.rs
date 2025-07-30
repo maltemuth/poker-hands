@@ -1,54 +1,49 @@
-use crate::card::{Card, Value};
-use crate::hand::Hand;
+use crate::card::Card;
+use crate::hand::hand_types::HandType;
+use crate::hand::{Hand, HandResult};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 impl Hand {
-    pub fn get_straight(&self) -> Vec<Card> {
-        let mut values = Vec::new();
-        let mut unique_values = std::collections::HashSet::new();
+    pub fn get_straight(&self) -> HandResult {
+        let mut value_counts = std::collections::HashMap::new();
 
         for card in &self.cards() {
-            if unique_values.insert(card.value()) {
-                values.push(card.clone());
-            }
+            let value = card.value();
+            *value_counts.entry(value).or_insert(0) += 1;
         }
 
-        values.sort_by(|a, b| b.value().cmp(&a.value()));
-
-        // Check for a straight in descending order
-        for i in 0..values.len() - 4 {
-            let value = values[i].value();
-            if value.to_u8() - 4 == values[i + 4].value().to_u8() {
-                return vec![
-                    values[i].clone(),
-                    values[i + 1].clone(),
-                    values[i + 2].clone(),
-                    values[i + 3].clone(),
-                    values[i + 4].clone(),
-                ];
-            }
+        let mut values = Vec::new();
+        for (value, _) in &value_counts {
+            values.push(value.clone());
         }
+        values.sort_by(|a, b| a.cmp(b));
 
-        // Check for a straight with Ace as 1 (low)
-        if let Some(ace_index) = values.iter().position(|c| c.value() == Value::Ace) {
-            for i in 0..values.len() - 3 {
-                if i == ace_index {
-                    continue;
+        for i in 0..(values.len() - 4) {
+            let mut straight = Vec::new();
+            let mut found = true;
+
+            for j in 0..5 {
+                if i + j >= values.len() || !values.contains(&values[i + j]) {
+                    found = false;
+                    break;
                 }
-                let value = values[i].value();
-                if value.to_u8() - 3 == values[i + 3].value().to_u8() {
-                    return vec![
-                        values[i].clone(),
-                        values[i + 1].clone(),
-                        values[i + 2].clone(),
-                        values[i + 3].clone(),
-                        values[ace_index].clone(),
-                    ];
+
+                for card in &self.cards() {
+                    if card.value() == values[i + j] {
+                        straight.push(card.clone());
+                        break;
+                    }
                 }
             }
+
+            if found {
+                let kickers = self.get_kickers(straight.clone());
+                return HandResult::new(HandType::Straight, straight, kickers);
+            }
         }
 
-        Vec::new()
+        // If no straight is found, return an empty HandResult
+        HandResult::new(HandType::HighCard, Vec::new(), Vec::new())
     }
 }

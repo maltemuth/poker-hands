@@ -1,10 +1,11 @@
 use crate::card::Card;
-use crate::hand::Hand;
+use crate::hand::hand_types::HandType;
+use crate::hand::{Hand, HandResult};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 impl Hand {
-    pub fn get_best_hand(&self) -> Vec<Card> {
+    pub fn get_best_hand(&self) -> HandResult {
         let mut cards = self.cards.clone();
         cards.sort_by(|a, b| b.value().cmp(&a.value()));
 
@@ -49,6 +50,6 @@ impl Hand {
         }
 
         // High card
-        Vec::from(&cards[0..5])
+        HandResult::new(HandType::HighCard, Vec::from(&cards[0..5]), Vec::new())
     }
 }

@@ -1,10 +1,11 @@
 use crate::card::Card;
-use crate::hand::Hand;
+use crate::hand::hand_types::HandType;
+use crate::hand::{Hand, HandResult};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 impl Hand {
-    pub fn get_full_house(&self) -> Vec<Card> {
+    pub fn get_full_house(&self) -> HandResult {
         let mut value_counts = std::collections::HashMap::new();
 
         for card in &self.cards() {
@@ -12,33 +13,41 @@ impl Hand {
             *value_counts.entry(value).or_insert(0) += 1;
         }
 
-        let mut sorted_values: Vec<_> = value_counts.iter().collect();
-        sorted_values.sort_by(|a, b| b.1.cmp(a.1));
+        let mut three_of_a_kind = Vec::new();
+        let mut pair = Vec::new();
 
-        if sorted_values.len() < 2 {
-            return Vec::new();
-        }
-
-        // Check for 3 of a kind and 2 of a kind
-        if *sorted_values[0].1 >= 3 && *sorted_values[1].1 >= 2 {
-            let three_of_a_kind_value = sorted_values[0].0;
-            let pair_value = sorted_values[1].0;
-
-            let mut full_house = Vec::new();
-
-            for card in &self.cards() {
-                if (card.value() == *three_of_a_kind_value && full_house.len() < 3)
-                    || (card.value() == *pair_value
-                        && full_house.len() >= 3
-                        && full_house.len() < 5)
-                {
-                    full_house.push(card.clone());
+        for (value, count) in &value_counts {
+            if *count >= 3 {
+                for card in &self.cards() {
+                    if card.value() == *value {
+                        three_of_a_kind.push(card.clone());
+                        if three_of_a_kind.len() == 3 {
+                            break;
+                        }
+                    }
+                }
+            } else if *count >= 2 && pair.is_empty() {
+                for card in &self.cards() {
+                    if card.value() == *value {
+                        pair.push(card.clone());
+                        if pair.len() == 2 {
+                            break;
+                        }
+                    }
                 }
             }
-
-            return full_house;
         }
 
-        Vec::new()
+        if !three_of_a_kind.is_empty() && !pair.is_empty() {
+            let mut full_house = Vec::new();
+            full_house.extend(three_of_a_kind);
+            full_house.extend(pair);
+
+            let kickers = self.get_kickers(full_house.clone());
+            return HandResult::new(HandType::FullHouse, full_house, kickers);
+        }
+
+        // If no full house is found, return an empty HandResult
+        HandResult::new(HandType::HighCard, Vec::new(), Vec::new())
     }
 }

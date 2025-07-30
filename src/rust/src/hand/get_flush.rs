@@ -1,27 +1,37 @@
 use crate::card::Card;
-use crate::hand::Hand;
+use crate::hand::hand_types::HandType;
+use crate::hand::{Hand, HandResult};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 impl Hand {
-    pub fn get_flush(&self) -> Vec<Card> {
-        let mut cards_by_suit = std::collections::HashMap::new();
+    pub fn get_flush(&self) -> HandResult {
+        let mut suit_counts = std::collections::HashMap::new();
 
         for card in &self.cards() {
             let suit = card.suit();
-            cards_by_suit
-                .entry(suit)
-                .or_insert_with(Vec::new)
-                .push(card.clone());
+            *suit_counts.entry(suit).or_insert(0) += 1;
         }
 
-        if let Some(candidate) = cards_by_suit.values().find(|cards| cards.len() >= 5) {
-            let mut flush = candidate.clone();
-            flush.sort_by(|a, b| b.value().cmp(&a.value()));
-            flush.truncate(5);
-            return flush;
+        for (suit, count) in &suit_counts {
+            if *count >= 5 {
+                let mut flush = Vec::new();
+
+                for card in &self.cards() {
+                    if card.suit() == *suit {
+                        flush.push(card.clone());
+                        if flush.len() == 5 {
+                            break;
+                        }
+                    }
+                }
+
+                let kickers = self.get_kickers(flush.clone());
+                return HandResult::new(HandType::Flush, flush, kickers);
+            }
         }
 
-        Vec::new()
+        // If no flush is found, return an empty HandResult
+        HandResult::new(HandType::HighCard, Vec::new(), Vec::new())
     }
 }

@@ -1,10 +1,11 @@
 use crate::card::Card;
-use crate::hand::Hand;
+use crate::hand::hand_types::HandType;
+use crate::hand::{Hand, HandResult};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 impl Hand {
-    pub fn get_three_of_a_kind(&self) -> Vec<Card> {
+    pub fn get_three_of_a_kind(&self) -> HandResult {
         let mut value_counts = std::collections::HashMap::new();
 
         for card in &self.cards() {
@@ -25,10 +26,12 @@ impl Hand {
                     }
                 }
 
-                return three_of_a_kind;
+                let kickers = self.get_kickers(three_of_a_kind.clone());
+                return HandResult::new(HandType::ThreeOfAKind, three_of_a_kind, kickers);
             }
         }
 
-        Vec::new()
+        // If no three of a kind is found, return an empty HandResult
+        HandResult::new(HandType::HighCard, Vec::new(), Vec::new())
     }
 }

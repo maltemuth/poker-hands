@@ -1,10 +1,11 @@
 use crate::card::Card;
-use crate::hand::Hand;
+use crate::hand::hand_types::HandType;
+use crate::hand::{Hand, HandResult};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 impl Hand {
-    pub fn get_two_pair(&self) -> Vec<Card> {
+    pub fn get_two_pair(&self) -> HandResult {
         let mut value_counts = std::collections::HashMap::new();
         let mut pairs = Vec::new();
 
@@ -37,9 +38,11 @@ impl Hand {
 
         // Return the first 4 cards if we have at least 2 pairs
         if pairs.len() >= 4 {
-            pairs
+            let kickers = self.get_kickers(pairs.clone());
+            HandResult::new(HandType::TwoPair, pairs, kickers)
         } else {
-            Vec::new()
+            // If no two pair is found, return an empty HandResult
+            HandResult::new(HandType::HighCard, Vec::new(), Vec::new())
         }
     }
 }
