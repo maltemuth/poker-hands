@@ -1,4 +1,4 @@
-use crate::card::{Card, Suit, Value};
+use crate::card::{Suit, Value};
 use crate::hand::Hand;
 use wasm_bindgen::prelude::*;
 

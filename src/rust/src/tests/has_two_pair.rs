@@ -1,8 +1,7 @@
 use crate::card::Card;
 use crate::hand::Hand;
-use wasm_bindgen_test::*;
 
-#[wasm_bindgen_test]
+#[test]
 fn test_has_two_pair() {
     let cards = vec![
         Card::new(crate::card::Suit::Hearts, crate::card::Value::Two),
@@ -16,7 +15,7 @@ fn test_has_two_pair() {
     assert!(hand.has_two_pair());
 }
 
-#[wasm_bindgen_test]
+#[test]
 fn test_does_not_have_two_pair() {
     let cards = vec![
         Card::new(crate::card::Suit::Hearts, crate::card::Value::Two),

@@ -1,9 +1,7 @@
 use crate::card::Card;
 use crate::hand::Hand;
-use wasm_bindgen::prelude::*;
-use wasm_bindgen_test::*;
 
-#[wasm_bindgen_test]
+#[test]
 fn test_get_full_house() {
     let hand = vec![
         Card::new(crate::card::Suit::Hearts, crate::card::Value::Ten).unwrap(),
@@ -33,7 +31,7 @@ fn test_get_full_house() {
     );
 }
 
-#[wasm_bindgen_test]
+#[test]
 fn test_get_full_house_empty() {
     let hand = vec![
         Card::new(crate::card::Suit::Hearts, crate::card::Value::Ten).unwrap(),

@@ -1,4 +1,4 @@
-use crate::card::{Suit, Value};
+use crate::card::Value;
 use crate::hand::Hand;
 use std::collections::HashMap;
 use wasm_bindgen::prelude::*;

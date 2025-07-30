@@ -1,9 +1,7 @@
 use super::super::card::Card;
 use super::super::hand::Hand;
-use wasm_bindgen::prelude::*;
-use wasm_bindgen_test::*;
 
-#[wasm_bindgen_test]
+#[test]
 fn test_has_three_of_a_kind() {
     let hand = vec![
         Card::new(crate::card::Suit::Hearts, crate::card::Value::Ten),
@@ -17,7 +15,7 @@ fn test_has_three_of_a_kind() {
     assert!(hand_obj.has_three_of_a_kind());
 }
 
-#[wasm_bindgen_test]
+#[test]
 fn test_does_not_have_three_of_a_kind() {
     let hand = vec![
         Card::new(crate::card::Suit::Hearts, crate::card::Value::Ten),
