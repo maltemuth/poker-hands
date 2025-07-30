@@ -1,4 +1,3 @@
-use crate::card::Card;
 use crate::hand::hand_types::HandType;
 use crate::hand::{Hand, HandResult};
 use wasm_bindgen::prelude::*;
@@ -38,7 +37,7 @@ impl Hand {
 
                         let value = values[i + j];
                         for card in &self.cards() {
-                            if card.suit() == *suit && card.value() == *value {
+                            if card.suit() == *suit && card.value() == value {
                                 straight_flush.push(card.clone());
                                 break;
                             }
@@ -46,7 +45,7 @@ impl Hand {
                     }
 
                     if found {
-                        let kickers = self.get_kickers(straight_flush.clone());
+                        let kickers = self.get_kickers(HandType::StraightFlush);
                         return HandResult::new(HandType::StraightFlush, straight_flush, kickers);
                     }
                 }

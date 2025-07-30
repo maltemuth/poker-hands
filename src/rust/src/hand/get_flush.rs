@@ -1,4 +1,3 @@
-use crate::card::Card;
 use crate::hand::hand_types::HandType;
 use crate::hand::{Hand, HandResult};
 use wasm_bindgen::prelude::*;
@@ -26,7 +25,7 @@ impl Hand {
                     }
                 }
 
-                let kickers = self.get_kickers(flush.clone());
+                let kickers = self.get_kickers(HandType::Flush);
                 return HandResult::new(HandType::Flush, flush, kickers);
             }
         }

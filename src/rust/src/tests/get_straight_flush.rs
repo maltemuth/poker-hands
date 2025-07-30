@@ -18,12 +18,12 @@ fn test_get_straight_flush() {
     let hand = Hand::new(cards);
     let straight_flush = hand.get_straight_flush();
     assert_eq!(straight_flush.len(), 5);
-    assert_eq!(straight_flush[0].suit(), Suit::Hearts);
-    assert_eq!(straight_flush[0].value(), Value::Two);
-    assert_eq!(straight_flush[1].value(), Value::Three);
-    assert_eq!(straight_flush[2].value(), Value::Four);
-    assert_eq!(straight_flush[3].value(), Value::Five);
-    assert_eq!(straight_flush[4].value(), Value::Six);
+    assert_eq!(straight_flush.cards()[0].suit(), Suit::Hearts);
+    assert_eq!(straight_flush.cards()[0].value(), Value::Two);
+    assert_eq!(straight_flush.cards()[1].value(), Value::Three);
+    assert_eq!(straight_flush.cards()[2].value(), Value::Four);
+    assert_eq!(straight_flush.cards()[3].value(), Value::Five);
+    assert_eq!(straight_flush.cards()[4].value(), Value::Six);
 
     // Test without a straight flush
     let cards = vec![
@@ -81,11 +81,11 @@ fn test_get_straight_flush_with_ace_low() {
     let hand = Hand::new(cards);
     let straight_flush = hand.get_straight_flush();
     assert_eq!(straight_flush.len(), 5);
-    assert_eq!(straight_flush[0].value(), Value::Two);
-    assert_eq!(straight_flush[1].value(), Value::Three);
-    assert_eq!(straight_flush[2].value(), Value::Four);
-    assert_eq!(straight_flush[3].value(), Value::Five);
-    assert_eq!(straight_flush[4].value(), Value::Ace);
+    assert_eq!(straight_flush.cards()[0].value(), Value::Two);
+    assert_eq!(straight_flush.cards()[1].value(), Value::Three);
+    assert_eq!(straight_flush.cards()[2].value(), Value::Four);
+    assert_eq!(straight_flush.cards()[3].value(), Value::Five);
+    assert_eq!(straight_flush.cards()[4].value(), Value::Ace);
 }
 
 #[test]
@@ -101,11 +101,11 @@ fn test_get_straight_flush_with_ace_high() {
     let hand = Hand::new(cards);
     let straight_flush = hand.get_straight_flush();
     assert_eq!(straight_flush.len(), 5);
-    assert_eq!(straight_flush[0].value(), Value::Ten);
-    assert_eq!(straight_flush[1].value(), Value::Jack);
-    assert_eq!(straight_flush[2].value(), Value::Queen);
-    assert_eq!(straight_flush[3].value(), Value::King);
-    assert_eq!(straight_flush[4].value(), Value::Ace);
+    assert_eq!(straight_flush.cards()[0].value(), Value::Ten);
+    assert_eq!(straight_flush.cards()[1].value(), Value::Jack);
+    assert_eq!(straight_flush.cards()[2].value(), Value::Queen);
+    assert_eq!(straight_flush.cards()[3].value(), Value::King);
+    assert_eq!(straight_flush.cards()[4].value(), Value::Ace);
 }
 
 #[test]
@@ -153,11 +153,11 @@ fn test_get_straight_flush_with_wrap_around() {
     let hand = Hand::new(cards);
     let straight_flush = hand.get_straight_flush();
     assert_eq!(straight_flush.len(), 5);
-    assert_eq!(straight_flush[0].value(), Value::Two);
-    assert_eq!(straight_flush[1].value(), Value::Three);
-    assert_eq!(straight_flush[2].value(), Value::Four);
-    assert_eq!(straight_flush[3].value(), Value::Five);
-    assert_eq!(straight_flush[4].value(), Value::Six);
+    assert_eq!(straight_flush.cards()[0].value(), Value::Two);
+    assert_eq!(straight_flush.cards()[1].value(), Value::Three);
+    assert_eq!(straight_flush.cards()[2].value(), Value::Four);
+    assert_eq!(straight_flush.cards()[3].value(), Value::Five);
+    assert_eq!(straight_flush.cards()[4].value(), Value::Six);
 }
 
 #[test]
@@ -174,9 +174,9 @@ fn test_get_straight_flush_with_wrap_around_reversed() {
     let hand = Hand::new(cards);
     let straight_flush = hand.get_straight_flush();
     assert_eq!(straight_flush.len(), 5);
-    assert_eq!(straight_flush[0].value(), Value::Ten);
-    assert_eq!(straight_flush[1].value(), Value::Jack);
-    assert_eq!(straight_flush[2].value(), Value::Queen);
-    assert_eq!(straight_flush[3].value(), Value::King);
-    assert_eq!(straight_flush[4].value(), Value::Ace);
+    assert_eq!(straight_flush.cards()[0].value(), Value::Ten);
+    assert_eq!(straight_flush.cards()[1].value(), Value::Jack);
+    assert_eq!(straight_flush.cards()[2].value(), Value::Queen);
+    assert_eq!(straight_flush.cards()[3].value(), Value::King);
+    assert_eq!(straight_flush.cards()[4].value(), Value::Ace);
 }

@@ -1,5 +1,5 @@
 use crate::card::Card;
-use crate::hand::Hand;
+use crate::hand::{Hand, HandResult};
 
 #[cfg(test)]
 mod tests {
@@ -14,10 +14,10 @@ mod tests {
             Card::from_str("Jh"),
             Card::from_str("Th"),
         ];
-        let hand = Hand::new(cards);
+        let hand = Hand::new(cards.into_iter().map(|c| c.unwrap()).collect());
 
         let best_hand = hand.get_best_hand();
-        assert_eq!(best_hand.len(), 5);
-        assert_eq!(best_hand[0].value(), 14);
+        assert_eq!(best_hand.cards().len(), 5);
+        assert_eq!(best_hand.cards()[0].value(), crate::card::Value::Ace);
     }
 }

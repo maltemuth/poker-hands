@@ -17,7 +17,7 @@ fn test_get_three_of_a_kind() {
     let three_of_a_kind = hand_obj.get_three_of_a_kind();
 
     assert_eq!(three_of_a_kind.len(), 3);
-    for card in &three_of_a_kind {
+    for card in three_of_a_kind.cards() {
         assert_eq!(card.value(), crate::card::Value::Ten);
     }
 }

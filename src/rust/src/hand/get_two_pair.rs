@@ -1,4 +1,3 @@
-use crate::card::Card;
 use crate::hand::hand_types::HandType;
 use crate::hand::{Hand, HandResult};
 use wasm_bindgen::prelude::*;
@@ -38,7 +37,7 @@ impl Hand {
 
         // Return the first 4 cards if we have at least 2 pairs
         if pairs.len() >= 4 {
-            let kickers = self.get_kickers(pairs.clone());
+            let kickers = self.get_kickers(HandType::TwoPair);
             HandResult::new(HandType::TwoPair, pairs, kickers)
         } else {
             // If no two pair is found, return an empty HandResult

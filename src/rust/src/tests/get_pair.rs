@@ -1,5 +1,5 @@
 use crate::card::{Card, Suit, Value};
-use crate::hand::Hand;
+use crate::hand::{Hand, HandResult};
 
 #[test]
 fn test_get_pair() {
@@ -13,9 +13,9 @@ fn test_get_pair() {
     let hand = Hand::new(cards);
 
     let pair = hand.get_pair();
-    assert_eq!(pair.len(), 2);
-    assert_eq!(pair[0].value(), Value::Two);
-    assert_eq!(pair[1].value(), Value::Two);
+    assert_eq!(pair.cards().len(), 2);
+    assert_eq!(pair.cards()[0].value(), Value::Two);
+    assert_eq!(pair.cards()[1].value(), Value::Two);
 }
 
 #[test]
@@ -30,5 +30,5 @@ fn test_get_pair_no_pair() {
     let hand = Hand::new(cards);
 
     let pair = hand.get_pair();
-    assert!(pair.is_empty());
+    assert!(pair.cards().is_empty());
 }

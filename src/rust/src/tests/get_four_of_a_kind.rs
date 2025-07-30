@@ -15,8 +15,8 @@ fn test_get_four_of_a_kind() {
     let hand = Hand::new(cards);
     let four_of_a_kind = hand.get_four_of_a_kind();
 
-    assert_eq!(four_of_a_kind.len(), 4);
-    for card in &four_of_a_kind {
+    assert_eq!(four_of_a_kind.cards().len(), 4);
+    for card in four_of_a_kind.cards() {
         assert_eq!(card.value(), Value::Two);
     }
 }

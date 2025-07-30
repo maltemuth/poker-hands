@@ -1,5 +1,5 @@
 use crate::card::Card;
-use crate::hand::Hand;
+use crate::hand::{Hand, HandResult};
 
 #[test]
 fn test_get_flush() {
@@ -17,12 +17,12 @@ fn test_get_flush() {
     let hand = Hand::new(cards);
     let flush = hand.get_flush();
 
-    assert_eq!(flush.len(), 5);
-    assert_eq!(flush[0].value(), crate::card::Value::Ace);
-    assert_eq!(flush[1].value(), crate::card::Value::King);
-    assert_eq!(flush[2].value(), crate::card::Value::Queen);
-    assert_eq!(flush[3].value(), crate::card::Value::Jack);
-    assert_eq!(flush[4].value(), crate::card::Value::Ten);
+    assert_eq!(flush.cards().len(), 5);
+    assert_eq!(flush.cards()[0].value(), crate::card::Value::Ace);
+    assert_eq!(flush.cards()[1].value(), crate::card::Value::King);
+    assert_eq!(flush.cards()[2].value(), crate::card::Value::Queen);
+    assert_eq!(flush.cards()[3].value(), crate::card::Value::Jack);
+    assert_eq!(flush.cards()[4].value(), crate::card::Value::Ten);
 
     // Create a hand without a flush
     let cards = vec![
@@ -38,5 +38,5 @@ fn test_get_flush() {
     let hand = Hand::new(cards);
     let flush = hand.get_flush();
 
-    assert!(flush.is_empty());
+    assert!(flush.cards().is_empty());
 }

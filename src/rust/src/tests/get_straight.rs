@@ -15,11 +15,11 @@ fn test_get_straight() {
     let hand = Hand::new(hand);
     let straight = hand.get_straight();
     assert_eq!(straight.len(), 5);
-    assert_eq!(straight[0].value(), Value::Eight);
-    assert_eq!(straight[1].value(), Value::Seven);
-    assert_eq!(straight[2].value(), Value::Six);
-    assert_eq!(straight[3].value(), Value::Five);
-    assert_eq!(straight[4].value(), Value::Four);
+    assert_eq!(straight.cards()[0].value(), Value::Eight);
+    assert_eq!(straight.cards()[1].value(), Value::Seven);
+    assert_eq!(straight.cards()[2].value(), Value::Six);
+    assert_eq!(straight.cards()[3].value(), Value::Five);
+    assert_eq!(straight.cards()[4].value(), Value::Four);
 }
 
 #[test]
@@ -34,11 +34,11 @@ fn test_get_straight_with_ace_as_one() {
     let hand = Hand::new(hand);
     let straight = hand.get_straight();
     assert_eq!(straight.len(), 5);
-    assert_eq!(straight[0].value(), Value::Ace);
-    assert_eq!(straight[1].value(), Value::King);
-    assert_eq!(straight[2].value(), Value::Queen);
-    assert_eq!(straight[3].value(), Value::Jack);
-    assert_eq!(straight[4].value(), Value::Ten);
+    assert_eq!(straight.cards()[0].value(), Value::Ace);
+    assert_eq!(straight.cards()[1].value(), Value::King);
+    assert_eq!(straight.cards()[2].value(), Value::Queen);
+    assert_eq!(straight.cards()[3].value(), Value::Jack);
+    assert_eq!(straight.cards()[4].value(), Value::Ten);
 }
 
 #[test]
@@ -67,11 +67,11 @@ fn test_get_straight_with_ace_low() {
     let hand = Hand::new(hand);
     let straight = hand.get_straight();
     assert_eq!(straight.len(), 5);
-    assert_eq!(straight[0].value(), Value::Five);
-    assert_eq!(straight[1].value(), Value::Four);
-    assert_eq!(straight[2].value(), Value::Three);
-    assert_eq!(straight[3].value(), Value::Two);
-    assert_eq!(straight[4].value(), Value::Ace);
+    assert_eq!(straight.cards()[0].value(), Value::Five);
+    assert_eq!(straight.cards()[1].value(), Value::Four);
+    assert_eq!(straight.cards()[2].value(), Value::Three);
+    assert_eq!(straight.cards()[3].value(), Value::Two);
+    assert_eq!(straight.cards()[4].value(), Value::Ace);
 }
 
 #[test]
@@ -86,11 +86,11 @@ fn test_get_straight_with_ace_high() {
     let hand = Hand::new(hand);
     let straight = hand.get_straight();
     assert_eq!(straight.len(), 5);
-    assert_eq!(straight[0].value(), Value::Ace);
-    assert_eq!(straight[1].value(), Value::King);
-    assert_eq!(straight[2].value(), Value::Queen);
-    assert_eq!(straight[3].value(), Value::Jack);
-    assert_eq!(straight[4].value(), Value::Ten);
+    assert_eq!(straight.cards()[0].value(), Value::Ace);
+    assert_eq!(straight.cards()[1].value(), Value::King);
+    assert_eq!(straight.cards()[2].value(), Value::Queen);
+    assert_eq!(straight.cards()[3].value(), Value::Jack);
+    assert_eq!(straight.cards()[4].value(), Value::Ten);
 }
 
 #[test]
@@ -108,11 +108,11 @@ fn test_get_straight_with_multiple_straights() {
     let hand = Hand::new(hand);
     let straight = hand.get_straight();
     assert_eq!(straight.len(), 5);
-    assert_eq!(straight[0].value(), Value::Nine);
-    assert_eq!(straight[1].value(), Value::Eight);
-    assert_eq!(straight[2].value(), Value::Seven);
-    assert_eq!(straight[3].value(), Value::Six);
-    assert_eq!(straight[4].value(), Value::Five);
+    assert_eq!(straight.cards()[0].value(), Value::Nine);
+    assert_eq!(straight.cards()[1].value(), Value::Eight);
+    assert_eq!(straight.cards()[2].value(), Value::Seven);
+    assert_eq!(straight.cards()[3].value(), Value::Six);
+    assert_eq!(straight.cards()[4].value(), Value::Five);
 }
 
 #[test]
@@ -142,11 +142,11 @@ fn test_get_straight_with_wrap_around() {
     let hand = Hand::new(hand);
     let straight = hand.get_straight();
     assert_eq!(straight.len(), 5);
-    assert_eq!(straight[0].value(), Value::Six);
-    assert_eq!(straight[1].value(), Value::Five);
-    assert_eq!(straight[2].value(), Value::Four);
-    assert_eq!(straight[3].value(), Value::Three);
-    assert_eq!(straight[4].value(), Value::Two);
+    assert_eq!(straight.cards()[0].value(), Value::Six);
+    assert_eq!(straight.cards()[1].value(), Value::Five);
+    assert_eq!(straight.cards()[2].value(), Value::Four);
+    assert_eq!(straight.cards()[3].value(), Value::Three);
+    assert_eq!(straight.cards()[4].value(), Value::Two);
 }
 
 #[test]
@@ -162,9 +162,9 @@ fn test_get_straight_with_wrap_around_reversed() {
     let hand = Hand::new(hand);
     let straight = hand.get_straight();
     assert_eq!(straight.len(), 5);
-    assert_eq!(straight[0].value(), Value::Ace);
-    assert_eq!(straight[1].value(), Value::King);
-    assert_eq!(straight[2].value(), Value::Queen);
-    assert_eq!(straight[3].value(), Value::Jack);
-    assert_eq!(straight[4].value(), Value::Ten);
+    assert_eq!(straight.cards()[0].value(), Value::Ace);
+    assert_eq!(straight.cards()[1].value(), Value::King);
+    assert_eq!(straight.cards()[2].value(), Value::Queen);
+    assert_eq!(straight.cards()[3].value(), Value::Jack);
+    assert_eq!(straight.cards()[4].value(), Value::Ten);
 }

@@ -1,4 +1,3 @@
-use crate::card::Card;
 use crate::hand::hand_types::HandType;
 use crate::hand::{Hand, HandResult};
 use wasm_bindgen::prelude::*;
@@ -43,7 +42,7 @@ impl Hand {
             full_house.extend(three_of_a_kind);
             full_house.extend(pair);
 
-            let kickers = self.get_kickers(full_house.clone());
+            let kickers = self.get_kickers(HandType::FullHouse);
             return HandResult::new(HandType::FullHouse, full_house, kickers);
         }
 
