@@ -1,5 +1,5 @@
 use crate::card::Card;
-use crate::hand::{Hand, HandResult};
+use crate::hand::Hand;
 
 #[cfg(test)]
 mod tests {

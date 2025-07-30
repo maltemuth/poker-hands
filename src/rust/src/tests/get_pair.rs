@@ -1,5 +1,5 @@
 use crate::card::{Card, Suit, Value};
-use crate::hand::{Hand, HandResult};
+use crate::hand::Hand;
 
 #[test]
 fn test_get_pair() {

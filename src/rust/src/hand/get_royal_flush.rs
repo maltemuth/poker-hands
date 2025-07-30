@@ -1,4 +1,4 @@
-use crate::card::Card;
+use crate::card::{Suit, Value};
 use crate::hand::hand_types::HandType;
 use crate::hand::{Hand, HandResult};
 use wasm_bindgen::prelude::*;
@@ -6,31 +6,42 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 impl Hand {
     pub fn get_royal_flush(&self) -> HandResult {
-        let mut suit_counts = std::collections::HashMap::new();
+        // Check each suit for a royal flush
+        for suit in &[Suit::Hearts, Suit::Diamonds, Suit::Clubs, Suit::Spades] {
+            let mut royal_flush = Vec::new();
 
-        for card in &self.cards() {
-            let suit = card.suit();
-            *suit_counts.entry(suit).or_insert(0) += 1;
-        }
-
-        for (suit, count) in &suit_counts {
-            if *count >= 5 {
-                let mut royal_flush = Vec::new();
-                let royal_values = vec![10, 11, 12, 13, 14]; // Jack, Queen, King, Ace
-
-                for value in royal_values {
-                    for card in &self.cards() {
-                        if card.suit() == *suit && card.value().to_u8() == value {
-                            royal_flush.push(card.clone());
-                            break;
-                        }
+            // Check for all royal flush cards
+            for &value in &[
+                Value::Ten,
+                Value::Jack,
+                Value::Queen,
+                Value::King,
+                Value::Ace,
+            ] {
+                let mut card_found = None;
+                for card in self.cards().iter() {
+                    if card.suit() == *suit && card.value() == value {
+                        card_found = Some(card.clone());
+                        break;
                     }
                 }
 
-                if royal_flush.len() == 5 {
-                    let kickers = self.get_kickers(royal_flush.clone());
-                    return HandResult::new(HandType::RoyalFlush, royal_flush, kickers);
+                if let Some(card) = card_found {
+                    royal_flush.push(card);
+                } else {
+                    // If any card is missing, this suit doesn't have a royal flush
+                    royal_flush.clear();
+                    break;
                 }
+            }
+
+            // If we found all 5 cards, we have a royal flush
+            if royal_flush.len() == 5 {
+                // Sort the cards from highest to lowest value for a royal flush
+                royal_flush.sort_by(|a, b| b.value().cmp(&a.value()));
+
+                // Royal flushes don't have kickers
+                return HandResult::new(HandType::RoyalFlush, royal_flush, vec![]);
             }
         }
 

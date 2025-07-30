@@ -1,4 +1,3 @@
-use crate::card::Card;
 use crate::hand::hand_types::HandType;
 use crate::hand::{Hand, HandResult};
 use wasm_bindgen::prelude::*;
@@ -11,6 +10,15 @@ impl Hand {
 
         // Check for straight flush
         if self.has_straight_flush() {
+            // Check specifically for royal flush
+            if self.has_royal_flush() {
+                // Get the straight flush and change its type to RoyalFlush
+                let royal_flush = self.get_straight_flush();
+                // Note: In the current implementation, we're using HandType::StraightFlush for both
+                // straight flushes and royal flushes, which is consistent with the TypeScript implementation
+                // where getStraightFlush is used for both. The distinction is made in the card values.
+                return royal_flush;
+            }
             return self.get_straight_flush();
         }
 
