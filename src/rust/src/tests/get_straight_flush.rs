@@ -19,11 +19,11 @@ fn test_get_straight_flush() {
     let straight_flush = hand.get_straight_flush();
     assert_eq!(straight_flush.len(), 5);
     assert_eq!(straight_flush.cards()[0].suit(), Suit::Hearts);
-    assert_eq!(straight_flush.cards()[0].value(), Value::Two);
-    assert_eq!(straight_flush.cards()[1].value(), Value::Three);
+    assert_eq!(straight_flush.cards()[0].value(), Value::Six);
+    assert_eq!(straight_flush.cards()[1].value(), Value::Five);
     assert_eq!(straight_flush.cards()[2].value(), Value::Four);
-    assert_eq!(straight_flush.cards()[3].value(), Value::Five);
-    assert_eq!(straight_flush.cards()[4].value(), Value::Six);
+    assert_eq!(straight_flush.cards()[3].value(), Value::Three);
+    assert_eq!(straight_flush.cards()[4].value(), Value::Two);
 
     // Test without a straight flush
     let cards = vec![
@@ -81,10 +81,10 @@ fn test_get_straight_flush_with_ace_low() {
     let hand = Hand::new(cards);
     let straight_flush = hand.get_straight_flush();
     assert_eq!(straight_flush.len(), 5);
-    assert_eq!(straight_flush.cards()[0].value(), Value::Two);
-    assert_eq!(straight_flush.cards()[1].value(), Value::Three);
-    assert_eq!(straight_flush.cards()[2].value(), Value::Four);
-    assert_eq!(straight_flush.cards()[3].value(), Value::Five);
+    assert_eq!(straight_flush.cards()[0].value(), Value::Five);
+    assert_eq!(straight_flush.cards()[1].value(), Value::Four);
+    assert_eq!(straight_flush.cards()[2].value(), Value::Three);
+    assert_eq!(straight_flush.cards()[3].value(), Value::Two);
     assert_eq!(straight_flush.cards()[4].value(), Value::Ace);
 }
 
@@ -101,11 +101,11 @@ fn test_get_straight_flush_with_ace_high() {
     let hand = Hand::new(cards);
     let straight_flush = hand.get_straight_flush();
     assert_eq!(straight_flush.len(), 5);
-    assert_eq!(straight_flush.cards()[0].value(), Value::Ten);
-    assert_eq!(straight_flush.cards()[1].value(), Value::Jack);
+    assert_eq!(straight_flush.cards()[0].value(), Value::Ace);
+    assert_eq!(straight_flush.cards()[1].value(), Value::King);
     assert_eq!(straight_flush.cards()[2].value(), Value::Queen);
-    assert_eq!(straight_flush.cards()[3].value(), Value::King);
-    assert_eq!(straight_flush.cards()[4].value(), Value::Ace);
+    assert_eq!(straight_flush.cards()[3].value(), Value::Jack);
+    assert_eq!(straight_flush.cards()[4].value(), Value::Ten);
 }
 
 #[test]
@@ -153,11 +153,11 @@ fn test_get_straight_flush_with_wrap_around() {
     let hand = Hand::new(cards);
     let straight_flush = hand.get_straight_flush();
     assert_eq!(straight_flush.len(), 5);
-    assert_eq!(straight_flush.cards()[0].value(), Value::Two);
-    assert_eq!(straight_flush.cards()[1].value(), Value::Three);
+    assert_eq!(straight_flush.cards()[0].value(), Value::Six);
+    assert_eq!(straight_flush.cards()[1].value(), Value::Five);
     assert_eq!(straight_flush.cards()[2].value(), Value::Four);
-    assert_eq!(straight_flush.cards()[3].value(), Value::Five);
-    assert_eq!(straight_flush.cards()[4].value(), Value::Six);
+    assert_eq!(straight_flush.cards()[3].value(), Value::Three);
+    assert_eq!(straight_flush.cards()[4].value(), Value::Two);
 }
 
 #[test]
@@ -174,9 +174,258 @@ fn test_get_straight_flush_with_wrap_around_reversed() {
     let hand = Hand::new(cards);
     let straight_flush = hand.get_straight_flush();
     assert_eq!(straight_flush.len(), 5);
-    assert_eq!(straight_flush.cards()[0].value(), Value::Ten);
-    assert_eq!(straight_flush.cards()[1].value(), Value::Jack);
+    assert_eq!(straight_flush.cards()[0].value(), Value::Ace);
+    assert_eq!(straight_flush.cards()[1].value(), Value::King);
     assert_eq!(straight_flush.cards()[2].value(), Value::Queen);
-    assert_eq!(straight_flush.cards()[3].value(), Value::King);
+    assert_eq!(straight_flush.cards()[3].value(), Value::Jack);
+    assert_eq!(straight_flush.cards()[4].value(), Value::Ten);
+}
+
+// Additional edge case tests for the refactored implementation
+
+#[test]
+fn test_get_straight_flush_with_duplicates() {
+    let cards = vec![
+        Card::new(Suit::Hearts, Value::Five),
+        Card::new(Suit::Hearts, Value::Five), // Duplicate
+        Card::new(Suit::Hearts, Value::Six),
+        Card::new(Suit::Hearts, Value::Seven),
+        Card::new(Suit::Hearts, Value::Eight),
+        Card::new(Suit::Hearts, Value::Nine),
+    ];
+
+    let hand = Hand::new(cards);
+    let straight_flush = hand.get_straight_flush();
+    assert_eq!(straight_flush.len(), 5);
+    // Should return the highest straight flush: 9-8-7-6-5
+    assert_eq!(straight_flush.cards()[0].value(), Value::Nine);
+    assert_eq!(straight_flush.cards()[1].value(), Value::Eight);
+    assert_eq!(straight_flush.cards()[2].value(), Value::Seven);
+    assert_eq!(straight_flush.cards()[3].value(), Value::Six);
+    assert_eq!(straight_flush.cards()[4].value(), Value::Five);
+}
+
+#[test]
+fn test_get_straight_flush_with_multiple_options() {
+    let cards = vec![
+        Card::new(Suit::Hearts, Value::Three),
+        Card::new(Suit::Hearts, Value::Four),
+        Card::new(Suit::Hearts, Value::Five),
+        Card::new(Suit::Hearts, Value::Six),
+        Card::new(Suit::Hearts, Value::Seven),
+        Card::new(Suit::Hearts, Value::Eight),
+        Card::new(Suit::Hearts, Value::Nine),
+    ];
+
+    let hand = Hand::new(cards);
+    let straight_flush = hand.get_straight_flush();
+    assert_eq!(straight_flush.len(), 5);
+    // Should return the highest straight flush: 9-8-7-6-5
+    assert_eq!(straight_flush.cards()[0].value(), Value::Nine);
+    assert_eq!(straight_flush.cards()[1].value(), Value::Eight);
+    assert_eq!(straight_flush.cards()[2].value(), Value::Seven);
+    assert_eq!(straight_flush.cards()[3].value(), Value::Six);
+    assert_eq!(straight_flush.cards()[4].value(), Value::Five);
+}
+
+#[test]
+fn test_get_straight_flush_with_ace_low_and_high() {
+    let cards = vec![
+        Card::new(Suit::Hearts, Value::Ace),
+        Card::new(Suit::Hearts, Value::Two),
+        Card::new(Suit::Hearts, Value::Three),
+        Card::new(Suit::Hearts, Value::Four),
+        Card::new(Suit::Hearts, Value::Five),
+        Card::new(Suit::Hearts, Value::Ten),
+        Card::new(Suit::Hearts, Value::Jack),
+        Card::new(Suit::Hearts, Value::Queen),
+        Card::new(Suit::Hearts, Value::King),
+    ];
+
+    let hand = Hand::new(cards);
+    let straight_flush = hand.get_straight_flush();
+    assert_eq!(straight_flush.len(), 5);
+    // Should return the highest straight flush: A-K-Q-J-10
+    assert_eq!(straight_flush.cards()[0].value(), Value::Ace);
+    assert_eq!(straight_flush.cards()[1].value(), Value::King);
+    assert_eq!(straight_flush.cards()[2].value(), Value::Queen);
+    assert_eq!(straight_flush.cards()[3].value(), Value::Jack);
+    assert_eq!(straight_flush.cards()[4].value(), Value::Ten);
+}
+
+#[test]
+fn test_get_straight_flush_with_suits_mixed() {
+    let cards = vec![
+        Card::new(Suit::Hearts, Value::Five),
+        Card::new(Suit::Hearts, Value::Six),
+        Card::new(Suit::Hearts, Value::Seven),
+        Card::new(Suit::Hearts, Value::Eight),
+        Card::new(Suit::Hearts, Value::Nine),
+        Card::new(Suit::Diamonds, Value::Ten),
+    ];
+
+    let hand = Hand::new(cards);
+    let straight_flush = hand.get_straight_flush();
+    assert_eq!(straight_flush.len(), 5);
+    // Should return the highest straight flush: 9-8-7-6-5
+    assert_eq!(straight_flush.cards()[0].value(), Value::Nine);
+    assert_eq!(straight_flush.cards()[1].value(), Value::Eight);
+    assert_eq!(straight_flush.cards()[2].value(), Value::Seven);
+    assert_eq!(straight_flush.cards()[3].value(), Value::Six);
+    assert_eq!(straight_flush.cards()[4].value(), Value::Five);
+}
+
+#[test]
+fn test_get_straight_flush_kickers_empty() {
+    let cards = vec![
+        Card::new(Suit::Hearts, Value::Five),
+        Card::new(Suit::Hearts, Value::Six),
+        Card::new(Suit::Hearts, Value::Seven),
+        Card::new(Suit::Hearts, Value::Eight),
+        Card::new(Suit::Hearts, Value::Nine),
+    ];
+
+    let hand = Hand::new(cards);
+    let straight_flush = hand.get_straight_flush();
+    assert_eq!(straight_flush.kickers().len(), 0);
+}
+
+#[test]
+fn test_get_straight_flush_kickers_with_extra_cards() {
+    let cards = vec![
+        Card::new(Suit::Hearts, Value::Five),
+        Card::new(Suit::Hearts, Value::Six),
+        Card::new(Suit::Hearts, Value::Seven),
+        Card::new(Suit::Hearts, Value::Eight),
+        Card::new(Suit::Hearts, Value::Nine),
+        Card::new(Suit::Diamonds, Value::Two), // Extra card
+        Card::new(Suit::Clubs, Value::Ace),    // Extra card
+    ];
+
+    let hand = Hand::new(cards);
+    let straight_flush = hand.get_straight_flush();
+    assert_eq!(straight_flush.len(), 5);
+    assert_eq!(straight_flush.kickers().len(), 0); // straight flushes never have kickers
+}
+
+#[test]
+fn test_get_straight_flush_edge_case_royal() {
+    let cards = vec![
+        Card::new(Suit::Hearts, Value::Ten),
+        Card::new(Suit::Hearts, Value::Jack),
+        Card::new(Suit::Hearts, Value::Queen),
+        Card::new(Suit::Hearts, Value::King),
+        Card::new(Suit::Hearts, Value::Ace),
+    ];
+
+    let hand = Hand::new(cards);
+    let straight_flush = hand.get_straight_flush();
+    assert_eq!(straight_flush.len(), 5);
+    assert_eq!(straight_flush.cards()[0].value(), Value::Ace);
+    assert_eq!(straight_flush.cards()[1].value(), Value::King);
+    assert_eq!(straight_flush.cards()[2].value(), Value::Queen);
+    assert_eq!(straight_flush.cards()[3].value(), Value::Jack);
+    assert_eq!(straight_flush.cards()[4].value(), Value::Ten);
+}
+
+#[test]
+fn test_get_straight_flush_edge_case_low_end() {
+    let cards = vec![
+        Card::new(Suit::Hearts, Value::Ace),
+        Card::new(Suit::Hearts, Value::Two),
+        Card::new(Suit::Hearts, Value::Three),
+        Card::new(Suit::Hearts, Value::Four),
+        Card::new(Suit::Hearts, Value::Five),
+    ];
+
+    let hand = Hand::new(cards);
+    let straight_flush = hand.get_straight_flush();
+    assert_eq!(straight_flush.len(), 5);
+    assert_eq!(straight_flush.cards()[0].value(), Value::Five);
+    assert_eq!(straight_flush.cards()[1].value(), Value::Four);
+    assert_eq!(straight_flush.cards()[2].value(), Value::Three);
+    assert_eq!(straight_flush.cards()[3].value(), Value::Two);
+    assert_eq!(straight_flush.cards()[4].value(), Value::Ace);
+}
+
+#[test]
+fn test_get_straight_flush_consecutive_duplicates() {
+    let cards = vec![
+        Card::new(Suit::Hearts, Value::Five),
+        Card::new(Suit::Hearts, Value::Five), // Duplicate
+        Card::new(Suit::Hearts, Value::Six),
+        Card::new(Suit::Hearts, Value::Six), // Duplicate
+        Card::new(Suit::Hearts, Value::Seven),
+        Card::new(Suit::Hearts, Value::Seven), // Duplicate
+        Card::new(Suit::Hearts, Value::Eight),
+        Card::new(Suit::Hearts, Value::Eight), // Duplicate
+        Card::new(Suit::Hearts, Value::Nine),
+    ];
+
+    let hand = Hand::new(cards);
+    let straight_flush = hand.get_straight_flush();
+    assert_eq!(straight_flush.len(), 5);
+    // Should return the highest straight flush: 9-8-7-6-5
+    assert_eq!(straight_flush.cards()[0].value(), Value::Nine);
+    assert_eq!(straight_flush.cards()[1].value(), Value::Eight);
+    assert_eq!(straight_flush.cards()[2].value(), Value::Seven);
+    assert_eq!(straight_flush.cards()[3].value(), Value::Six);
+    assert_eq!(straight_flush.cards()[4].value(), Value::Five);
+}
+
+#[test]
+fn test_get_straight_flush_no_duplicates_but_gaps() {
+    let cards = vec![
+        Card::new(Suit::Hearts, Value::Three),
+        Card::new(Suit::Hearts, Value::Four),
+        Card::new(Suit::Hearts, Value::Five),
+        Card::new(Suit::Hearts, Value::Seven), // Gap at 6
+        Card::new(Suit::Hearts, Value::Eight),
+        Card::new(Suit::Hearts, Value::Nine),
+    ];
+
+    let hand = Hand::new(cards);
+    let straight_flush = hand.get_straight_flush();
+    assert!(straight_flush.is_empty());
+}
+
+#[test]
+fn test_get_straight_flush_multiple_suits_with_flush() {
+    let cards = vec![
+        Card::new(Suit::Hearts, Value::Two),
+        Card::new(Suit::Hearts, Value::Three),
+        Card::new(Suit::Hearts, Value::Four),
+        Card::new(Suit::Hearts, Value::Five),
+        Card::new(Suit::Hearts, Value::Seven), // Gap at 6
+        Card::new(Suit::Diamonds, Value::Six), // Different suit
+        Card::new(Suit::Diamonds, Value::Eight),
+        Card::new(Suit::Diamonds, Value::Nine),
+        Card::new(Suit::Diamonds, Value::Ten),
+    ];
+
+    let hand = Hand::new(cards);
+    let straight_flush = hand.get_straight_flush();
+    assert!(straight_flush.is_empty());
+}
+
+#[test]
+fn test_get_straight_flush_with_extra_cards() {
+    let cards = vec![
+        Card::new(Suit::Hearts, Value::Ace),
+        Card::new(Suit::Hearts, Value::Two),
+        Card::new(Suit::Hearts, Value::Three),
+        Card::new(Suit::Hearts, Value::Four),
+        Card::new(Suit::Hearts, Value::Five),
+        Card::new(Suit::Diamonds, Value::Seven), // Extra card
+        Card::new(Suit::Clubs, Value::Ace),      // Extra card
+    ];
+
+    let hand = Hand::new(cards);
+    let straight_flush = hand.get_straight_flush();
+    assert_eq!(straight_flush.len(), 5);
+    assert_eq!(straight_flush.cards()[0].value(), Value::Five);
+    assert_eq!(straight_flush.cards()[1].value(), Value::Four);
+    assert_eq!(straight_flush.cards()[2].value(), Value::Three);
+    assert_eq!(straight_flush.cards()[3].value(), Value::Two);
     assert_eq!(straight_flush.cards()[4].value(), Value::Ace);
 }

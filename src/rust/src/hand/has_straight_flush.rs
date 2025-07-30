@@ -1,6 +1,44 @@
+use crate::card::{Suit, Value};
 use crate::hand::Hand;
 use std::collections::HashMap;
 use wasm_bindgen::prelude::*;
+
+/// Helper function to check if a slice of Values contains a straight
+fn has_consecutive_straight(values: &[Value]) -> bool {
+    if values.len() < 5 {
+        return false;
+    }
+
+    for i in 0..values.len() - 4 {
+        let base_value = values[i].to_u8();
+        // Check if we have 5 consecutive values starting from base_value
+        if (1..5).all(|shift| values[i + shift].to_u8() == base_value + (shift as u8)) {
+            return true;
+        }
+    }
+    false
+}
+
+/// Helper function to check for Ace-low straight (A-2-3-4-5)
+fn has_ace_low_straight(values: &[Value]) -> bool {
+    values.contains(&Value::Ace)
+        && values.contains(&Value::Two)
+        && values.contains(&Value::Three)
+        && values.contains(&Value::Four)
+        && values.contains(&Value::Five)
+}
+
+/// Helper function to extract unique values from cards and sort them
+fn get_sorted_unique_values(cards: &[crate::card::Card]) -> Vec<Value> {
+    let mut unique_values = std::collections::HashSet::new();
+    for card in cards {
+        unique_values.insert(card.value());
+    }
+
+    let mut sorted_values: Vec<Value> = unique_values.into_iter().collect();
+    sorted_values.sort();
+    sorted_values
+}
 
 /// Detects if a straight flush (5 consecutive cards of the same suit) exists within the hand.
 ///
@@ -78,11 +116,11 @@ use wasm_bindgen::prelude::*;
 /// * Automatically handles royal flushes (A-K-Q-J-10) as a type of straight flush
 /// * Properly handles Ace-low straight flushes (A-2-3-4-5)
 /// * Only checks suits with 5+ cards for straight potential
-/// * Reuses existing `has_straight` logic for each suit group
+/// * Uses efficient straight detection logic without creating temporary Hand objects
 #[wasm_bindgen]
 impl Hand {
     pub fn has_straight_flush(&self) -> bool {
-        // First, group cards by suit
+        // Group cards by suit
         let mut cards_by_suit = HashMap::new();
 
         for card in &self.cards() {
@@ -99,13 +137,11 @@ impl Hand {
                 continue;
             }
 
-            // Create a temporary hand with just these cards
-            let temp_hand = Hand {
-                cards: cards.clone(),
-            };
+            // Extract unique values from this suit's cards
+            let sorted_values = get_sorted_unique_values(cards);
 
-            // Use the existing has_straight function
-            if temp_hand.has_straight() {
+            // Check for regular straights and Ace-low straights
+            if has_consecutive_straight(&sorted_values) || has_ace_low_straight(&sorted_values) {
                 return true;
             }
         }

@@ -150,3 +150,110 @@ fn test_straight_with_ace_wrap_around_reversed() {
     let hand = Hand::new(hand);
     assert!(hand.has_straight());
 }
+
+// Additional edge case tests for the refactored implementation
+
+#[test]
+fn test_has_straight_with_duplicates() {
+    let hand = vec![
+        Card::new(Suit::Hearts, Value::Five),
+        Card::new(Suit::Diamonds, Value::Five), // Duplicate
+        Card::new(Suit::Clubs, Value::Six),
+        Card::new(Suit::Spades, Value::Seven),
+        Card::new(Suit::Hearts, Value::Eight),
+        Card::new(Suit::Diamonds, Value::Nine),
+    ];
+    let hand = Hand::new(hand);
+    assert!(hand.has_straight());
+}
+
+#[test]
+fn test_has_straight_with_minimum_cards() {
+    let hand = vec![
+        Card::new(Suit::Hearts, Value::Six),
+        Card::new(Suit::Diamonds, Value::Seven),
+        Card::new(Suit::Clubs, Value::Eight),
+        Card::new(Suit::Spades, Value::Nine),
+        Card::new(Suit::Hearts, Value::Ten),
+    ];
+    let hand = Hand::new(hand);
+    assert!(hand.has_straight());
+}
+
+#[test]
+fn test_has_straight_with_maximum_cards() {
+    let hand = vec![
+        Card::new(Suit::Hearts, Value::Two),
+        Card::new(Suit::Diamonds, Value::Three),
+        Card::new(Suit::Clubs, Value::Four),
+        Card::new(Suit::Spades, Value::Five),
+        Card::new(Suit::Hearts, Value::Six),
+        Card::new(Suit::Diamonds, Value::Seven),
+        Card::new(Suit::Clubs, Value::Eight),
+        Card::new(Suit::Spades, Value::Nine),
+        Card::new(Suit::Hearts, Value::Ten),
+        Card::new(Suit::Diamonds, Value::Jack),
+        Card::new(Suit::Clubs, Value::Queen),
+        Card::new(Suit::Spades, Value::King),
+        Card::new(Suit::Hearts, Value::Ace),
+    ];
+    let hand = Hand::new(hand);
+    assert!(hand.has_straight());
+}
+
+#[test]
+fn test_has_straight_edge_case_high_end() {
+    let hand = vec![
+        Card::new(Suit::Hearts, Value::Ten),
+        Card::new(Suit::Diamonds, Value::Jack),
+        Card::new(Suit::Clubs, Value::Queen),
+        Card::new(Suit::Spades, Value::King),
+        Card::new(Suit::Hearts, Value::Ace),
+    ];
+    let hand = Hand::new(hand);
+    assert!(hand.has_straight());
+}
+
+#[test]
+fn test_has_straight_edge_case_low_end() {
+    let hand = vec![
+        Card::new(Suit::Hearts, Value::Ace),
+        Card::new(Suit::Diamonds, Value::Two),
+        Card::new(Suit::Clubs, Value::Three),
+        Card::new(Suit::Spades, Value::Four),
+        Card::new(Suit::Hearts, Value::Five),
+    ];
+    let hand = Hand::new(hand);
+    assert!(hand.has_straight());
+}
+
+#[test]
+fn test_has_straight_consecutive_duplicates() {
+    let hand = vec![
+        Card::new(Suit::Hearts, Value::Five),
+        Card::new(Suit::Diamonds, Value::Five), // Duplicate
+        Card::new(Suit::Clubs, Value::Six),
+        Card::new(Suit::Spades, Value::Six), // Duplicate
+        Card::new(Suit::Hearts, Value::Seven),
+        Card::new(Suit::Diamonds, Value::Seven), // Duplicate
+        Card::new(Suit::Clubs, Value::Eight),
+        Card::new(Suit::Spades, Value::Eight), // Duplicate
+        Card::new(Suit::Hearts, Value::Nine),
+    ];
+    let hand = Hand::new(hand);
+    assert!(hand.has_straight());
+}
+
+#[test]
+fn test_has_straight_no_duplicates_but_gaps() {
+    let hand = vec![
+        Card::new(Suit::Hearts, Value::Three),
+        Card::new(Suit::Diamonds, Value::Four),
+        Card::new(Suit::Clubs, Value::Five),
+        Card::new(Suit::Spades, Value::Seven), // Gap at 6
+        Card::new(Suit::Hearts, Value::Eight),
+        Card::new(Suit::Diamonds, Value::Nine),
+    ];
+    let hand = Hand::new(hand);
+    assert!(!hand.has_straight());
+}

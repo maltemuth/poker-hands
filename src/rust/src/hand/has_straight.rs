@@ -3,6 +3,31 @@ use crate::hand::Hand;
 use std::collections::HashSet;
 use wasm_bindgen::prelude::*;
 
+/// Helper function to check if a slice of Values contains a straight
+fn has_consecutive_straight(values: &[Value]) -> bool {
+    if values.len() < 5 {
+        return false;
+    }
+
+    for i in 0..values.len() - 4 {
+        let base_value = values[i].to_u8();
+        // Check if we have 5 consecutive values starting from base_value
+        if (1..5).all(|shift| values[i + shift].to_u8() == base_value + (shift as u8)) {
+            return true;
+        }
+    }
+    false
+}
+
+/// Helper function to check for Ace-low straight (A-2-3-4-5)
+fn has_ace_low_straight(values: &[Value]) -> bool {
+    values.contains(&Value::Ace)
+        && values.contains(&Value::Two)
+        && values.contains(&Value::Three)
+        && values.contains(&Value::Four)
+        && values.contains(&Value::Five)
+}
+
 /// Detects if a straight (5 consecutive cards) exists within the hand.
 ///
 /// A straight is defined as 5 cards with consecutive values. This function handles
@@ -69,37 +94,24 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 impl Hand {
     pub fn has_straight(&self) -> bool {
-        let mut values = HashSet::new();
-
+        // Extract unique values from cards
+        let mut unique_values = HashSet::new();
         for card in &self.cards() {
-            values.insert(card.value());
+            unique_values.insert(card.value());
         }
 
-        let mut sorted_values: Vec<Value> = values.into_iter().collect();
+        // Convert to sorted vector
+        let mut sorted_values: Vec<Value> = unique_values.into_iter().collect();
         sorted_values.sort();
 
-        // Check for a straight in the normal order
-        for i in 0..sorted_values.len() - 4 {
-            let value = sorted_values[i];
-            if sorted_values[i + 1] == Value::from_u8(value.to_u8() + 1)
-                && sorted_values[i + 2] == Value::from_u8(value.to_u8() + 2)
-                && sorted_values[i + 3] == Value::from_u8(value.to_u8() + 3)
-                && sorted_values[i + 4] == Value::from_u8(value.to_u8() + 4)
-            {
-                return true;
-            }
+        // Check for regular straights
+        if has_consecutive_straight(&sorted_values) {
+            return true;
         }
 
-        // Check for a straight with Ace as 1
-        if sorted_values.len() >= 5 {
-            if sorted_values.contains(&Value::Two)
-                && sorted_values.contains(&Value::Three)
-                && sorted_values.contains(&Value::Four)
-                && sorted_values.contains(&Value::Five)
-                && sorted_values.contains(&Value::Ace)
-            {
-                return true;
-            }
+        // Check for Ace-low straight (A-2-3-4-5)
+        if has_ace_low_straight(&sorted_values) {
+            return true;
         }
 
         false

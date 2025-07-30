@@ -1,6 +1,101 @@
+use crate::card::{Suit, Value};
 use crate::hand::hand_types::HandType;
 use crate::hand::{Hand, HandResult};
+use std::collections::HashMap;
 use wasm_bindgen::prelude::*;
+
+/// Helper function to find all possible straights in sorted unique values
+fn find_all_straights(values: &[Value]) -> Vec<Vec<Value>> {
+    let mut straights = Vec::new();
+
+    // Check for regular straights
+    for i in 0..values.len().saturating_sub(4) {
+        let mut is_straight = true;
+
+        // Check if 5 consecutive values form a straight
+        for j in 0..4 {
+            if i + j + 1 >= values.len() {
+                is_straight = false;
+                break;
+            }
+            // Check if consecutive values differ by 1
+            if values[i + j + 1] as u8 != values[i + j] as u8 + 1 {
+                is_straight = false;
+                break;
+            }
+        }
+
+        if is_straight {
+            let straight_values: Vec<Value> = values[i..i + 5].to_vec();
+            straights.push(straight_values);
+        }
+    }
+
+    // Check for Ace-low straight (A-2-3-4-5)
+    if values.contains(&Value::Ace)
+        && values.contains(&Value::Two)
+        && values.contains(&Value::Three)
+        && values.contains(&Value::Four)
+        && values.contains(&Value::Five)
+    {
+        straights.push(vec![
+            Value::Five,
+            Value::Four,
+            Value::Three,
+            Value::Two,
+            Value::Ace,
+        ]);
+    }
+
+    straights
+}
+
+/// Helper function to get actual cards for a straight flush (highest to lowest)
+fn get_cards_for_straight_flush(
+    cards: &[crate::card::Card],
+    suit: Suit,
+    straight_values: &[Value],
+) -> Vec<crate::card::Card> {
+    let mut result = Vec::new();
+
+    // Check if this is an Ace-low straight [Five, Four, Three, Two, Ace]
+    let is_ace_low = straight_values.len() == 5
+        && straight_values[0] == Value::Five
+        && straight_values[4] == Value::Ace;
+
+    // Find cards with the specified suit and values in the straight
+    for &value in straight_values {
+        let matching_cards: Vec<_> = cards
+            .iter()
+            .filter(|card| card.suit() == suit && card.value() == value)
+            .collect();
+
+        // Take the first matching card (in case of duplicates, any will do for straight detection)
+        if let Some(card) = matching_cards.first() {
+            result.push((*card).clone());
+        }
+    }
+
+    // Sort the result from highest to lowest value, but only for non-Ace-low straights
+    if !is_ace_low {
+        result.sort_by(|a, b| b.value().cmp(&a.value()));
+    }
+    result
+}
+
+/// Helper function to extract unique values from cards of a specific suit and sort them
+fn get_sorted_unique_values_by_suit(cards: &[crate::card::Card], suit: Suit) -> Vec<Value> {
+    let mut unique_values = std::collections::HashSet::new();
+    for card in cards {
+        if card.suit() == suit {
+            unique_values.insert(card.value());
+        }
+    }
+
+    let mut sorted_values: Vec<Value> = unique_values.into_iter().collect();
+    sorted_values.sort();
+    sorted_values
+}
 
 /// Extracts the highest straight flush from the hand and returns hand metadata.
 ///
@@ -35,14 +130,15 @@ use wasm_bindgen::prelude::*;
 ///     Card::new(Suit::Hearts, Value::Seven),
 ///     Card::new(Suit::Hearts, Value::Eight),
 ///     Card::new(Suit::Hearts, Value::Nine),
-///     Card::new(Suit::Hearts, Value::Ten),
-///     Card::new(Suit::Hearts, Value::Jack),
+///     // Add some other cards
+///     Card::new(Suit::Diamonds, Value::Seven),
+///     Card::new(Suit::Clubs, Value::Eight),
 /// ];
 /// let hand = Hand::new(cards);
 /// let result = hand.get_straight_flush();
 /// result.hand_type(); // HandType::StraightFlush
 /// result.cards().len(); // 5
-/// // Contains the highest possible straight flush: [Jack, Ten, Nine, Eight, Seven]
+/// // Contains the highest possible straight flush: [Nine, Eight, Seven, Six, Five]
 /// ```
 ///
 /// ```rust
@@ -74,7 +170,7 @@ use wasm_bindgen::prelude::*;
 /// let result = hand.get_straight_flush();
 /// result.hand_type(); // HandType::StraightFlush
 /// result.cards().len(); // 5
-/// // Contains: [Ace, Five, Four, Three, Two]
+/// // Contains: [Five, Four, Three, Two, Ace]
 /// ```
 ///
 /// ```rust
@@ -107,54 +203,69 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 impl Hand {
     pub fn get_straight_flush(&self) -> HandResult {
-        let mut suit_counts = std::collections::HashMap::new();
-        let mut value_counts = std::collections::HashMap::new();
+        let all_cards = self.cards();
 
-        for card in &self.cards() {
+        // Group cards by suit
+        let mut cards_by_suit = HashMap::new();
+        for card in &all_cards {
             let suit = card.suit();
-            let value = card.value();
-            *suit_counts.entry(suit).or_insert(0) += 1;
-            *value_counts.entry(value).or_insert(0) += 1;
+            cards_by_suit
+                .entry(suit)
+                .or_insert_with(Vec::new)
+                .push(card.clone());
         }
 
-        for (suit, suit_count) in &suit_counts {
-            if *suit_count >= 5 {
-                let mut values = Vec::new();
-                for (value, count) in &value_counts {
-                    if *count >= 1 && *suit_count >= 5 {
-                        values.push(value.clone());
-                    }
-                }
-                values.sort_by(|a, b| a.cmp(b));
+        let mut all_straight_flushes = Vec::new();
 
-                for i in 0..(values.len() - 4) {
-                    let mut found = true;
-                    let mut straight_flush = Vec::new();
+        // Check each suit group for straight flushes
+        for (suit, cards) in cards_by_suit {
+            if cards.len() < 5 {
+                continue;
+            }
 
-                    for j in 0..5 {
-                        if i + j >= values.len() {
-                            found = false;
-                            break;
-                        }
+            // Extract unique values from this suit's cards
+            let sorted_values = get_sorted_unique_values_by_suit(&all_cards, suit);
 
-                        let value = values[i + j];
-                        for card in &self.cards() {
-                            if card.suit() == *suit && card.value() == value {
-                                straight_flush.push(card.clone());
-                                break;
-                            }
-                        }
-                    }
+            // Find all possible straights in this suit
+            let straights = find_all_straights(&sorted_values);
 
-                    if found {
-                        let kickers = self.get_kickers(HandType::StraightFlush);
-                        return HandResult::new(HandType::StraightFlush, straight_flush, kickers);
-                    }
+            // For each straight found, get the actual cards
+            for straight_values in straights {
+                let straight_flush_cards =
+                    get_cards_for_straight_flush(&all_cards, suit, &straight_values);
+                if straight_flush_cards.len() == 5 {
+                    all_straight_flushes.push((straight_flush_cards, suit));
                 }
             }
         }
 
-        // If no straight flush is found, return an empty HandResult
-        HandResult::new(HandType::HighCard, Vec::new(), Vec::new())
+        // If no straight flushes found, return empty result
+        if all_straight_flushes.is_empty() {
+            return HandResult::new(HandType::HighCard, Vec::new(), Vec::new());
+        }
+
+        // For straight flushes, we need to find the one with the highest card
+        // But we need to be careful with Ace-low straight flushes
+        let best_straight_flush = all_straight_flushes
+            .iter()
+            .max_by_key(|(cards, _)| {
+                // Check if this is an Ace-low straight flush (A-2-3-4-5)
+                // In our representation, this would be [Five, Four, Three, Two, Ace]
+                if cards.len() == 5
+                    && cards[0].value() == Value::Five
+                    && cards[4].value() == Value::Ace
+                {
+                    // This is an Ace-low straight flush, highest card is Five
+                    Value::Five
+                } else {
+                    // This is a regular straight flush, highest card is the first card
+                    cards.first().unwrap().value()
+                }
+            })
+            .unwrap()
+            .0
+            .clone();
+
+        HandResult::new(HandType::StraightFlush, best_straight_flush, Vec::new())
     }
 }

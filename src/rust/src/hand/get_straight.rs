@@ -1,6 +1,83 @@
+use crate::card::Value;
 use crate::hand::hand_types::HandType;
 use crate::hand::{Hand, HandResult};
+use std::collections::HashMap;
 use wasm_bindgen::prelude::*;
+
+/// Helper function to find all possible straights in sorted unique values
+fn find_all_straights(values: &[Value]) -> Vec<Vec<Value>> {
+    let mut straights = Vec::new();
+
+    // Check for regular straights
+    for i in 0..values.len().saturating_sub(4) {
+        let mut is_straight = true;
+
+        // Check if 5 consecutive values form a straight
+        for j in 0..4 {
+            if i + j + 1 >= values.len() {
+                is_straight = false;
+                break;
+            }
+            // Check if consecutive values differ by 1
+            if values[i + j + 1] as u8 != values[i + j] as u8 + 1 {
+                is_straight = false;
+                break;
+            }
+        }
+
+        if is_straight {
+            let straight_values: Vec<Value> = values[i..i + 5].to_vec();
+            straights.push(straight_values);
+        }
+    }
+
+    // Check for Ace-low straight (A-2-3-4-5)
+    if values.contains(&Value::Ace)
+        && values.contains(&Value::Two)
+        && values.contains(&Value::Three)
+        && values.contains(&Value::Four)
+        && values.contains(&Value::Five)
+    {
+        straights.push(vec![
+            Value::Five,
+            Value::Four,
+            Value::Three,
+            Value::Two,
+            Value::Ace,
+        ]);
+    }
+
+    straights
+}
+
+/// Helper function to get actual cards for a straight (highest to lowest)
+fn get_cards_for_straight(
+    cards: &[crate::card::Card],
+    straight_values: &[Value],
+) -> Vec<crate::card::Card> {
+    let mut result = Vec::new();
+
+    // Check if this is an Ace-low straight [Five, Four, Three, Two, Ace]
+    let is_ace_low = straight_values.len() == 5
+        && straight_values[0] == Value::Five
+        && straight_values[4] == Value::Ace;
+
+    // Find cards with the values in the straight, preferring higher cards when duplicates exist
+    for &value in straight_values {
+        let matching_cards: Vec<_> = cards.iter().filter(|card| card.value() == value).collect();
+
+        // Take the first matching card (in case of duplicates, any will do for straight detection)
+        if let Some(card) = matching_cards.first() {
+            result.push((*card).clone());
+        }
+    }
+
+    // Sort the result from highest to lowest value, but only for non-Ace-low straights
+    if !is_ace_low {
+        result.sort_by(|a, b| b.value().cmp(&a.value()));
+    }
+    result
+}
 
 /// Extracts the highest straight from the hand and returns hand metadata.
 ///
@@ -58,7 +135,7 @@ use wasm_bindgen::prelude::*;
 /// let result = hand.get_straight();
 /// result.hand_type(); // HandType::Straight
 /// result.cards().len(); // 5
-/// // Contains: [Ace, Five, Four, Three, Two]
+/// // Contains: [Five, Four, Three, Two, Ace]
 /// ```
 ///
 /// ```rust
@@ -90,44 +167,42 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 impl Hand {
     pub fn get_straight(&self) -> HandResult {
-        let mut value_counts = std::collections::HashMap::new();
+        let all_cards = self.cards();
 
-        for card in &self.cards() {
-            let value = card.value();
-            *value_counts.entry(value).or_insert(0) += 1;
+        // Extract unique values and sort them
+        let mut unique_values = HashMap::new();
+        for card in &all_cards {
+            unique_values.insert(card.value(), ());
         }
 
-        let mut values = Vec::new();
-        for (value, _) in &value_counts {
-            values.push(value.clone());
+        let mut sorted_values: Vec<Value> = unique_values.keys().cloned().collect();
+        sorted_values.sort();
+
+        // Find all possible straights
+        let all_straights = find_all_straights(&sorted_values);
+
+        // If no straights found, return empty result
+        if all_straights.is_empty() {
+            return HandResult::new(HandType::HighCard, Vec::new(), Vec::new());
         }
-        values.sort_by(|a, b| a.cmp(b));
 
-        for i in 0..(values.len() - 4) {
-            let mut straight = Vec::new();
-            let mut found = true;
-
-            for j in 0..5 {
-                if i + j >= values.len() || !values.contains(&values[i + j]) {
-                    found = false;
-                    break;
+        // Find the highest straight by comparing the highest card in each straight
+        let best_straight_values = all_straights
+            .iter()
+            .max_by_key(|straight| {
+                // For Ace-low straight, the highest card is Five
+                // For regular straights, the highest card is the last element
+                if straight.len() == 5 && straight[0] == Value::Five && straight[4] == Value::Ace {
+                    // This is an Ace-low straight, highest card is Five
+                    Value::Five
+                } else {
+                    // This is a regular straight, highest card is the last element
+                    *straight.last().unwrap()
                 }
+            })
+            .unwrap();
 
-                for card in &self.cards() {
-                    if card.value() == values[i + j] {
-                        straight.push(card.clone());
-                        break;
-                    }
-                }
-            }
-
-            if found {
-                let kickers = self.get_kickers(HandType::Straight);
-                return HandResult::new(HandType::Straight, straight, kickers);
-            }
-        }
-
-        // If no straight is found, return an empty HandResult
-        HandResult::new(HandType::HighCard, Vec::new(), Vec::new())
+        let straight_cards = get_cards_for_straight(&all_cards, best_straight_values);
+        HandResult::new(HandType::Straight, straight_cards, Vec::new())
     }
 }
