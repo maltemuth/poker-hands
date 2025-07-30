@@ -5,11 +5,11 @@ use wasm_bindgen_test::*;
 #[wasm_bindgen_test]
 fn test_get_two_pair() {
     let cards = vec![
-        Card::new(2, "hearts").unwrap(),
-        Card::new(2, "diamonds").unwrap(),
-        Card::new(3, "clubs").unwrap(),
-        Card::new(3, "spades").unwrap(),
-        Card::new(4, "hearts").unwrap(),
+        Card::new(crate::card::Suit::Hearts, crate::card::Value::Two),
+        Card::new(crate::card::Suit::Diamonds, crate::card::Value::Two),
+        Card::new(crate::card::Suit::Clubs, crate::card::Value::Three),
+        Card::new(crate::card::Suit::Spades, crate::card::Value::Three),
+        Card::new(crate::card::Suit::Hearts, crate::card::Value::Four),
     ];
     let hand = Hand::new(cards);
 
@@ -23,11 +23,11 @@ fn test_get_two_pair() {
 #[wasm_bindgen_test]
 fn test_get_two_pair_empty() {
     let cards = vec![
-        Card::new(2, "hearts").unwrap(),
-        Card::new(2, "diamonds").unwrap(),
-        Card::new(3, "clubs").unwrap(),
-        Card::new(4, "spades").unwrap(),
-        Card::new(5, "hearts").unwrap(),
+        Card::new(crate::card::Suit::Hearts, crate::card::Value::Two),
+        Card::new(crate::card::Suit::Diamonds, crate::card::Value::Two),
+        Card::new(crate::card::Suit::Clubs, crate::card::Value::Three),
+        Card::new(crate::card::Suit::Spades, crate::card::Value::Four),
+        Card::new(crate::card::Suit::Hearts, crate::card::Value::Five),
     ];
     let hand = Hand::new(cards);
 

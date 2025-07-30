@@ -111,4 +111,22 @@ async function run() {
   );
 }
 
+// Create a hand with a pair
+const pairCards = [
+  Card.from_str("2h"),
+  Card.from_str("2d"),
+  Card.from_str("3c"),
+  Card.from_str("4s"),
+  Card.from_str("5h"),
+];
+const pairHand = Hand.new(pairCards);
+const hasPair = pairHand.has_pair();
+const pair = pairHand.get_pair();
+
+// Output the result
+console.log(`Has Pair: ${hasPair}`);
+console.log(
+  `Pair cards: ${pair.map((card: Card) => card.to_string()).join(", ")}`
+);
+
 run().catch(console.error);

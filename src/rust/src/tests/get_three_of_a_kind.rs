@@ -6,11 +6,11 @@ use wasm_bindgen_test::*;
 #[wasm_bindgen_test]
 fn test_get_three_of_a_kind() {
     let hand = vec![
-        Card::new(crate::card::Suit::Hearts, crate::card::Value::Ten).unwrap(),
-        Card::new(crate::card::Suit::Diamonds, crate::card::Value::Ten).unwrap(),
-        Card::new(crate::card::Suit::Clubs, crate::card::Value::Ten).unwrap(),
-        Card::new(crate::card::Suit::Hearts, crate::card::Value::Jack).unwrap(),
-        Card::new(crate::card::Suit::Diamonds, crate::card::Value::Queen).unwrap(),
+        Card::new(crate::card::Suit::Hearts, crate::card::Value::Ten),
+        Card::new(crate::card::Suit::Diamonds, crate::card::Value::Ten),
+        Card::new(crate::card::Suit::Clubs, crate::card::Value::Ten),
+        Card::new(crate::card::Suit::Hearts, crate::card::Value::Jack),
+        Card::new(crate::card::Suit::Diamonds, crate::card::Value::Queen),
     ];
 
     let hand_obj = Hand::new(hand);
@@ -25,11 +25,11 @@ fn test_get_three_of_a_kind() {
 #[wasm_bindgen_test]
 fn test_get_three_of_a_kind_not_found() {
     let hand = vec![
-        Card::new(crate::card::Suit::Hearts, crate::card::Value::Ten).unwrap(),
-        Card::new(crate::card::Suit::Diamonds, crate::card::Value::Jack).unwrap(),
-        Card::new(crate::card::Suit::Clubs, crate::card::Value::Queen).unwrap(),
-        Card::new(crate::card::Suit::Hearts, crate::card::Value::King).unwrap(),
-        Card::new(crate::card::Suit::Diamonds, crate::card::Value::Ace).unwrap(),
+        Card::new(crate::card::Suit::Hearts, crate::card::Value::Ten),
+        Card::new(crate::card::Suit::Diamonds, crate::card::Value::Jack),
+        Card::new(crate::card::Suit::Clubs, crate::card::Value::Queen),
+        Card::new(crate::card::Suit::Hearts, crate::card::Value::King),
+        Card::new(crate::card::Suit::Diamonds, crate::card::Value::Ace),
     ];
 
     let hand_obj = Hand::new(hand);
