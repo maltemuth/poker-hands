@@ -1,6 +1,7 @@
 use crate::card::Card;
 use wasm_bindgen::prelude::*;
 
+pub mod get_best_hand;
 pub mod get_flush;
 pub mod get_four_of_a_kind;
 pub mod get_full_house;

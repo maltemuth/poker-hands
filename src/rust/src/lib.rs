@@ -3,6 +3,7 @@ pub mod hand;
 
 #[cfg(test)]
 mod tests {
+    pub mod get_best_hand;
     pub mod get_flush;
     pub mod get_four_of_a_kind;
     pub mod get_pair;
