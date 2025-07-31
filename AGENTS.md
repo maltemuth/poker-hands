@@ -337,6 +337,10 @@ fn test_has_flush() {
 - Use `cargo flamegraph` for performance profiling
 - Use `wasm-profiler` for WASM-specific analysis
 
+### Forbidden files
+
+Do _not_ attempt to read **tests**/full/poker-hand-testing.data as it is way too large. The file contains 5 cards and a hand type in each line, comma-separated, and encoded as numbers. If you want to know more about this file, read **tests**/full/getBestHand.ts instead. We are using this to test getBestHand/get_best_hand against a validated data set of 1.000.000 lines.
+
 ## Future Enhancements
 
 ### 1. Advanced Features
@@ -351,12 +355,6 @@ fn test_has_flush() {
 - SIMD operations for batch processing
 - Parallel processing for odds calculations
 - Caching for repeated evaluations
-
-### 3. Platform Support
-
-- Native mobile applications
-- Server-side deployment
-- Cloud-based services
 
 ## Contributing Guidelines
 
