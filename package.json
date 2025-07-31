@@ -8,7 +8,6 @@
     "test": "npm run build && jest --testPathIgnorePatterns='__tests__/full/'",
     "test:full": "npm run build && jest",
     "test:rust": "cd src/rust && cargo test",
-    "profile:wasm": "cd src/rust/profiling && ts-node run-profile.ts",
     "start": "node dist/index.js",
     "build:wasm": "cd src/rust && npm run build",
     "example:node": "npm run build:wasm && ts-node examples/node-wasm/index.ts"
