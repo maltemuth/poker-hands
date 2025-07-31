@@ -1,44 +1,35 @@
 import { readFileSync } from "fs";
-import getBestHand from "../../src/model/hand/getBestHand";
-import { Suit, Value } from "../../src/model/card/Card";
-import { HandType } from "../../src/model/hand/Hand";
 
-import {
-  Hand,
-  HandType as RustHandType,
-  Card,
-  Suit as RustSuit,
-  Value as RustValue,
-} from "../../src/rust/node";
+import { Hand, HandType, Card, Suit, Value } from "../../src/rust/node";
 
 describe("retrieve best hands", () => {
-  test("success on training data", () => {
+  test("success on training data with WASM", () => {
     const trainingDataRaw = readFileSync(
       __dirname + "/poker-hand-testing.data"
     );
 
     const lineSuitToSuit = (lineSuit: string): Suit => {
-      if (lineSuit === "1") return Suit.hearts;
-      if (lineSuit === "2") return Suit.spades;
-      if (lineSuit === "3") return Suit.diamonds;
-      if (lineSuit === "4") return Suit.clubs;
+      if (lineSuit === "1") return "h";
+      if (lineSuit === "2") return "s";
+      if (lineSuit === "3") return "d";
+      if (lineSuit === "4") return "c";
       throw new Error("Invalid suit: " + lineSuit);
     };
 
     const lineValueToValue = (lineValue: string): Value => {
-      if (lineValue === "1") return Value.ace;
-      if (lineValue === "2") return Value.two;
-      if (lineValue === "3") return Value.three;
-      if (lineValue === "4") return Value.four;
-      if (lineValue === "5") return Value.five;
-      if (lineValue === "6") return Value.six;
-      if (lineValue === "7") return Value.seven;
-      if (lineValue === "8") return Value.eight;
-      if (lineValue === "9") return Value.nine;
-      if (lineValue === "10") return Value.ten;
-      if (lineValue === "11") return Value.jack;
-      if (lineValue === "12") return Value.queen;
-      if (lineValue === "13") return Value.king;
+      if (lineValue === "1") return Value.Ace;
+      if (lineValue === "2") return Value.Two;
+      if (lineValue === "3") return Value.Three;
+      if (lineValue === "4") return Value.Four;
+      if (lineValue === "5") return Value.Five;
+      if (lineValue === "6") return Value.Six;
+      if (lineValue === "7") return Value.Seven;
+      if (lineValue === "8") return Value.Eight;
+      if (lineValue === "9") return Value.Nine;
+      if (lineValue === "10") return Value.Ten;
+      if (lineValue === "11") return Value.Jack;
+      if (lineValue === "12") return Value.Queen;
+      if (lineValue === "13") return Value.King;
       throw new Error("Invalid value: " + lineValue);
     };
 
@@ -81,10 +72,9 @@ describe("retrieve best hands", () => {
           [suitThree, valueThree],
           [suitFour, valueFour],
           [suitFive, valueFive],
-        ].map(([lineSuit, lineValue]) => ({
-          suit: lineSuitToSuit(lineSuit),
-          value: lineValueToValue(lineValue),
-        }));
+        ].map(([lineSuit, lineValue]) =>
+          Card.new(lineSuitToSuit(lineSuit), lineValueToValue(lineValue))
+        );
 
         const handType = lineResultToHandType(result);
 
@@ -99,8 +89,11 @@ describe("retrieve best hands", () => {
 
     const before = Date.now().valueOf();
 
-    trainingLines.forEach(({ cards, handType }, index) => {
-      expect([index, getBestHand(cards).type]).toEqual([index, handType]);
+    trainingLines.forEach(({ cards, handType }, line) => {
+      expect([line, Hand.new(cards).get_best_hand().hand_type()]).toEqual([
+        line,
+        handType,
+      ]);
     });
 
     const elapsed = Date.now().valueOf() - before;
