@@ -13,10 +13,7 @@ impl Hand {
             // Check specifically for royal flush
             if self.has_royal_flush() {
                 // Get the straight flush and change its type to RoyalFlush
-                let royal_flush = self.get_straight_flush();
-                // Note: In the current implementation, we're using HandType::StraightFlush for both
-                // straight flushes and royal flushes, which is consistent with the TypeScript implementation
-                // where getStraightFlush is used for both. The distinction is made in the card values.
+                let royal_flush = self.get_royal_flush();
                 return royal_flush;
             }
             return self.get_straight_flush();
