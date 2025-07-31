@@ -3,7 +3,7 @@ node_modules
 dist
 
 # Performance profiles
-__perf__/*.cpuprofile
+**/*.cpuprofile
 
 # Rust
 /src/rust/target/
