@@ -2,149 +2,24 @@ import { Card, Hand } from "../../src/rust/node/poker_hands";
 
 // Initialize the WASM module
 async function run() {
-  // Create cards using the Rust implementation
-  const cards = [
+  // Test getBestHand
+  const bestHandCards = [
     Card.from_str("Ah"),
     Card.from_str("Kh"),
     Card.from_str("Qh"),
     Card.from_str("As"),
     Card.from_str("Th"),
-    Card.from_str("Ad"),
-    Card.from_str("Ac"),
   ];
-
-  // Create a hand and check for a flush
-  const hand = Hand.new(cards);
-  const hasFlush = hand.has_flush();
-  const flush = hand.get_flush();
+  const bestHand = Hand.new(bestHandCards);
+  const bestHandResult = bestHand.get_best_hand();
 
   // Output the result
-  console.log(`Has Flush: ${hasFlush}`);
   console.log(
-    `Flush cards: ${flush.map((card) => card.to_string()).join(", ")}`
-  );
-
-  // Check for a straight
-  const hasStraight = hand.has_straight();
-  const straight = hand.get_straight();
-
-  // Output the result
-  console.log(`Has Straight: ${hasStraight}`);
-  console.log(
-    `Straight cards: ${straight.map((card) => card.to_string()).join(", ")}`
-  );
-
-  // Check for a straight flush
-  const hasStraightFlush = hand.has_straight_flush();
-  const straightFlush = hand.get_straight_flush();
-
-  // Output the result
-  console.log(`Has Straight Flush: ${hasStraightFlush}`);
-  console.log(
-    `Straight Flush cards: ${straightFlush
-      .map((card) => card.to_string())
-      .join(", ")}`
-  );
-
-  // Check for a four of a kind
-  const hasFourOfAKind = hand.has_four_of_a_kind();
-  const fourOfAKind = hand.get_four_of_a_kind();
-
-  // Output the result
-  console.log(`Has Four of a Kind: ${hasFourOfAKind}`);
-  console.log(
-    `Four of a Kind cards: ${fourOfAKind
-      .map((card) => card.to_string())
-      .join(", ")}`
-  );
-
-  // Create a hand with a full house
-  const fullHouseCards = [
-    Card.from_str("Th"),
-    Card.from_str("Tc"),
-    Card.from_str("Td"),
-    Card.from_str("Jh"),
-    Card.from_str("Jd"),
-  ];
-  const fullHouseHand = Hand.new(fullHouseCards);
-  const hasFullHouse = fullHouseHand.has_full_house();
-  const fullHouse = fullHouseHand.get_full_house();
-
-  // Output the result
-  console.log(`Has Full House: ${hasFullHouse}`);
-  console.log(
-    `Full House cards: ${fullHouse
-      .map((card: Card) => card.to_string())
-      .join(", ")}`
-  );
-
-  // Check for a three of a kind
-  const hasThreeOfAKind = hand.has_three_of_a_kind();
-  const threeOfAKind = hand.get_three_of_a_kind();
-
-  // Output the result
-  console.log(`Has Three of a Kind: ${hasThreeOfAKind}`);
-  console.log(
-    `Three of a Kind cards: ${threeOfAKind
-      .map((card) => card.to_string())
-      .join(", ")}`
-  );
-
-  // Create a hand with two pair
-  const twoPairCards = [
-    Card.from_str("2h"),
-    Card.from_str("2d"),
-    Card.from_str("3c"),
-    Card.from_str("3s"),
-    Card.from_str("4h"),
-  ];
-  const twoPairHand = Hand.new(twoPairCards);
-  const hasTwoPair = twoPairHand.has_two_pair();
-  const twoPair = twoPairHand.get_two_pair();
-
-  // Output the result
-  console.log(`Has Two Pair: ${hasTwoPair}`);
-  console.log(
-    `Two Pair cards: ${twoPair
+    `Best Hand: ${bestHandResult
+      .cards()
       .map((card: Card) => card.to_string())
       .join(", ")}`
   );
 }
-
-// Create a hand with a pair
-const pairCards = [
-  Card.from_str("2h"),
-  Card.from_str("2d"),
-  Card.from_str("3c"),
-  Card.from_str("4s"),
-  Card.from_str("5h"),
-];
-const pairHand = Hand.new(pairCards);
-const hasPair = pairHand.has_pair();
-const pair = pairHand.get_pair();
-
-// Output the result
-console.log(`Has Pair: ${hasPair}`);
-console.log(
-  `Pair cards: ${pair.map((card: Card) => card.to_string()).join(", ")}`
-);
-
-// Test getBestHand
-const bestHandCards = [
-  Card.from_str("Ah"),
-  Card.from_str("Kh"),
-  Card.from_str("Qh"),
-  Card.from_str("As"),
-  Card.from_str("Th"),
-];
-const bestHand = Hand.new(bestHandCards);
-const bestHandResult = bestHand.get_best_hand();
-
-// Output the result
-console.log(
-  `Best Hand: ${bestHandResult
-    .map((card: Card) => card.to_string())
-    .join(", ")}`
-);
 
 run().catch(console.error);
