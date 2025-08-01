@@ -2,7 +2,6 @@ use crate::card::{Suit, Value};
 use crate::hand::hand_types::HandType;
 use crate::hand::{Hand, HandResult};
 use std::collections::HashMap;
-use wasm_bindgen::prelude::*;
 
 /// Helper function to find all possible straights in sorted unique values
 fn find_all_straights(values: &[Value]) -> Vec<Vec<Value>> {
@@ -200,7 +199,6 @@ fn get_sorted_unique_values_by_suit(cards: &[crate::card::Card], suit: Suit) -> 
 /// * Properly handles Ace-low straight flushes (A-2-3-4-5)
 /// * Only checks suits with 5+ cards for straight flush potential
 /// * Works with 5, 6, or 7 card hands to find the best 5-card straight flush
-#[wasm_bindgen]
 impl Hand {
     pub fn get_straight_flush(&self) -> HandResult {
         let all_cards = self.cards();

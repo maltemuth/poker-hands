@@ -1,7 +1,6 @@
 use crate::card::Value;
 use crate::hand::Hand;
 use std::collections::HashMap;
-use wasm_bindgen::prelude::*;
 
 /// Helper function to check if a slice of Values contains a straight
 fn has_consecutive_straight(values: &[Value]) -> bool {
@@ -117,7 +116,6 @@ fn get_sorted_unique_values(cards: &[crate::card::Card]) -> Vec<Value> {
 /// * Properly handles Ace-low straight flushes (A-2-3-4-5)
 /// * Only checks suits with 5+ cards for straight potential
 /// * Uses efficient straight detection logic without creating temporary Hand objects
-#[wasm_bindgen]
 impl Hand {
     pub fn has_straight_flush(&self) -> bool {
         // Group cards by suit

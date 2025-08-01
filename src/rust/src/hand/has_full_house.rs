@@ -1,7 +1,5 @@
 use crate::hand::Hand;
-use wasm_bindgen::prelude::*;
 
-#[wasm_bindgen]
 impl Hand {
     pub fn has_full_house(&self) -> bool {
         let mut value_counts = std::collections::HashMap::new();

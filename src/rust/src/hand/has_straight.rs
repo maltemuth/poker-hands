@@ -1,7 +1,6 @@
 use crate::card::Value;
 use crate::hand::Hand;
 use std::collections::HashSet;
-use wasm_bindgen::prelude::*;
 
 /// Helper function to check if a slice of Values contains a straight
 fn has_consecutive_straight(values: &[Value]) -> bool {
@@ -91,7 +90,6 @@ fn has_ace_low_straight(values: &[Value]) -> bool {
 /// * Automatically filters duplicate card values using HashSet
 /// * Handles Ace as both high (14) and low (1) value
 /// * Returns `false` if fewer than 5 unique values exist
-#[wasm_bindgen]
 impl Hand {
     pub fn has_straight(&self) -> bool {
         // Extract unique values from cards

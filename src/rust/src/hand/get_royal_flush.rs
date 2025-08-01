@@ -1,9 +1,7 @@
 use crate::card::{Suit, Value};
 use crate::hand::hand_types::HandType;
 use crate::hand::{Hand, HandResult};
-use wasm_bindgen::prelude::*;
 
-#[wasm_bindgen]
 impl Hand {
     pub fn get_royal_flush(&self) -> HandResult {
         // Check each suit for a royal flush

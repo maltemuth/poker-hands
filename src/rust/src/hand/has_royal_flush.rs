@@ -1,6 +1,5 @@
 use crate::card::{Suit, Value};
 use crate::hand::Hand;
-use wasm_bindgen::prelude::*;
 
 /// Detects if a royal flush (A-K-Q-J-10 of the same suit) exists within the hand.
 ///
@@ -64,7 +63,6 @@ use wasm_bindgen::prelude::*;
 /// * Handles hands with fewer than 5 cards (returns false)
 /// * Handles duplicate cards correctly
 /// * Only checks for exact royal flush combinations
-#[wasm_bindgen]
 impl Hand {
     pub fn has_royal_flush(&self) -> bool {
         // Need at least 5 cards for a royal flush

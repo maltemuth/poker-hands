@@ -1,7 +1,5 @@
 use crate::hand::Hand;
-use wasm_bindgen::prelude::*;
 
-#[wasm_bindgen]
 impl Hand {
     pub fn has_flush(&self) -> bool {
         let mut counts = std::collections::HashMap::new();

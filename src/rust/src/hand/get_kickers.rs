@@ -1,9 +1,7 @@
 use crate::card::Card;
 use crate::hand::hand_types::HandType;
 use crate::hand::Hand;
-use wasm_bindgen::prelude::*;
 
-#[wasm_bindgen]
 impl Hand {
     pub fn get_kickers(&self, hand_type: HandType) -> Vec<Card> {
         let mut cards = self.cards();

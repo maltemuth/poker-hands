@@ -1,8 +1,6 @@
 use crate::hand::hand_types::HandType;
 use crate::hand::{Hand, HandResult};
-use wasm_bindgen::prelude::*;
 
-#[wasm_bindgen]
 impl Hand {
     pub fn get_flush(&self) -> HandResult {
         let mut suit_counts = std::collections::HashMap::new();
