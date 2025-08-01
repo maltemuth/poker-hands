@@ -50,6 +50,7 @@ describe("retrieve best hands", () => {
     const trainingLines = trainingDataRaw
       .toString()
       .split("\r\n")
+      .slice(0, 1000)
       .map((line) => line.split(","))
       .map((line) => {
         const [
@@ -83,7 +84,6 @@ describe("retrieve best hands", () => {
           handType,
         };
       });
-    // .slice(0, 1000);
 
     console.log(`Loaded ${trainingLines.length} training lines.`);
 

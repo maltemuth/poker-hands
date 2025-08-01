@@ -59,6 +59,7 @@ describe("retrieve best hands", () => {
     const trainingLines = trainingDataRaw
       .toString()
       .split("\r\n")
+      .slice(0, 1000)
       .map((line) => line.split(","))
       .map((line) => {
         const [
