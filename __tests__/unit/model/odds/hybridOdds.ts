@@ -1,16 +1,16 @@
-import hybridOdds, {
+import odds, {
   calculateBoardCombinations,
-} from "../../../../src/model/odds/hybridOdds";
+} from "../../../../src/model/odds/odds";
 import cards from "../../../../src/model/card/cards";
 
-describe("hybridOdds", () => {
+describe("odds", () => {
   it("should use exhaustive algorithm when combinations are below threshold", () => {
     // Simple case with few combinations - As, Ks vs 2d, 3d with board 4d, 5d, 6d
     const holes = [cards("As", "Ks"), cards("2d", "3d")];
     const board = cards("4d", "5d", "6d");
 
     // This should use the exhaustive algorithm since there are only C(47, 2) = 1081 combinations
-    const result = hybridOdds(holes, board);
+    const result = odds(holes, board);
 
     expect(result).toHaveLength(2);
     expect(result[0].hole).toEqual(holes[0]);
@@ -29,7 +29,7 @@ describe("hybridOdds", () => {
     const holes = [cards("As", "Ah"), cards("Ks", "Kh")];
 
     // This should use the Monte Carlo algorithm since combinations exceed threshold
-    const result = hybridOdds(holes, [], 5000); // Use smaller sample size for faster test
+    const result = odds(holes, [], 5000); // Use smaller sample size for faster test
 
     expect(result).toHaveLength(2);
     expect(result[0].hole).toEqual(holes[0]);

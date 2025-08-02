@@ -1,12 +1,10 @@
 import { Card } from "../card/Card";
 import create from "../deck/create";
 import without from "../card/without";
-import combinations from "../combinatorics/combinations";
-import toString from "../card/toString";
-import getBestHand from "../hand/getBestHand";
-import isBetterThan from "../hand/isBetterThan";
-import hasEqualValue from "../hand/hasEqualValue";
 import assertUnique from "../card/assertUnique";
+import monteCarloOdds from "./monteCarloOdds";
+import combinationCount from "../combinatorics/combinationCount";
+import exhaustive from "./exhaustive";
 
 export type Hole = Card[];
 
@@ -16,105 +14,66 @@ export interface HoleOdds {
   ties: number;
   winChance: number;
   tieChance: number;
+  // Confidence interval for statistical accuracy (only in Monte Carlo results)
+  winChanceError?: number;
+  tieChanceError?: number;
 }
 
-const holeIdentifier = (hole: Hole) => hole.map(toString).join("-");
+/**
+ * Calculates the number of possible board combinations for the given holes and board
+ * @param holes Array of hole cards for each player
+ * @param board Currently revealed board cards
+ * @returns The number of possible board combinations
+ */
+const calculateBoardCombinations = (
+  holes: Hole[],
+  board: Card[] = []
+): number => {
+  // Validate inputs
+  const allCardsInHoles = holes.reduce((flat, hole) => flat.concat(hole), []);
+  assertUnique([...board, ...allCardsInHoles]);
 
-// const generateHoles = (deck: Card[], length: number): Hole[] => {};
+  // Create deck and remove known cards
+  const deck = create();
+  const deckWithoutKnownHoleCards = holes.reduce(
+    (remain, hole) => without(remain, ...hole),
+    deck
+  );
+  const deckWithoutKnownBoard = without(deckWithoutKnownHoleCards, ...board);
+
+  // Calculate number of combinations
+  const cardsNeeded = 5 - board.length;
+  return combinationCount(deckWithoutKnownBoard.length, cardsNeeded);
+};
 
 /**
- * returns the odds of winning each of the given holes has with the given board already revealed,
- * by simulating all possible boards
- * @param holes
- * @param board
+ * Calculate poker odds using either exhaustive or Monte Carlo approach based on performance
+ * @param holes Array of hole cards for each player
+ * @param board Currently revealed board cards
+ * @param sampleSize Number of random simulations to run for Monte Carlo (default: 10000)
+ * @param threshold Maximum number of combinations to use exhaustive algorithm (default: 10000)
  */
 const odds = (
   holes: Hole[],
-  board: Card[] = []
-  // unknownHoles: number = 0
+  board: Card[] = [],
+  sampleSize: number = 10000,
+  threshold: number = 10000
 ): HoleOdds[] => {
   if (holes.length === 0) {
     throw new Error("Cannot calculate odds without any holes.");
   }
 
-  const initialTime = Date.now().valueOf();
+  // Calculate the number of combinations the exhaustive algorithm would need to check
+  const combinationCount = calculateBoardCombinations(holes, board);
 
-  const allCardsInHoles = holes.reduce((flat, hole) => flat.concat(hole), []);
-
-  assertUnique([...board, ...allCardsInHoles]);
-
-  const deck = create();
-
-  const deckWithoutKnownHoleCards = holes.reduce(
-    (remain, hole) => without(remain, ...hole),
-    deck
-  );
-
-  const deckWithoutKnownBoard = without(deckWithoutKnownHoleCards, ...board);
-
-  const possibleRestBoards = combinations(
-    deckWithoutKnownBoard,
-    5 - board.length
-  );
-
-  const totalAmountOfBoards = possibleRestBoards.length;
-
-  const results = holes.reduce(
-    (partial, hole) => ({
-      ...partial,
-      [holeIdentifier(hole)]: {
-        hole,
-        ties: 0,
-        wins: 0,
-      },
-    }),
-    {}
-  );
-
-  possibleRestBoards.forEach((restBoard, boardIndex) => {
-    const completeBoard = [...board, ...restBoard];
-    const beforeBestHand = Date.now().valueOf();
-    const hands = holes.map((hole) => ({
-      id: holeIdentifier(hole),
-      hand: getBestHand([...completeBoard, ...hole]),
-    }));
-
-    const sortedHands = hands.sort((a, b) => {
-      if (isBetterThan(a.hand, b.hand)) return -1;
-      if (hasEqualValue(a.hand, b.hand)) return 0;
-      return +1;
-    });
-
-    const first = sortedHands[0];
-    const ties = sortedHands.filter(
-      ({ hand }, index) => index === 0 || hasEqualValue(first.hand, hand)
-    );
-
-    if (ties.length === 1) {
-      results[first.id].wins += 1;
-    } else {
-      ties.forEach((tie) => {
-        results[tie.id].ties += 1;
-      });
-    }
-  });
-
-  const resultsWithChances = Object.keys(results).reduce(
-    (partial, id) => ({
-      ...partial,
-      [id]: {
-        ...results[id],
-        winChance: results[id].wins / totalAmountOfBoards,
-        tieChance: results[id].ties / totalAmountOfBoards,
-      },
-    }),
-    {}
-  );
-
-  return holes.map((hole) => ({
-    hole,
-    ...resultsWithChances[holeIdentifier(hole)],
-  }));
+  // If the number of combinations is below the threshold, use the exhaustive algorithm
+  if (combinationCount <= threshold) {
+    return exhaustive(holes, board);
+  } else {
+    // Otherwise, use the Monte Carlo algorithm
+    return monteCarloOdds(holes, board, sampleSize);
+  }
 };
 
+export { calculateBoardCombinations };
 export default odds;

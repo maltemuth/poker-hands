@@ -1,4 +1,4 @@
-import odds from "../src/model/odds/odds";
+import exhaustive from "../src/model/odds/exhaustive";
 import monteCarloOdds from "../src/model/odds/monteCarloOdds";
 import cards from "../src/model/card/cards";
 import withProfiling from "./withProfiling";
@@ -10,7 +10,7 @@ const runPerformanceTest = () => {
   // Test case 1: Preflop all-in scenario
   console.log("\n1. Preflop all-in (AA vs TT):");
   console.time("Exhaustive");
-  const exhaustive1 = odds([cards("Ah", "As"), cards("Td", "Tc")]);
+  const exhaustive1 = exhaustive([cards("Ah", "As"), cards("Td", "Tc")]);
   console.timeEnd("Exhaustive");
   console.log(
     `Exhaustive - AA win: ${(exhaustive1[0].winChance * 100).toFixed(
@@ -36,7 +36,7 @@ const runPerformanceTest = () => {
   // Test case 2: Flop scenario
   console.log("\n2. Flop scenario (AA vs TT with board):");
   console.time("Exhaustive");
-  const exhaustive2 = odds(
+  const exhaustive2 = exhaustive(
     [cards("Ah", "As"), cards("Td", "Tc")],
     cards("7c", "7d", "6s")
   );
@@ -65,7 +65,7 @@ const runPerformanceTest = () => {
   // Test case 3: Turn scenario
   console.log("\n3. Turn scenario (AA vs TT with board):");
   console.time("Exhaustive");
-  const exhaustive3 = odds(
+  const exhaustive3 = exhaustive(
     [cards("Ac", "Ad"), cards("Td", "Tc")],
     cards("7s", "8h", "Th", "9s")
   );

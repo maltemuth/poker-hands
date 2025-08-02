@@ -17,7 +17,7 @@ const withProfiling = (F: () => void, profileName: string) => {
     //   Click Open dedicated DevTools for Node
     //   Select the profiler tab
     //   Load your file
-    writeFileSync(__dirname + `/${id}.cpuprofile`, result);
+    writeFileSync(__dirname + `/${id}.cpuprofile`, result!);
     profile.delete();
   });
 };
