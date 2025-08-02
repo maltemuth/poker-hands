@@ -81,7 +81,7 @@ const odds = (
 
     const sortedHands = hands.sort((a, b) => {
       if (isBetterThan(a.hand, b.hand)) return -1;
-      if (hasEqualValue) return 0;
+      if (hasEqualValue(a.hand, b.hand)) return 0;
       return +1;
     });
 
