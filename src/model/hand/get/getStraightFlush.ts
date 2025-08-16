@@ -7,15 +7,12 @@ const getStraightFlush = (
   cards: Card[]
 ): Hand<HandType.StraightFlush> | null => {
   const straight = purify(() => {
-    const cardsBySuit: { [suit: string]: Card[] } = cards.reduce(
-      (bySuit, card) => {
-        bySuit[card.suit] = bySuit[card.suit] || [];
-        bySuit[card.suit].push(card);
+    const cardsBySuit: Record<string, Card[]> = cards.reduce((bySuit, card) => {
+      bySuit[card.suit] = bySuit[card.suit] || [];
+      bySuit[card.suit].push(card);
 
-        return bySuit;
-      },
-      {}
-    );
+      return bySuit;
+    }, {} as Record<string, Card[]>);
 
     const flushCandidate = Object.values(cardsBySuit).filter(
       (candidate) => candidate.length >= 5
@@ -24,10 +21,15 @@ const getStraightFlush = (
     return getStraight(flushCandidate);
   });
 
+  const straightResult = straight();
+  if (!straightResult) {
+    return null;
+  }
+
   return {
     type: HandType.StraightFlush,
-    cards: purify(() => straight().cards()),
-    value: purify(() => straight().value()),
+    cards: purify(() => straightResult.cards()),
+    value: purify(() => straightResult.value()),
     kickers: () => [],
     subvalue: () => null,
   };

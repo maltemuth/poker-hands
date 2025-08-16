@@ -7,16 +7,18 @@ import { Value } from "../../../../../src/model/card/Card";
 describe("retrieve high cards", () => {
   test("retrieve high card from one card", () => {
     const highCard = getHighCard(cards("As"));
-    expect(highCard.type).toEqual(HandType.HighCard);
-    expect(highCard.cards().map(toString)).toEqual(["As"]);
-    expect(highCard.value()).toEqual(Value.ace);
-    expect(highCard.subvalue()).toBe(null);
+    expect(highCard).not.toBeNull();
+    expect(highCard!.type).toEqual(HandType.HighCard);
+    expect(highCard!.cards().map(toString)).toEqual(["As"]);
+    expect(highCard!.value()).toEqual(Value.ace);
+    expect(highCard!.subvalue()).toBe(null);
   });
 
   test("retrieve high card with one kicker", () => {
     const highCard = getHighCard(cards("7s", "5s"));
-    expect(highCard.cards().map(toString)).toEqual(["7s"]);
-    expect(highCard.kickers().map(toString)).toEqual(["5s"]);
-    expect(highCard.value()).toEqual(Value.seven);
+    expect(highCard).not.toBeNull();
+    expect(highCard!.cards().map(toString)).toEqual(["7s"]);
+    expect(highCard!.kickers().map(toString)).toEqual(["5s"]);
+    expect(highCard!.value()).toEqual(Value.seven);
   });
 });

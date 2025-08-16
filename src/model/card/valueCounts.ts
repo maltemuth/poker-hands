@@ -12,9 +12,9 @@ const valueCounts = (
   cards: Card[],
   presortedValues = sortedValues(cards)
 ): ValueCounts =>
-  presortedValues.reduce((counts, value) => {
-    counts[value] = counts[value] + 1 || 1;
+  presortedValues.reduce((counts: ValueCounts, value) => {
+    counts[value] = (counts[value] || 0) + 1;
     return counts;
-  }, {});
+  }, {} as ValueCounts);
 
 export default valueCounts;

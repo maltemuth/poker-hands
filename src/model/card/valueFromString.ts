@@ -12,10 +12,14 @@ const valueFromString = (input: string): Value => {
   }
 
   const valueKey = Object.keys(ValueAsString).find(
-    (key) => ValueAsString[key] === input
+    (key) => ValueAsString[key as keyof typeof ValueAsString] === input
   );
 
-  return Value[valueKey];
+  if (!valueKey) {
+    throw new Error(`Could not convert string ${input} to a card value.`);
+  }
+
+  return Value[valueKey as keyof typeof Value];
 };
 
 export default valueFromString;

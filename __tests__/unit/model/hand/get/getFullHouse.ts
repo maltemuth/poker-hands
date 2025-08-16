@@ -7,9 +7,10 @@ describe("retrieve full house", () => {
   test("retrieve full house", () => {
     const fullHouse = getFullHouse(cards("Td", "Th", "Tc", "Qh", "Qd", "Ts"));
 
-    expect(fullHouse.type).toEqual(HandType.FullHouse);
-    expect(fullHouse.value()).toEqual(Value.ten);
-    expect(fullHouse.subvalue()).toEqual(Value.queen);
+    expect(fullHouse).not.toBeNull();
+    expect(fullHouse!.type).toEqual(HandType.FullHouse);
+    expect(fullHouse!.value()).toEqual(Value.ten);
+    expect(fullHouse!.subvalue()).toEqual(Value.queen);
   });
 
   test("retrieve full house in the correct order from seven cards", () => {
@@ -17,10 +18,11 @@ describe("retrieve full house", () => {
       cards("Qs", "Td", "Ah", "Th", "Qh", "Qd", "Qc")
     );
 
-    expect(fullHouse.type).toEqual(HandType.FullHouse);
-    expect(fullHouse.value()).toEqual(Value.queen);
-    expect(fullHouse.subvalue()).toEqual(Value.ten);
+    expect(fullHouse).not.toBeNull();
+    expect(fullHouse!.type).toEqual(HandType.FullHouse);
+    expect(fullHouse!.value()).toEqual(Value.queen);
+    expect(fullHouse!.subvalue()).toEqual(Value.ten);
 
-    expect(fullHouse.kickers().length).toBe(0);
+    expect(fullHouse!.kickers().length).toBe(0);
   });
 });

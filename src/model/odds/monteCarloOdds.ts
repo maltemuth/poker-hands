@@ -51,7 +51,10 @@ const monteCarloOdds = (
   const deckWithoutKnownBoard = without(deckWithoutKnownHoleCards, ...board);
 
   // Initialize results
-  const results: Record<string, { wins: number; ties: number }> = {};
+  const results: Record<string, { wins: number; ties: number }> = {} as Record<
+    string,
+    { wins: number; ties: number }
+  >;
   holes.forEach((hole) => {
     results[holeIdentifier(hole)] = { wins: 0, ties: 0 };
   });
@@ -136,10 +139,13 @@ const monteCarloOdds = (
     {}
   );
 
-  return holes.map((hole) => ({
-    hole,
-    ...resultsWithChances[holeIdentifier(hole)],
-  }));
+  return holes.map((hole) => {
+    const key = holeIdentifier(hole);
+    return {
+      hole,
+      ...(resultsWithChances as any)[key],
+    };
+  });
 };
 
 export default monteCarloOdds;

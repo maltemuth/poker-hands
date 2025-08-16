@@ -8,8 +8,8 @@ describe("retrieve three-of-a-kind", () => {
   test("retrieve three-of-a-kind in the correct order", () => {
     const threeOfAKind = getThreeOfAKind(cards("Td", "Th", "Tc", "Qh", "Qd"));
 
-    expect(threeOfAKind.type).toEqual(HandType.ThreeOfAKind);
-    expect(threeOfAKind.value()).toEqual(Value.ten);
+    expect(threeOfAKind!.type).toEqual(HandType.ThreeOfAKind);
+    expect(threeOfAKind!.value()).toEqual(Value.ten);
   });
 
   test("retrieve three-of-a-kind in the correct order from seven cards", () => {
@@ -17,10 +17,10 @@ describe("retrieve three-of-a-kind", () => {
       cards("3h", "Td", "Ah", "Th", "Qh", "Qd", "Qs")
     );
 
-    expect(threeOfAKind.type).toEqual(HandType.ThreeOfAKind);
-    expect(threeOfAKind.value()).toEqual(Value.queen);
+    expect(threeOfAKind!.type).toEqual(HandType.ThreeOfAKind);
+    expect(threeOfAKind!.value()).toEqual(Value.queen);
 
-    expect(threeOfAKind.kickers().length).toBe(2);
-    expect(threeOfAKind.kickers().map(toString)).toEqual(["Ah", "Th"]);
+    expect(threeOfAKind!.kickers().length).toBe(2);
+    expect(threeOfAKind!.kickers().map(toString)).toEqual(["Ah", "Th"]);
   });
 });

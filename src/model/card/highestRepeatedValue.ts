@@ -5,12 +5,15 @@ const highestRepeatedValue = (
   cards: Card[],
   repetitionCount: number,
   precalculatedValueCounts = valueCounts(cards)
-): Value => {
+): Value | null => {
   const repeatedValues = Object.keys(precalculatedValueCounts)
-    .filter((key) => precalculatedValueCounts[key] >= repetitionCount)
+    .filter(
+      (key) =>
+        precalculatedValueCounts[key as unknown as Value] >= repetitionCount
+    )
     .map((value) => parseInt(value, 10))
     .sort((a, b) => b - a);
-  return repeatedValues[0];
+  return repeatedValues[0] || null;
 };
 
 export default highestRepeatedValue;

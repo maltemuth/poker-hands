@@ -23,7 +23,7 @@ const hasStraightFlush = (
    * an object with suits as keys where the corresponing value is the list of values of that suit in cards
    */
   const valuesBySuit: { [suit: string]: Value[] } = cards.reduce(
-    (dict, card) => {
+    (dict: Record<string, Value[]>, card) => {
       const { suit, value } = card;
 
       dict[suit] = dict[suit] || [];
@@ -31,7 +31,7 @@ const hasStraightFlush = (
 
       return dict;
     },
-    {}
+    {} as Record<string, Value[]>
   );
 
   // only if any flushes remain, we need to calculate further

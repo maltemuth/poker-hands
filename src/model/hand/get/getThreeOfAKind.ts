@@ -12,19 +12,20 @@ const getThreeOfAKind = (
   presortedValues = sortedValues(cards),
   precalculatedValueCounts = valueCounts(cards, presortedValues)
 ): Hand<HandType.ThreeOfAKind> | null => {
-  const threeOfAKind = purify(() =>
-    ofValue(
-      cards,
-      highestRepeatedValue(cards, 3, precalculatedValueCounts)
-    ).slice(0, 3)
-  );
+  const highestValue = highestRepeatedValue(cards, 3, precalculatedValueCounts);
+  if (!highestValue) return null;
+
+  const threeOfAKind = purify(() => ofValue(cards, highestValue).slice(0, 3));
+  const threeOfAKindCards = threeOfAKind();
+  if (!threeOfAKindCards || threeOfAKindCards.length === 0) return null;
+
   const kickers = purify(() => getKickers(cards, threeOfAKind()));
 
   return {
     type: HandType.ThreeOfAKind,
     cards: threeOfAKind,
     kickers,
-    value: purify(() => threeOfAKind()[0].value),
+    value: purify(() => threeOfAKindCards[0].value),
     subvalue: () => null,
   };
 };

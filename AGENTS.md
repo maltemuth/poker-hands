@@ -1,5 +1,17 @@
 # AGENTS.md - Coding Agent Guidelines for Poker Hands Library
 
+## Node.js Version Requirements
+
+This project requires Node.js v24.6.0 as specified in the `.nvmrc` file. IMPORTANT: Before running any commands, ensure you're using the correct Node.js version:
+
+```bash
+# Activate the correct Node.js version using nvm
+nvm use
+
+# If you don't have the version installed:
+nvm install
+```
+
 ## Project Overview
 
 This is a TypeScript library (`@malte.muth/poker-hands`) for handling Texas Hold'em poker games and more. The library provides functions for poker hand evaluation, odds calculation, and card manipulation.

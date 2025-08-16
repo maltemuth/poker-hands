@@ -6,7 +6,8 @@ import { Value } from "../../../../../src/model/card/Card";
 describe("retrieve royal flushes", () => {
   test("retrieve a royal flush", () => {
     const royalFlush = getRoyalFlush(cards("Th", "Jh", "Qh", "Kh", "Ah"));
-    expect(royalFlush.type).toEqual(HandType.RoyalFlush);
-    expect(royalFlush.value()).toEqual(Value.ace);
+    expect(royalFlush).not.toBeNull();
+    expect(royalFlush!.type).toEqual(HandType.RoyalFlush);
+    expect(royalFlush!.value()).toEqual(Value.ace);
   });
 });

@@ -5,15 +5,12 @@ import purify from "../../../lib/purify";
 
 const getFlush = (cards: Card[]): Hand<HandType.Flush> | null => {
   const flush = purify(() => {
-    const cardsBySuit: { [suit: string]: Card[] } = cards.reduce(
-      (map, card) => {
-        map[card.suit] = map[card.suit] || [];
-        map[card.suit].push(card);
+    const cardsBySuit: Record<string, Card[]> = cards.reduce((map, card) => {
+      map[card.suit] = map[card.suit] || [];
+      map[card.suit].push(card);
 
-        return map;
-      },
-      {}
-    );
+      return map;
+    }, {} as Record<string, Card[]>);
     const candidate = Object.values(cardsBySuit).filter(
       (candidate) => candidate.length >= 5
     )[0];

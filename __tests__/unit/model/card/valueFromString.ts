@@ -6,7 +6,7 @@ describe("reading values from strings", () => {
     expect(valueFromString("J")).toEqual(Value.jack);
   });
   test("invalid suit", () => {
-    expect(() => valueFromString("17")).toThrowError();
+    expect(() => valueFromString("17")).toThrow();
   });
   test("read a 10", () => {
     expect(valueFromString("T")).toEqual(Value.ten);

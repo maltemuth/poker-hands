@@ -14,24 +14,31 @@ const getFullHouse = (
   presortedValues = sortedValues(cards),
   precalculatedValueCounts = valueCounts(cards, presortedValues)
 ): Hand<HandType.FullHouse> | null => {
-  const threeOfAKind = purify(() =>
+  const threeOfAKindResult = purify(() =>
     getThreeOfAKind(cards, presortedValues, precalculatedValueCounts)
   );
-  const remainingCards = purify(() =>
-    without(cards, ...threeOfAKind().cards())
-  );
-  const pair = purify(() => getPair(remainingCards()));
-  const fullHouse = purify(() => [
-    ...threeOfAKind().cards(),
-    ...pair().cards(),
-  ]);
+
+  if (!threeOfAKindResult()) return null;
+
+  const threeOfAKindCards = threeOfAKindResult()?.cards() || [];
+  if (threeOfAKindCards.length === 0) return null;
+
+  const remainingCards = purify(() => without(cards, ...threeOfAKindCards));
+  const pairResult = purify(() => getPair(remainingCards()));
+
+  if (!pairResult()) return null;
+
+  const pairCards = pairResult()?.cards() || [];
+  if (pairCards.length === 0) return null;
+
+  const fullHouse = purify(() => [...threeOfAKindCards, ...pairCards]);
 
   return {
     type: HandType.FullHouse,
     cards: fullHouse,
     kickers: () => [],
-    value: purify(() => threeOfAKind().cards()[0].value),
-    subvalue: purify(() => pair().cards()[0].value),
+    value: purify(() => threeOfAKindCards[0].value),
+    subvalue: purify(() => pairCards[0].value),
   };
 };
 

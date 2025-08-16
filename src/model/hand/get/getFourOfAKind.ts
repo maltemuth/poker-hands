@@ -13,19 +13,20 @@ const getFourOfAKind = (
   presortedValues = sortedValues(cards),
   precalculatedValueCounts = valueCounts(cards, presortedValues)
 ): Hand<HandType.FourOfAKind> | null => {
-  const fourOfAKind = purify(() =>
-    ofValue(
-      cards,
-      highestRepeatedValue(cards, 4, precalculatedValueCounts)
-    ).slice(0, 4)
-  );
+  const highestValue = highestRepeatedValue(cards, 4, precalculatedValueCounts);
+  if (!highestValue) return null;
+
+  const fourOfAKind = purify(() => ofValue(cards, highestValue).slice(0, 4));
+  const fourOfAKindCards = fourOfAKind();
+  if (!fourOfAKindCards || fourOfAKindCards.length === 0) return null;
+
   const kickers = purify(() => getKickers(cards, fourOfAKind()));
 
   return {
     type: HandType.FourOfAKind,
     cards: fourOfAKind,
     kickers,
-    value: purify(() => fourOfAKind()[0].value),
+    value: purify(() => fourOfAKindCards[0].value),
     subvalue: () => null,
   };
 };

@@ -35,11 +35,14 @@ const getStraight = (cards: Card[]): Hand<HandType.Straight> | null => {
     return contiguousSubsetsOfLength5[0];
   });
 
+  const straightCards = straight();
+  if (!straightCards || straightCards.length === 0) return null;
+
   return {
     type: HandType.Straight,
-    cards: purify(() => straight()),
+    cards: purify(() => straightCards as Card[]),
     kickers: () => [],
-    value: purify(() => straight()[0].value),
+    value: purify(() => straightCards[0]?.value || Value.two),
     subvalue: () => null,
   };
 };

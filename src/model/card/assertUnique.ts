@@ -3,7 +3,7 @@ import toString from "../../../src/model/card/toString";
 
 const assertUnique = (cards: Card[]): void => {
   if (
-    cards.map(toString).reduce((unique, id) => {
+    cards.map(toString).reduce<string[]>((unique, id) => {
       if (unique.includes(id)) return unique;
       return [...unique, id];
     }, []).length !== cards.length

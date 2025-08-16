@@ -13,19 +13,20 @@ const getPair = (
   presortedValues = sortedValues(cards),
   precalculatedValueCounts = valueCounts(cards, presortedValues)
 ): Hand<HandType.Pair> | null => {
-  const pair = purify(() =>
-    ofValue(
-      cards,
-      highestRepeatedValue(cards, 2, precalculatedValueCounts)
-    ).slice(0, 2)
-  );
+  const highestValue = highestRepeatedValue(cards, 2, precalculatedValueCounts);
+  if (!highestValue) return null;
+
+  const pair = purify(() => ofValue(cards, highestValue).slice(0, 2));
+  const pairCards = pair();
+  if (!pairCards || pairCards.length === 0) return null;
+
   const kickers = purify(() => getKickers(cards, pair()));
 
   return {
     type: HandType.Pair,
     cards: pair,
     kickers,
-    value: purify(() => pair()[0].value),
+    value: purify(() => pairCards[0].value),
     subvalue: () => null,
   };
 };

@@ -10,8 +10,9 @@ describe("retrieve four-of-a-kind", () => {
       cards("Td", "Th", "Tc", "Qh", "Qd", "Ts")
     );
 
-    expect(fourOfAKind.type).toEqual(HandType.FourOfAKind);
-    expect(fourOfAKind.value()).toEqual(Value.ten);
+    expect(fourOfAKind).not.toBeNull();
+    expect(fourOfAKind!.type).toEqual(HandType.FourOfAKind);
+    expect(fourOfAKind!.value()).toEqual(Value.ten);
   });
 
   test("retrieve four-of-a-kind in the correct order from seven cards", () => {
@@ -19,10 +20,11 @@ describe("retrieve four-of-a-kind", () => {
       cards("Qs", "Td", "Ah", "Th", "Qh", "Qd", "Qc")
     );
 
-    expect(fourOfAKind.type).toEqual(HandType.FourOfAKind);
-    expect(fourOfAKind.value()).toEqual(Value.queen);
+    expect(fourOfAKind).not.toBeNull();
+    expect(fourOfAKind!.type).toEqual(HandType.FourOfAKind);
+    expect(fourOfAKind!.value()).toEqual(Value.queen);
 
-    expect(fourOfAKind.kickers().length).toBe(1);
-    expect(fourOfAKind.kickers().map(toString)).toEqual(["Ah"]);
+    expect(fourOfAKind!.kickers().length).toBe(1);
+    expect(fourOfAKind!.kickers().map(toString)).toEqual(["Ah"]);
   });
 });

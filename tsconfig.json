@@ -2,7 +2,12 @@
   "compilerOptions": {
     "module": "commonjs",
     "outDir": "dist/src",
-    "declaration": true
+    "declaration": true,
+    "target": "ES2022",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true
   },
   "files": ["src/index.ts"]
 }

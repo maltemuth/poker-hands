@@ -6,8 +6,11 @@ const isBetterThan = (a: Hand<any>, b: Hand<any>): boolean => {
   if (a.type === b.type) {
     if (a.value() > b.value()) return true;
     if (a.value() === b.value()) {
-      if (a.subvalue() > b.subvalue()) return true;
-      if (a.subvalue() === b.subvalue()) {
+      const aSubvalue = a.subvalue();
+      const bSubvalue = b.subvalue();
+      if (aSubvalue !== null && bSubvalue !== null && aSubvalue > bSubvalue)
+        return true;
+      if (aSubvalue === bSubvalue) {
         // now, we actually have to compare card-by-card, since e.g. flushes are compared this way
         if (hasBetterValues(a.cards(), b.cards())) return true;
         if (hasBetterValues(a.kickers(), b.kickers())) return true;

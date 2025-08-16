@@ -59,17 +59,18 @@ const exhaustive = (
 
   const totalAmountOfBoards = possibleRestBoards.length;
 
-  const results = holes.reduce(
-    (partial, hole) => ({
-      ...partial,
-      [holeIdentifier(hole)]: {
-        hole,
-        ties: 0,
-        wins: 0,
-      },
-    }),
-    {}
-  );
+  const results: Record<string, { hole: Hole; ties: number; wins: number }> =
+    holes.reduce(
+      (partial, hole) => ({
+        ...partial,
+        [holeIdentifier(hole)]: {
+          hole,
+          ties: 0,
+          wins: 0,
+        },
+      }),
+      {} as Record<string, { hole: Hole; ties: number; wins: number }>
+    );
 
   possibleRestBoards.forEach((restBoard, boardIndex) => {
     const completeBoard = [...board, ...restBoard];
@@ -80,15 +81,26 @@ const exhaustive = (
     }));
 
     const sortedHands = hands.sort((a, b) => {
-      if (isBetterThan(a.hand, b.hand)) return -1;
-      if (hasEqualValue(a.hand, b.hand)) return 0;
+      // Handle null hands
+      if (!a.hand && !b.hand) return 0;
+      if (!a.hand) return +1;
+      if (!b.hand) return -1;
+
+      // Both hands are valid
+      if (isBetterThan(a.hand!, b.hand!)) return -1;
+      if (hasEqualValue(a.hand!, b.hand!)) return 0;
       return +1;
     });
 
     const first = sortedHands[0];
-    const ties = sortedHands.filter(
-      ({ hand }, index) => index === 0 || hasEqualValue(first.hand, hand)
-    );
+    const ties = sortedHands.filter(({ hand }, index) => {
+      // Handle null hands
+      if (!first.hand && !hand) return true;
+      if (!first.hand || !hand) return false;
+
+      // Both hands are valid
+      return hasEqualValue(first.hand!, hand!);
+    });
 
     if (ties.length === 1) {
       results[first.id].wins += 1;
@@ -108,13 +120,33 @@ const exhaustive = (
         tieChance: results[id].ties / totalAmountOfBoards,
       },
     }),
-    {}
+    {} as Record<
+      string,
+      {
+        hole: Hole;
+        ties: number;
+        wins: number;
+        winChance: number;
+        tieChance: number;
+      }
+    >
   );
 
-  return holes.map((hole) => ({
-    hole,
-    ...resultsWithChances[holeIdentifier(hole)],
-  }));
+  return holes.map((hole) => {
+    const result = resultsWithChances[holeIdentifier(hole)] || {
+      wins: 0,
+      ties: 0,
+      winChance: 0,
+      tieChance: 0,
+    };
+    return {
+      hole: hole,
+      wins: result.wins,
+      ties: result.ties,
+      winChance: result.winChance,
+      tieChance: result.tieChance,
+    };
+  });
 };
 
 export default exhaustive;
