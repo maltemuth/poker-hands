@@ -1,0 +1,30 @@
+{
+  "name": "@malte.muth/poker-hands",
+  "version": "0.3.1",
+  "private": false,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "lint": "eslint src --ext .ts",
+    "clean": "rm -rf dist",
+    "prepack": "npm run build"
+  },
+  "author": "Malte Muth",
+  "license": "MIT",
+  "engines": {
+    "node": ">=24.6.0",
+    "npm": ">=10.8.2"
+  },
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.39.1",
+    "@typescript-eslint/parser": "^8.39.1",
+    "eslint": "^9.33.0",
+    "jest": "^30.0.5",
+    "ts-jest": "^29.4.1",
+    "typescript": "^5.4.5"
+  }
+}

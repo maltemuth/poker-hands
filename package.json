@@ -1,16 +1,34 @@
 {
-  "name": "@malte.muth/poker-hands",
-  "version": "0.3.1",
-  "author": "Malte Muth <malte.muth+poker-hands@googlemail.com>",
-  "license": "MIT",
-  "private": false,
-  "types": "dist/index.d.ts",
-  "main": "dist/index.js",
-  "engines": {
-    "node": ">=24.6.0",
-    "npm": ">=10.8.2"
+  "name": "poker-hands-workspace",
+  "private": true,
+  "workspaces": [
+    "packages/library",
+    "packages/service",
+    "packages/cli"
+  ],
+  "scripts": {
+    "build": "npm run build:library && npm run build:service && npm run build:cli",
+    "build:library": "cd packages/library && npm run build",
+    "build:service": "cd packages/service && npm run build",
+    "build:cli": "cd packages/cli && npm run build",
+    "test": "npm run test:library && npm run test:service && npm run test:cli",
+    "test:library": "cd packages/library && npm test",
+    "test:service": "cd packages/service && npm test",
+    "test:cli": "cd packages/cli && npm test",
+    "lint": "npm run lint:library && npm run lint:service && npm run lint:cli",
+    "lint:library": "cd packages/library && npm run lint",
+    "lint:service": "cd packages/service && npm run lint",
+    "lint:cli": "cd packages/cli && npm run lint",
+    "clean": "npm run clean:library && npm run clean:service && npm run clean:cli",
+    "clean:library": "cd packages/library && npm run clean",
+    "clean:service": "cd packages/service && npm run clean",
+    "clean:cli": "cd packages/cli && npm run clean",
+    "prepack": "npm run build",
+    "test:watch": "npm run test:library -- --watch",
+    "test:full": "npm run test:library -- --testPathPattern=__tests__/full"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
     "@types/jest": "^30.0.0",
     "@typescript-eslint/eslint-plugin": "^8.39.1",
     "@typescript-eslint/parser": "^8.39.1",
@@ -20,15 +38,5 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5",
     "v8-profiler-next": "^1.9.4"
-  },
-  "scripts": {
-    "prepack": "rm -rf dist && yarn build",
-    "build": "tsc",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:full": "jest __tests__/full --testMatch",
-    "profile": "yarn profile:odds",
-    "profile:odds": "nvm use && time ts-node -T __perf__/odds.ts",
-    "profile:percentages": "nvm use && time ts-node -T __perf__/percentages.ts"
   }
 }

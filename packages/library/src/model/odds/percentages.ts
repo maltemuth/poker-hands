@@ -47,9 +47,10 @@ const percentages = (hole: Card[], board: Card[] = []): HandPercentages => {
 
   restBoards.forEach((rest) => {
     const hand = getBestHand([...hole, ...board, ...rest]);
-    const key = mapHandTypeToKey(hand.type);
-
-    results[key].count += 1;
+    if (hand) {
+      const key = mapHandTypeToKey(hand.type);
+      results[key].count += 1;
+    }
   });
 
   handTypes.forEach((type) => {

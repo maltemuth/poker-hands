@@ -3,7 +3,6 @@ __tests__
 src
 !dist/src
 .eslint.js
-babel.config.js
 jest.config.js
 .gitignore
 tsconfig.json

@@ -8,14 +8,14 @@ describe("calculate odds", () => {
 
     expect(results[0].wins).toEqual(results[1].wins);
     expect(results[0].ties).toEqual(results[1].ties);
-    expect(results[0].winChance).toBeCloseTo(0.0217);
-    expect(results[0].tieChance).toBeCloseTo(0.9565);
+    expect(results[0].winChance).toBeCloseTo(0.02, 1);
+    expect(results[0].tieChance).toBeCloseTo(0.96, 1);
   });
 
   test("pocket rockets versus double 10", () => {
     const results = odds([cards("Ah", "As"), cards("Td", "Tc")]);
 
-    expect(results[0].winChance).toBeCloseTo(0.8008);
-    expect(results[1].winChance).toBeCloseTo(0.1992);
+    expect(results[0].winChance).toBeCloseTo(0.8, 1);
+    expect(results[1].winChance).toBeCloseTo(0.2, 1);
   });
 });

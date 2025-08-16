@@ -1,0 +1,23 @@
+{
+  "name": "@malte.muth/poker-hands-cli",
+  "version": "0.1.0",
+  "private": false,
+  "main": "dist/index.js",
+  "bin": {
+    "poker-hands": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint src --ext .ts",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "commander": "^11.1.0",
+    "@malte.muth/poker-hands": "file:../library"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5",
+    "typescript": "^5.4.5"
+  }
+}

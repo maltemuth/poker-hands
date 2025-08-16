@@ -1,5 +1,5 @@
-import { Card } from "../../../src/model/card/Card";
-import toString from "../../../src/model/card/toString";
+import { Card } from "./Card";
+import toString from "./toString";
 
 const assertUnique = (cards: Card[]): void => {
   if (

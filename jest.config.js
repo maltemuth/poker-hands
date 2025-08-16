@@ -76,7 +76,13 @@ module.exports = {
   // ],
 
   // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
-  // moduleNameMapper: {},
+  moduleNameMapper: {
+    "^@library/(.*)$": "<rootDir>/packages/library/src/$1",
+    "^@service/(.*)$": "<rootDir>/packages/service/src/$1",
+    "^@cli/(.*)$": "<rootDir>/packages/cli/src/$1",
+    "^@src/(.*)$": "<rootDir>/packages/library/src/$1",
+    "^src/(.*)$": "<rootDir>/packages/library/src/$1",
+  },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
   // modulePathIgnorePatterns: [],
@@ -138,7 +144,7 @@ module.exports = {
   // testLocationInResults: false,
 
   // The glob patterns Jest uses to detect test files
-  testMatch: ["**/__tests__/unit/**/*.[jt]s?(x)"],
+  testMatch: ["**/__tests__/**/*.[jt]s?(x)"],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   // testPathIgnorePatterns: [
