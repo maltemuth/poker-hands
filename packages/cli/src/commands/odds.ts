@@ -132,7 +132,7 @@ export const oddsCommand = new Command()
         // Clean up progress display
         handleProgressCleanup(options.progress);
 
-        // Output results
+        // Output results with mode information
         console.log(outputFormatter.formatOdds(oddsResult));
       } catch (error) {
         handleError(error);
