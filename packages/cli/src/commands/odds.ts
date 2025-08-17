@@ -2,13 +2,93 @@ import { Command } from "commander";
 import { odds, Card } from "@malte.muth/poker-hands";
 import { parseHoleCards, parseBoardCards } from "../utils/cardParser";
 import { outputFormatter } from "../utils/outputFormatter";
+import { OddsOptions } from "packages/library/dist/src/model/odds/odds";
+
+function parseHoleCardsForPlayers(holes: string[]): Card[][] {
+  const holeCardsList: Card[][] = [];
+  for (const holeInput of holes) {
+    const holeCards = parseHoleCards(holeInput);
+    holeCardsList.push(holeCards);
+  }
+  return holeCardsList;
+}
+
+function parseBoardCardsFromInput(boardInput?: string): Card[] {
+  return boardInput ? parseBoardCards(boardInput) : [];
+}
+
+function validateHoleCards(holeCardsList: Card[][]): void {
+  if (holeCardsList.length < 1) {
+    throw new Error("At least one set of hole cards is required");
+  }
+}
+
+function validateAndNormalizeMode(
+  mode?: string
+): "auto" | "exhaustive" | "monteCarlo" {
+  const validModes = ["auto", "exhaustive", "monteCarlo"];
+  return mode && validModes.includes(mode)
+    ? (mode as "auto" | "exhaustive" | "monteCarlo")
+    : "auto";
+}
+
+function buildOddsOptions(
+  mode: "auto" | "exhaustive" | "monteCarlo",
+  options: {
+    threshold?: number;
+    sampleSize?: number;
+    progress?: boolean;
+  }
+): OddsOptions {
+  const oddsOptions: OddsOptions = {
+    mode,
+    progress: options.progress
+      ? (progress: number) => {
+          // Clear the dots and show progress
+          if (progressInterval) {
+            clearInterval(progressInterval);
+            progressInterval = null;
+          }
+          process.stdout.write(`\r${Math.round(progress * 100)}`);
+        }
+      : undefined,
+  };
+
+  // Add threshold only for auto mode
+  if (oddsOptions.mode === "auto" && options.threshold !== undefined) {
+    oddsOptions.threshold = options.threshold;
+  }
+
+  // Add sampleSize only for monte-carlo mode
+  if (oddsOptions.mode === "monteCarlo" && options.sampleSize !== undefined) {
+    oddsOptions.sampleSize = options.sampleSize;
+  }
+
+  return oddsOptions;
+}
+
+function handleProgressCleanup(progress?: boolean): void {
+  if (progress) {
+    process.stdout.write(`\r`);
+  }
+}
+
+function handleError(error: unknown): void {
+  console.error(
+    "Error:",
+    error instanceof Error ? error.message : "Unknown error occurred"
+  );
+  process.exit(1);
+}
+
+let progressInterval: ReturnType<typeof setInterval> | null = null;
 
 export const oddsCommand = new Command()
   .name("odds")
   .description("Calculate winning odds for given hole cards and board")
   .argument("<holes...>", "Player hole cards (e.g., AhAs KdKh QcQd)")
-  .option("--board", "Community board cards (e.g., 2h 5d 9c)", "")
-  .option("--mode", "Calculation mode (auto, exhaustive, monte-carlo)", "auto")
+  .option("--board", "Community board cards (e.g., 2h5d9c)", "")
+  .option("--mode", "Calculation mode (auto, exhaustive, monteCarlo)", "auto")
   .option("--threshold", "Threshold for auto mode (default: 10000)", parseInt)
   .option(
     "--sample-size",
@@ -27,69 +107,36 @@ export const oddsCommand = new Command()
         progress?: boolean;
       }
     ) => {
-      let progressInterval: ReturnType<typeof setInterval> | null = null;
-
       try {
         // Parse hole cards for all players
-        const holeCardsList: Card[][] = [];
-        for (const holeInput of holes) {
-          const holeCards = parseHoleCards(holeInput);
-          holeCardsList.push(holeCards);
-        }
+        const holeCardsList = parseHoleCardsForPlayers(holes);
 
         // Parse board cards if provided
-        const boardCards = options.board ? parseBoardCards(options.board) : [];
+        const boardCards = parseBoardCardsFromInput(options.board);
 
-        // Validate at least one hole card set
-        if (holeCardsList.length < 1) {
-          throw new Error("At least one set of hole cards is required");
-        }
+        // Validate inputs
+        validateHoleCards(holeCardsList);
 
-        // Validate mode option
-        const validModes = ["auto", "exhaustive", "monte-carlo"];
-        const mode =
-          options.mode && validModes.includes(options.mode)
-            ? (options.mode as "auto" | "exhaustive" | "monte-carlo")
-            : "auto";
+        // Validate and normalize mode
+        const mode = validateAndNormalizeMode(options.mode);
 
         // Build options object with mode-specific parameters
-        const oddsOptions: any = {
-          mode,
-          progress: options.progress
-            ? (progress: number) => {
-                // Clear the dots and show progress
-                if (progressInterval) {
-                  clearInterval(progressInterval);
-                  progressInterval = null;
-                }
-                process.stdout.write(`\r${Math.round(progress * 100)}`);
-              }
-            : undefined,
-        };
+        const oddsOptions = buildOddsOptions(mode, {
+          threshold: options.threshold,
+          sampleSize: options.sampleSize,
+          progress: options.progress,
+        });
 
-        // Add threshold only for auto mode
-        if (mode === "auto" && options.threshold !== undefined) {
-          oddsOptions.threshold = options.threshold;
-        }
-
-        // Add sampleSize only for monte-carlo mode
-        if (mode === "monte-carlo" && options.sampleSize !== undefined) {
-          oddsOptions.sampleSize = options.sampleSize;
-        }
-
+        // Calculate odds
         const oddsResult = odds(holeCardsList, boardCards, oddsOptions);
 
-        if (options.progress) {
-          process.stdout.write(`\r`);
-        }
+        // Clean up progress display
+        handleProgressCleanup(options.progress);
 
+        // Output results
         console.log(outputFormatter.formatOdds(oddsResult));
       } catch (error) {
-        console.error(
-          "Error:",
-          error instanceof Error ? error.message : "Unknown error occurred"
-        );
-        process.exit(1);
+        handleError(error);
       }
     }
   );

@@ -48,7 +48,7 @@ const calculateBoardCombinations = (
   return combinationCount(deckWithoutKnownBoard.length, cardsNeeded);
 };
 
-type OddsOptions = (
+export type OddsOptions = (
   | {
       mode: "auto";
       threshold?: number;
