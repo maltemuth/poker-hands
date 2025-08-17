@@ -73,8 +73,8 @@ const exhaustive = (
     );
 
   possibleRestBoards.forEach((restBoard, boardIndex) => {
-    // Report progress if callback is provided
-    if (progressCallback) {
+    // Report progress if callback is provided, but only every 100 steps
+    if (progressCallback && (boardIndex + 1) % 100 === 0) {
       progressCallback({
         current: boardIndex + 1,
         total: totalAmountOfBoards,
