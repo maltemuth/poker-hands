@@ -1,20 +1,11 @@
 import { Command } from "commander";
 import { odds, Card } from "@malte.muth/poker-hands";
-import { parseHoleCards, parseBoardCards } from "../utils/cardParser";
+import { parseCards } from "../utils/cardParser";
 import { outputFormatter } from "../utils/outputFormatter";
 import { OddsOptions } from "packages/library/dist/src/model/odds/odds";
 
 function parseHoleCardsForPlayers(holes: string[]): Card[][] {
-  const holeCardsList: Card[][] = [];
-  for (const holeInput of holes) {
-    const holeCards = parseHoleCards(holeInput);
-    holeCardsList.push(holeCards);
-  }
-  return holeCardsList;
-}
-
-function parseBoardCardsFromInput(boardInput?: string): Card[] {
-  return boardInput ? parseBoardCards(boardInput) : [];
+  return holes.map((holeString) => parseCards(holeString));
 }
 
 function validateHoleCards(holeCardsList: Card[][]): void {
@@ -87,11 +78,19 @@ export const oddsCommand = new Command()
   .name("odds")
   .description("Calculate winning odds for given hole cards and board")
   .argument("<holes...>", "Player hole cards (e.g., AhAs KdKh QcQd)")
-  .option("--board", "Community board cards (e.g., 2h5d9c)", "")
-  .option("--mode", "Calculation mode (auto, exhaustive, monteCarlo)", "auto")
-  .option("--threshold", "Threshold for auto mode (default: 10000)", parseInt)
+  .option("--board <board>", "Community board cards (e.g., 2h5d9c)", "")
   .option(
-    "--sample-size",
+    "-m, --mode <mode>",
+    "Calculation mode (auto, exhaustive, monteCarlo)",
+    "auto"
+  )
+  .option(
+    "-t, --threshold <threshold>",
+    "Threshold for auto mode (default: 10000)",
+    parseInt
+  )
+  .option(
+    "-s, --sample-size <sampleSize>",
     "Sample size for monte-carlo mode (default: 10000)",
     parseInt
   )
@@ -112,7 +111,7 @@ export const oddsCommand = new Command()
         const holeCardsList = parseHoleCardsForPlayers(holes);
 
         // Parse board cards if provided
-        const boardCards = parseBoardCardsFromInput(options.board);
+        const boardCards = options.board ? parseCards(options.board) : [];
 
         // Validate inputs
         validateHoleCards(holeCardsList);
