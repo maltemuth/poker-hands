@@ -3,6 +3,7 @@
 export interface CLIOptions {
   verbose?: boolean;
   format?: "json" | "table" | "pretty";
+  json?: boolean;
 }
 
 export interface CommandResult {

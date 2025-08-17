@@ -7,23 +7,62 @@ export const bestHandCommand = new Command()
   .name("best-hand")
   .description("Get the best possible poker hand from a set of cards")
   .argument("<cards>", 'Cards to evaluate (e.g., "2hTdAs")')
-  .action((cards: string) => {
+  .option("--json", "Output results in JSON format")
+  .action((cards: string, options: { json?: boolean }) => {
     try {
       const parsedCards = parseCards(cards);
       const bestHand = getBestHand(parsedCards);
 
       if (bestHand) {
-        console.log(outputFormatter.formatBestHand(bestHand, parsedCards));
+        if (options.json) {
+          console.log(
+            JSON.stringify(
+              outputFormatter.createJsonResponse(
+                true,
+                "best-hand",
+                outputFormatter.formatBestHandJson(bestHand, parsedCards)
+              )
+            )
+          );
+        } else {
+          console.log(outputFormatter.formatBestHand(bestHand, parsedCards));
+        }
       } else {
-        console.log(
-          "No valid hand could be determined from the provided cards."
-        );
+        if (options.json) {
+          console.log(
+            JSON.stringify(
+              outputFormatter.createJsonResponse(
+                false,
+                "best-hand",
+                undefined,
+                "No valid hand could be determined from the provided cards."
+              )
+            )
+          );
+        } else {
+          console.log(
+            "No valid hand could be determined from the provided cards."
+          );
+        }
       }
     } catch (error) {
-      console.error(
-        "Error:",
-        error instanceof Error ? error.message : "Unknown error occurred"
-      );
-      process.exit(1);
+      if (options.json) {
+        console.log(
+          JSON.stringify(
+            outputFormatter.createJsonResponse(
+              false,
+              "best-hand",
+              undefined,
+              error instanceof Error ? error.message : "Unknown error occurred"
+            )
+          )
+        );
+      } else {
+        console.error(
+          "Error:",
+          error instanceof Error ? error.message : "Unknown error occurred"
+        );
+        process.exit(1);
+      }
     }
   });

@@ -95,6 +95,7 @@ export const oddsCommand = new Command()
     parseInt
   )
   .option("--progress", "Show progress during calculation")
+  .option("--json", "Output results in JSON format")
   .action(
     (
       holes: string[],
@@ -104,6 +105,7 @@ export const oddsCommand = new Command()
         threshold?: number;
         sampleSize?: number;
         progress?: boolean;
+        json?: boolean;
       }
     ) => {
       try {
@@ -123,19 +125,46 @@ export const oddsCommand = new Command()
         const oddsOptions = buildOddsOptions(mode, {
           threshold: options.threshold,
           sampleSize: options.sampleSize,
-          progress: options.progress,
+          progress: options.progress && !options.json, // Don't show progress if JSON is requested
         });
 
         // Calculate odds
         const oddsResult = odds(holeCardsList, boardCards, oddsOptions);
 
         // Clean up progress display
-        handleProgressCleanup(options.progress);
+        handleProgressCleanup(options.progress && !options.json);
 
-        // Output results with mode information
-        console.log(outputFormatter.formatOdds(oddsResult));
+        // Output results
+        if (options.json) {
+          console.log(
+            JSON.stringify(
+              outputFormatter.createJsonResponse(
+                true,
+                "odds",
+                outputFormatter.formatOddsJson(oddsResult)
+              )
+            )
+          );
+        } else {
+          console.log(outputFormatter.formatOdds(oddsResult));
+        }
       } catch (error) {
-        handleError(error);
+        if (options.json) {
+          console.log(
+            JSON.stringify(
+              outputFormatter.createJsonResponse(
+                false,
+                "odds",
+                undefined,
+                error instanceof Error
+                  ? error.message
+                  : "Unknown error occurred"
+              )
+            )
+          );
+        } else {
+          handleError(error);
+        }
       }
     }
   );

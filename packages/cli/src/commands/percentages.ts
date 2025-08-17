@@ -8,19 +8,45 @@ export const percentagesCommand = new Command()
   .description("Calculate hand type percentages for given hole cards and board")
   .argument("<hole>", 'Hole cards (e.g., "2hTd")')
   .argument("[board...]", "Community board cards (optional)", [])
-  .action((hole: string, board: string) => {
+  .option("--json", "Output results in JSON format")
+  .action((hole: string, board: string[], options: { json?: boolean }) => {
     try {
       const hole1Cards = parseCards(hole);
-      const boardCards = parseCards(board);
+      const boardCards = parseCards(board.join(" "));
 
       const percentagesResult = percentages(hole1Cards, boardCards);
 
-      console.log(outputFormatter.formatPercentages(percentagesResult));
+      if (options.json) {
+        console.log(
+          JSON.stringify(
+            outputFormatter.createJsonResponse(
+              true,
+              "percentages",
+              outputFormatter.formatPercentagesJson(percentagesResult)
+            )
+          )
+        );
+      } else {
+        console.log(outputFormatter.formatPercentages(percentagesResult));
+      }
     } catch (error) {
-      console.error(
-        "Error:",
-        error instanceof Error ? error.message : "Unknown error occurred"
-      );
-      process.exit(1);
+      if (options.json) {
+        console.log(
+          JSON.stringify(
+            outputFormatter.createJsonResponse(
+              false,
+              "percentages",
+              undefined,
+              error instanceof Error ? error.message : "Unknown error occurred"
+            )
+          )
+        );
+      } else {
+        console.error(
+          "Error:",
+          error instanceof Error ? error.message : "Unknown error occurred"
+        );
+        process.exit(1);
+      }
     }
   });

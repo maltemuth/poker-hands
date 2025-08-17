@@ -9,7 +9,7 @@ import {
 } from "@malte.muth/poker-hands";
 
 /**
- * Convert hand type to readable string
+ * Convert hand type to string
  */
 function handTypeToString(type: HandType): string {
   const typeNames: Record<number, string> = {
@@ -149,6 +149,12 @@ export const outputFormatter = {
   formatPercentages,
   formatResult,
   formatHandType,
+  // JSON functions
+  formatOddsJson,
+  formatBestHandJson,
+  formatPercentagesJson,
+  formatCompareJson,
+  createJsonResponse,
 };
 
 /**
@@ -178,4 +184,145 @@ export function formatHandType(
 ): string {
   const formattedPercentage = `${(percentage * 100).toFixed(2)}%`;
   return `${type}: ${count} occurrences (${formattedPercentage})`;
+}
+
+// JSON Output Functions
+
+/**
+ * Format odds result for JSON output
+ */
+export function formatOddsJson(oddsResult: HoleOdds[]): object {
+  return {
+    players: oddsResult.map((player) => ({
+      holeCards: player.hole.map(formatCard),
+      winChance: player.winChance,
+      tieChance: player.tieChance,
+      ...(player.winChanceError && { winChanceError: player.winChanceError }),
+    })),
+  };
+}
+
+/**
+ * Format best hand result for JSON output
+ */
+export function formatBestHandJson(
+  hand: HandInterface,
+  allCards: Card[]
+): object {
+  const rank = typeof hand.value === "function" ? hand.value() : hand.value;
+
+  return {
+    hand: {
+      type: handTypeToString(hand.type),
+      value: rank,
+      cards: hand.cards().map(formatCard),
+    },
+    allCards: allCards.map(formatCard),
+  };
+}
+
+/**
+ * Format percentages result for JSON output
+ */
+export function formatPercentagesJson(
+  percentagesResult: HandPercentages
+): object {
+  return {
+    highCard: {
+      percentage: percentagesResult.highCard.percentage,
+      count: percentagesResult.highCard.count,
+    },
+    pair: {
+      percentage: percentagesResult.pair.percentage,
+      count: percentagesResult.pair.count,
+    },
+    twoPair: {
+      percentage: percentagesResult.twoPair.percentage,
+      count: percentagesResult.twoPair.count,
+    },
+    threeOfAKind: {
+      percentage: percentagesResult.threeOfAKind.percentage,
+      count: percentagesResult.threeOfAKind.count,
+    },
+    straight: {
+      percentage: percentagesResult.straight.percentage,
+      count: percentagesResult.straight.count,
+    },
+    flush: {
+      percentage: percentagesResult.flush.percentage,
+      count: percentagesResult.flush.count,
+    },
+    fullHouse: {
+      percentage: percentagesResult.fullHouse.percentage,
+      count: percentagesResult.fullHouse.count,
+    },
+    fourOfAKind: {
+      percentage: percentagesResult.fourOfAKind.percentage,
+      count: percentagesResult.fourOfAKind.count,
+    },
+    straightFlush: {
+      percentage: percentagesResult.straightFlush.percentage,
+      count: percentagesResult.straightFlush.count,
+    },
+    royalFlush: {
+      percentage: percentagesResult.royalFlush.percentage,
+      count: percentagesResult.royalFlush.count,
+    },
+  };
+}
+
+/**
+ * Format compare result for JSON output
+ */
+export function formatCompareJson(
+  hand1Cards: Card[],
+  hand2Cards: Card[],
+  bestHand1: HandInterface | null,
+  bestHand2: HandInterface | null,
+  result: boolean | null
+): object {
+  return {
+    hand1: {
+      cards: hand1Cards.map(formatCard),
+      bestHand: bestHand1
+        ? {
+            type: handTypeToString(bestHand1.type),
+            value:
+              typeof bestHand1.value === "function"
+                ? bestHand1.value()
+                : bestHand1.value,
+          }
+        : null,
+    },
+    hand2: {
+      cards: hand2Cards.map(formatCard),
+      bestHand: bestHand2
+        ? {
+            type: handTypeToString(bestHand2.type),
+            value:
+              typeof bestHand2.value === "function"
+                ? bestHand2.value()
+                : bestHand2.value,
+          }
+        : null,
+    },
+    result,
+  };
+}
+
+/**
+ * Create JSON response object
+ */
+export function createJsonResponse(
+  success: boolean,
+  command: string,
+  data?: object,
+  error?: string
+): object {
+  return {
+    success,
+    command,
+    ...(data && { data }),
+    ...(error && { error }),
+  };
 }
