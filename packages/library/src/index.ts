@@ -1,7 +1,7 @@
 import getBestHand from "./model/hand/getBestHand";
 import hasEqualValue from "./model/hand/hasEqualValue";
 import isBetterThan from "./model/hand/isBetterThan";
-import odds from "./model/odds/odds";
+import odds, { ProgressCallback } from "./model/odds/odds";
 import cards from "./model/card/cards";
 import toString from "./model/card/toString";
 import create from "./model/deck/create";
@@ -18,4 +18,5 @@ export {
   create,
   shuffle,
   toString,
+  ProgressCallback,
 };

@@ -7,7 +7,7 @@
     "paths": {
       "@src/*": ["./src/*"]
     },
-    "types": [],
+    "types": ["jest", "node"],
     "sourceMap": false
   },
   "include": ["./src/**/*"],

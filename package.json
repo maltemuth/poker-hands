@@ -25,7 +25,8 @@
     "clean:cli": "cd packages/cli && npm run clean",
     "prepack": "npm run build",
     "test:watch": "npm run test:library -- --watch",
-    "test:full": "npm run test:library -- --testPathPattern=__tests__/full"
+    "test:full": "npm run test:library -- --testPathPattern=__tests__/full",
+    "cli": "cd packages/cli && npm run start"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",

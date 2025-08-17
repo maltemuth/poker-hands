@@ -6,6 +6,7 @@ import isBetterThan from "../hand/isBetterThan";
 import hasEqualValue from "../hand/hasEqualValue";
 import assertUnique from "../card/assertUnique";
 import shuffle from "../deck/shuffle";
+import { ProgressCallback } from "./odds";
 
 export type Hole = Card[];
 
@@ -32,7 +33,8 @@ const holeIdentifier = (hole: Hole) =>
 const monteCarloOdds = (
   holes: Hole[],
   board: Card[] = [],
-  sampleSize: number = 10000
+  sampleSize: number = 10000,
+  progressCallback?: ProgressCallback
 ): HoleOdds[] => {
   if (holes.length === 0) {
     throw new Error("Cannot calculate odds without any holes.");
@@ -61,6 +63,15 @@ const monteCarloOdds = (
 
   // Run Monte Carlo simulations
   for (let i = 0; i < sampleSize; i++) {
+    // Report progress if callback is provided
+    if (progressCallback) {
+      progressCallback({
+        current: i + 1,
+        total: sampleSize,
+        type: "monte-carlo",
+        message: `Running simulation ${i + 1} of ${sampleSize}`,
+      });
+    }
     // Create a shuffled copy of the remaining deck
     const shuffledDeck = shuffle([...deckWithoutKnownBoard]);
 
@@ -85,8 +96,8 @@ const monteCarloOdds = (
       if (!b.hand) return -1;
 
       // Both hands are valid
-      if (isBetterThan(a.hand!, b.hand!)) return -1;
-      if (hasEqualValue(a.hand!, b.hand!)) return 0;
+      if (isBetterThan(a.hand, b.hand)) return -1;
+      if (hasEqualValue(a.hand, b.hand)) return 0;
       return +1;
     });
 
@@ -98,7 +109,7 @@ const monteCarloOdds = (
       if (!first.hand || !hand) return false;
 
       // Both hands are valid
-      return hasEqualValue(first.hand!, hand!);
+      return hasEqualValue(first.hand, hand);
     });
 
     if (ties.length === 1) {
@@ -116,6 +127,7 @@ const monteCarloOdds = (
     (partial, id) => ({
       ...partial,
       [id]: {
+        hole: holes.find((h) => holeIdentifier(h) === id) || [],
         ...results[id],
         winChance: results[id].wins / sampleSize,
         tieChance: results[id].ties / sampleSize,
@@ -136,15 +148,12 @@ const monteCarloOdds = (
           ),
       },
     }),
-    {}
+    {} as Record<string, HoleOdds>
   );
 
   return holes.map((hole) => {
     const key = holeIdentifier(hole);
-    return {
-      hole,
-      ...(resultsWithChances as any)[key],
-    };
+    return resultsWithChances[key];
   });
 };
 

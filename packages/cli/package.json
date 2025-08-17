@@ -10,7 +10,8 @@
     "build": "tsc",
     "lint": "eslint src --ext .ts",
     "clean": "rm -rf dist",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "start": "ts-node src/index.ts"
   },
   "dependencies": {
     "@malte.muth/poker-hands": "file:../library",

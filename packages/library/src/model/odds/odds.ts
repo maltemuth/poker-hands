@@ -19,6 +19,15 @@ export interface HoleOdds {
   tieChanceError?: number;
 }
 
+export interface ProgressInfo {
+  current: number;
+  total: number;
+  type: "monte-carlo" | "exhaustive";
+  message?: string;
+}
+
+export type ProgressCallback = (progress: ProgressInfo) => void;
+
 /**
  * Calculates the number of possible board combinations for the given holes and board
  * @param holes Array of hole cards for each player
@@ -57,7 +66,8 @@ const odds = (
   holes: Hole[],
   board: Card[] = [],
   sampleSize: number = 10000,
-  threshold: number = 10000
+  threshold: number = 10000,
+  progressCallback?: ProgressCallback
 ): HoleOdds[] => {
   if (holes.length === 0) {
     throw new Error("Cannot calculate odds without any holes.");
@@ -68,10 +78,10 @@ const odds = (
 
   // If the number of combinations is below the threshold, use the exhaustive algorithm
   if (combinationCount <= threshold) {
-    return exhaustive(holes, board);
+    return exhaustive(holes, board, progressCallback);
   } else {
     // Otherwise, use the Monte Carlo algorithm
-    return monteCarloOdds(holes, board, sampleSize);
+    return monteCarloOdds(holes, board, sampleSize, progressCallback);
   }
 };
 
