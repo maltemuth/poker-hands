@@ -24,42 +24,27 @@ export const oddsCommand = new Command()
         const hole2Cards = parseHoleCards(hole2);
         const boardCards = parseBoardCards(board);
 
-        if (options.progress) {
-          progressInterval = setInterval(() => {
-            process.stdout.write(".");
-          }, 100);
-        }
-
-        const oddsResult = odds(
-          [hole1Cards, hole2Cards],
-          boardCards,
-          10000, // sampleSize
-          10000, // threshold
-          options.progress
-            ? (progress: any) => {
+        const oddsResult = odds([hole1Cards, hole2Cards], boardCards, {
+          mode: "auto",
+          threshold: 10000,
+          progress: options.progress
+            ? (progress: number) => {
                 // Clear the dots and show progress
                 if (progressInterval) {
                   clearInterval(progressInterval);
                   progressInterval = null;
                 }
-                process.stdout.write(
-                  `\r${progress.message} (${Math.round(
-                    (progress.current / progress.total) * 100
-                  )}%)\n`
-                );
+                process.stdout.write(`\r${Math.round(progress * 100)}`);
               }
-            : undefined
-        );
+            : undefined,
+        });
 
-        if (progressInterval) {
-          clearInterval(progressInterval);
+        if (options.progress) {
+          process.stdout.write(`\r`);
         }
 
         console.log(outputFormatter.formatOdds(oddsResult));
       } catch (error) {
-        if (progressInterval) {
-          clearInterval(progressInterval);
-        }
         console.error(
           "Error:",
           error instanceof Error ? error.message : "Unknown error occurred"

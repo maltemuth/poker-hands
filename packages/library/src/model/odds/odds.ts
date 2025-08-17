@@ -48,6 +48,16 @@ const calculateBoardCombinations = (
   return combinationCount(deckWithoutKnownBoard.length, cardsNeeded);
 };
 
+type OddsOptions = (
+  | {
+      mode: "auto";
+      threshold?: number;
+    }
+  | { mode: "exhaustive" }
+  | { mode: "monteCarlo"; sampleSize?: number }
+) & {
+  progress?: ProgressCallback;
+};
 /**
  * Calculate poker odds using either exhaustive or Monte Carlo approach based on performance
  * @param holes Array of hole cards for each player
@@ -58,24 +68,31 @@ const calculateBoardCombinations = (
 const odds = (
   holes: Hole[],
   board: Card[] = [],
-  sampleSize: number = 10000,
-  threshold: number = 10000,
-  progressCallback?: ProgressCallback
+  options: OddsOptions = { mode: "auto", threshold: 10000 }
 ): HoleOdds[] => {
   if (holes.length === 0) {
     throw new Error("Cannot calculate odds without any holes.");
   }
+  if (options.mode === "auto") {
+    const threshold = options.threshold || 10000;
+    // Calculate the number of combinations the exhaustive algorithm would need to check
+    const combinationCount = calculateBoardCombinations(holes, board);
 
-  // Calculate the number of combinations the exhaustive algorithm would need to check
-  const combinationCount = calculateBoardCombinations(holes, board);
-
-  // If the number of combinations is below the threshold, use the exhaustive algorithm
-  if (combinationCount <= threshold) {
-    return exhaustive(holes, board, progressCallback);
-  } else {
-    // Otherwise, use the Monte Carlo algorithm
-    return monteCarloOdds(holes, board, sampleSize, progressCallback);
+    // If the number of combinations is below the threshold, use the exhaustive algorithm
+    if (combinationCount <= threshold) {
+      return exhaustive(holes, board, options.progress);
+    } else {
+      // Otherwise, use the Monte Carlo algorithm
+      return monteCarloOdds(holes, board, threshold, options.progress);
+    }
   }
+
+  if (options.mode === "monteCarlo") {
+    const sampleSize = options.sampleSize || 10000;
+    return monteCarloOdds(holes, board, sampleSize, options.progress);
+  }
+
+  return exhaustive(holes, board, options.progress);
 };
 
 export { calculateBoardCombinations };
