@@ -10,32 +10,10 @@ export const compareCommand = new Command()
   .action((hand1: string, hand2: string) => {
     try {
       // Process hand1 to handle both individual and concatenated cards
-      const processedHand1: string[] = [];
-      if (hand1.includes(" ")) {
-        const individualCards = hand1.split(" ").filter((s) => s.trim() !== "");
-        processedHand1.push(...individualCards);
-      } else {
-        if (hand1.length > 2) {
-          const concatenatedCards = parseConcatenatedCards(hand1);
-          processedHand1.push(...concatenatedCards);
-        } else {
-          processedHand1.push(hand1);
-        }
-      }
+      const processedHand1 = processHandInput(hand1);
 
       // Process hand2 to handle both individual and concatenated cards
-      const processedHand2: string[] = [];
-      if (hand2.includes(" ")) {
-        const individualCards = hand2.split(" ").filter((s) => s.trim() !== "");
-        processedHand2.push(...individualCards);
-      } else {
-        if (hand2.length > 2) {
-          const concatenatedCards = parseConcatenatedCards(hand2);
-          processedHand2.push(...concatenatedCards);
-        } else {
-          processedHand2.push(hand2);
-        }
-      }
+      const processedHand2 = processHandInput(hand2);
 
       const hand1Cards = parseCardInputs(processedHand1);
       const hand2Cards = parseCardInputs(processedHand2);
@@ -54,12 +32,12 @@ export const compareCommand = new Command()
 
       console.log(
         `Hand 1: ${hand1Cards
-          .map((card: any) => `${card.value}${card.suit}`)
+          .map((card) => `${card.value}${card.suit}`)
           .join(", ")}`
       );
       console.log(
         `Hand 2: ${hand2Cards
-          .map((card: any) => `${card.value}${card.suit}`)
+          .map((card) => `${card.value}${card.suit}`)
           .join(", ")}`
       );
       console.log(
@@ -73,3 +51,20 @@ export const compareCommand = new Command()
       process.exit(1);
     }
   });
+
+/**
+ * Process a hand input string to handle both individual and concatenated cards
+ * @param hand The hand input string
+ * @returns Array of processed card strings
+ */
+function processHandInput(hand: string): string[] {
+  if (hand.includes(" ")) {
+    return hand.split(" ").filter((s) => s.trim() !== "");
+  } else {
+    if (hand.length > 2) {
+      return parseConcatenatedCards(hand);
+    } else {
+      return [hand];
+    }
+  }
+}

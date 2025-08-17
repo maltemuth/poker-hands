@@ -13,11 +13,12 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "commander": "^11.1.0",
-    "@malte.muth/poker-hands": "file:../library"
+    "@malte.muth/poker-hands": "file:../library",
+    "commander": "^11.1.0"
   },
   "devDependencies": {
     "@types/node": "^20.10.5",
+    "jiti": "^2.5.1",
     "typescript": "^5.4.5"
   }
 }
