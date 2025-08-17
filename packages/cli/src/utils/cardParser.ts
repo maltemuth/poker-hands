@@ -32,6 +32,24 @@ export function validateCardString(cardString: string): boolean {
 }
 
 /**
+ * Parse concatenated card strings (e.g., "AsAhKd") into individual card strings
+ */
+export function parseConcatenatedCards(concatenatedString: string): string[] {
+  // Split the string into 2-character segments
+  const cards: string[] = [];
+  for (let i = 0; i < concatenatedString.length; i += 2) {
+    const card = concatenatedString.substring(i, i + 2);
+    if (!validateCardString(card)) {
+      throw new Error(
+        `Invalid card format: "${card}". Cards should be in format like "2h", "Td", "As".`
+      );
+    }
+    cards.push(card);
+  }
+  return cards;
+}
+
+/**
  * Validate that card strings are in the correct format
  */
 export function validateCardStrings(cardStrings: string[]): boolean {
