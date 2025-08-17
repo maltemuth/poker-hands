@@ -5,15 +5,15 @@ import { parseCardInputs, parseConcatenatedCards } from "../utils/cardParser";
 export const compareCommand = new Command()
   .name("compare")
   .description("Compare two poker hands to determine which is better")
-  .argument("<hand1>", 'First hand (e.g., "2h Td As" or "2hTdAs")')
-  .argument("<hand2>", 'Second hand (e.g., "3c 4d 5s" or "3c4d5s")')
+  .argument("<hand1>", 'First hand (e.g., "2hTdAs")')
+  .argument("<hand2>", 'Second hand (e.g., "3c4d5s")')
   .action((hand1: string, hand2: string) => {
     try {
-      // Process hand1 to handle both individual and concatenated cards
-      const processedHand1 = processHandInput(hand1);
+      // Process hand1 to handle concatenated cards only
+      const processedHand1 = parseConcatenatedCards(hand1);
 
-      // Process hand2 to handle both individual and concatenated cards
-      const processedHand2 = processHandInput(hand2);
+      // Process hand2 to handle concatenated cards only
+      const processedHand2 = parseConcatenatedCards(hand2);
 
       const hand1Cards = parseCardInputs(processedHand1);
       const hand2Cards = parseCardInputs(processedHand2);
@@ -51,20 +51,3 @@ export const compareCommand = new Command()
       process.exit(1);
     }
   });
-
-/**
- * Process a hand input string to handle both individual and concatenated cards
- * @param hand The hand input string
- * @returns Array of processed card strings
- */
-function processHandInput(hand: string): string[] {
-  if (hand.includes(" ")) {
-    return hand.split(" ").filter((s) => s.trim() !== "");
-  } else {
-    if (hand.length > 2) {
-      return parseConcatenatedCards(hand);
-    } else {
-      return [hand];
-    }
-  }
-}
