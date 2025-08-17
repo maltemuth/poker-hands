@@ -1,6 +1,6 @@
 import { Command } from "commander";
 import { getBestHand } from "@malte.muth/poker-hands";
-import { parseCardInputs, parseConcatenatedCards } from "../utils/cardParser";
+import { parseCards } from "../utils/cardParser";
 import { outputFormatter } from "../utils/outputFormatter";
 
 export const bestHandCommand = new Command()
@@ -9,16 +9,7 @@ export const bestHandCommand = new Command()
   .argument("<cards...>", 'Cards to evaluate (e.g., "2hTdAs")')
   .action((cardStrings: string[]) => {
     try {
-      // Process each card string to handle concatenated cards only
-      const processedCardStrings: string[] = [];
-
-      for (const cardString of cardStrings) {
-        // Parse concatenated cards like "AsAhKd"
-        const concatenatedCards = parseConcatenatedCards(cardString);
-        processedCardStrings.push(...concatenatedCards);
-      }
-
-      const parsedCards = parseCardInputs(processedCardStrings);
+      const parsedCards = parseCards(cardStrings);
       const bestHand = getBestHand(parsedCards);
 
       if (bestHand) {

@@ -1,10 +1,6 @@
 import { Command } from "commander";
 import { percentages } from "@malte.muth/poker-hands";
-import {
-  parseHoleCards,
-  parseBoardCards,
-  parseConcatenatedCards,
-} from "../utils/cardParser";
+import { parseHoleCards, parseBoardCards } from "../utils/cardParser";
 import { outputFormatter } from "../utils/outputFormatter";
 
 export const percentagesCommand = new Command()
@@ -14,10 +10,7 @@ export const percentagesCommand = new Command()
   .argument("[board...]", "Community board cards (optional)", [])
   .action((hole1: string, board: string[]) => {
     try {
-      // Process hole1 to handle concatenated cards only
-      const processedHole1 = parseConcatenatedCards(hole1);
-      const hole1Cards = parseHoleCards(processedHole1.join(" "));
-
+      const hole1Cards = parseHoleCards(hole1);
       const boardCards = parseBoardCards(board);
 
       const percentagesResult = percentages(hole1Cards, boardCards);

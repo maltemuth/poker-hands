@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import { Command } from "commander";
-import { getBestHand } from "@malte.muth/poker-hands";
 import { bestHandCommand } from "./commands/bestHand";
 import { compareCommand } from "./commands/compare";
 import { oddsCommand } from "./commands/odds";
