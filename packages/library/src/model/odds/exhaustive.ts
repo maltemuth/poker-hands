@@ -75,14 +75,7 @@ const exhaustive = (
   possibleRestBoards.forEach((restBoard, boardIndex) => {
     // Report progress if callback is provided, but only every 100 steps
     if (progressCallback && (boardIndex + 1) % 100 === 0) {
-      progressCallback({
-        current: boardIndex + 1,
-        total: totalAmountOfBoards,
-        type: "exhaustive",
-        message: `Evaluating board combination ${
-          boardIndex + 1
-        } of ${totalAmountOfBoards}`,
-      });
+      progressCallback((boardIndex + 1) / totalAmountOfBoards);
     }
 
     const completeBoard = [...board, ...restBoard];

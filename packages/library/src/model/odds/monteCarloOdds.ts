@@ -65,12 +65,7 @@ const monteCarloOdds = (
   for (let i = 0; i < sampleSize; i++) {
     // Report progress if callback is provided, but only every 100 steps
     if (progressCallback && (i + 1) % 100 === 0) {
-      progressCallback({
-        current: i + 1,
-        total: sampleSize,
-        type: "monte-carlo",
-        message: `Running simulation ${i + 1} of ${sampleSize}`,
-      });
+      progressCallback((i + 1) / sampleSize);
     }
     // Create a shuffled copy of the remaining deck
     const shuffledDeck = shuffle([...deckWithoutKnownBoard]);

@@ -19,14 +19,7 @@ export interface HoleOdds {
   tieChanceError?: number;
 }
 
-export interface ProgressInfo {
-  current: number;
-  total: number;
-  type: "monte-carlo" | "exhaustive";
-  message?: string;
-}
-
-export type ProgressCallback = (progress: ProgressInfo) => void;
+export type ProgressCallback = (progress: number) => void;
 
 /**
  * Calculates the number of possible board combinations for the given holes and board
