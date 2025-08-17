@@ -3,12 +3,14 @@
   "compilerOptions": {
     "outDir": "dist",
     "baseUrl": ".",
+    "rootDir": ".",
     "paths": {
-      "@src/*": ["src/*"]
+      "@src/*": ["./src/*"]
     },
-    "types": []
+    "types": [],
+    "sourceMap": false
   },
-  "include": ["src/**/*"],
+  "include": ["./src/**/*"],
   "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"],
-  "files": ["src/index.ts"]
+  "files": ["src/index.ts", "index.ts"]
 }
