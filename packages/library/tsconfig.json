@@ -12,5 +12,5 @@
   },
   "include": ["./src/**/*"],
   "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"],
-  "files": ["src/index.ts", "index.ts"]
+  "files": ["index.ts"]
 }

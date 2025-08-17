@@ -7,7 +7,7 @@ export interface CLIOptions {
 
 export interface CommandResult {
   success: boolean;
-  data?: any;
+  data?: object;
   error?: string;
 }
 

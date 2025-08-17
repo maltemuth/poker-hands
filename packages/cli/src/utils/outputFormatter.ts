@@ -1,9 +1,17 @@
 // import { HandInterface } from "@malte.muth/poker-hands";
 
+import {
+  Card,
+  HandType,
+  HandInterface,
+  HoleOdds,
+  HandPercentages,
+} from "@malte.muth/poker-hands";
+
 /**
  * Convert hand type to readable string
  */
-function handTypeToString(type: number): string {
+function handTypeToString(type: HandType): string {
   const typeNames: Record<number, string> = {
     1: "High Card",
     2: "Pair",
@@ -22,11 +30,7 @@ function handTypeToString(type: number): string {
 /**
  * Format card for display
  */
-function formatCard(card: any): string {
-  // Handle both function and value cases
-  const value = typeof card.value === "function" ? card.value() : card.value;
-  const suit = typeof card.suit === "function" ? card.suit() : card.suit;
-
+function formatCard({ value, suit }: Card): string {
   const valueMap: Record<number, string> = {
     2: "2",
     3: "3",
@@ -49,7 +53,7 @@ function formatCard(card: any): string {
 /**
  * Format the best hand result for display
  */
-export function formatBestHand(hand: any, allCards: any[]): string {
+export function formatBestHand(hand: HandInterface, allCards: Card[]): string {
   const handType = handTypeToString(hand.type);
   const allCardsStr = allCards.map(formatCard).join(", ");
 
@@ -65,8 +69,8 @@ Rank: ${rank}`;
  * Format comparison result between two hands
  */
 export function compareHands(
-  hand1: any[],
-  hand2: any[],
+  hand1: Card[],
+  hand2: Card[],
   result: boolean | null
 ): string {
   const hand1Str = hand1.map(formatCard).join(", ");
@@ -90,7 +94,7 @@ Result: Both hands are equal`;
 /**
  * Format odds calculation result
  */
-export function formatOdds(oddsResult: any): string {
+export function formatOdds(oddsResult: HoleOdds[]): string {
   const player1Win = (oddsResult[0]?.winChance || 0) * 100;
   const player2Win = (oddsResult[1]?.winChance || 0) * 100;
   const tie = (oddsResult[0]?.tieChance || 0) * 100;
@@ -114,12 +118,12 @@ Total: ${(player1Win + player2Win + tie).toFixed(2)}%${confidenceInfo}`;
 /**
  * Format percentages calculation result
  */
-export function formatPercentages(percentagesResult: any): string {
+export function formatPercentages(percentagesResult: HandPercentages): string {
   const formatPercentage = (value: number) => `${(value * 100).toFixed(2)}%`;
 
   // Calculate total percentage for verification
   const total = Object.values(percentagesResult).reduce(
-    (sum: number, item: any) => sum + item.percentage,
+    (sum, item) => sum + item.percentage,
     0
   );
 
@@ -152,7 +156,7 @@ export const outputFormatter = {
  */
 export function formatResult(
   success: boolean,
-  data?: any,
+  data?: HandPercentages,
   error?: string
 ): string {
   if (success) {

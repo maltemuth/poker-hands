@@ -7,7 +7,7 @@ import valueFromString from "./valueFromString";
  * @param input
  */
 const fromString = (input: string): Card => {
-  const [stringValue, suit, ..._] = input.split("");
+  const [stringValue, suit] = input.split("");
 
   const value = valueFromString(stringValue);
 

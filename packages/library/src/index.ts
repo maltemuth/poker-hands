@@ -3,6 +3,7 @@ import hasEqualValue from "./model/hand/hasEqualValue";
 import isBetterThan from "./model/hand/isBetterThan";
 import odds from "./model/odds/odds";
 import cards from "./model/card/cards";
+import toString from "./model/card/toString";
 import create from "./model/deck/create";
 import shuffle from "./model/deck/shuffle";
 import percentages from "./model/odds/percentages";
@@ -16,4 +17,5 @@ export {
   cards,
   create,
   shuffle,
+  toString,
 };
