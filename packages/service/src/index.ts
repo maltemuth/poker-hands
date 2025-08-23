@@ -1,4 +1,4 @@
-import express from "express";
+import express, { json } from "express";
 import cors from "cors";
 import { setupRoutes } from "./routes";
 
@@ -12,7 +12,7 @@ export class PokerHandsService {
 
     // Setup middleware
     this.app.use(cors());
-    this.app.use(express.json({ limit: "10mb" }));
+    this.app.use(json({ limit: "10mb" }));
 
     // Setup routes
     setupRoutes(this.app);
@@ -20,6 +20,7 @@ export class PokerHandsService {
 
   public start(): void {
     this.app.listen(this.port, () => {
+      // eslint-disable-next-line no-console
       console.log(`Poker Hands Service running on port ${this.port}`);
     });
   }

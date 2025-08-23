@@ -1,5 +1,5 @@
 import express from "express";
-import { OddsRequest, OddsResponse, ApiResponse } from "../types";
+import { OddsRequest } from "../types";
 import {
   validateOddsInput,
   executeCliCommand,
