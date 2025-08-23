@@ -12,7 +12,7 @@ export class PokerHandsService {
 
     // Setup middleware
     this.app.use(cors());
-    this.app.use(json({ limit: "10mb" }));
+    this.app.use(json({ limit: "1kb" }));
 
     // Setup routes
     setupRoutes(this.app);
