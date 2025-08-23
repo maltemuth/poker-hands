@@ -36,13 +36,4 @@ export interface OddsResponse {
 /**
  * API response wrapper
  */
-export interface ApiResponse<T = unknown> {
-  /** Success status */
-  success: boolean;
-  /** Data payload */
-  data?: T;
-  /** Error message */
-  error?: string;
-  /** Request timestamp */
-  timestamp: string;
-}
+export type ApiResponse<T = unknown> = T | string;

@@ -16,11 +16,7 @@ export function setupRoutes(app: express.Application): void {
       // Validate input
       const validationError = validateOddsInput(input);
       if (validationError) {
-        const response: ApiResponse = createApiResponse(
-          false,
-          undefined,
-          validationError.error
-        );
+        const response = createApiResponse(validationError.error);
         return res.status(400).json(response);
       }
 
@@ -35,45 +31,28 @@ export function setupRoutes(app: express.Application): void {
       executeCliCommand(cliCommand)
         .then((cliOutput) => {
           const oddsResponse = formatCliOutput(cliOutput);
-          const response: ApiResponse<OddsResponse> = createApiResponse(
-            true,
-            oddsResponse
-          );
+          const response = createApiResponse(oddsResponse);
           res.json(response);
         })
         .catch((error) => {
-          const response: ApiResponse = createApiResponse(
-            false,
-            undefined,
-            error.message
-          );
+          const response = createApiResponse(error.message);
           res.status(500).json(response);
         });
     } catch (_error) {
-      const response: ApiResponse = createApiResponse(
-        false,
-        undefined,
-        "Internal server error"
-      );
+      const response = createApiResponse("Internal server error");
       res.status(500).json(response);
     }
   });
 
   // Percentages endpoint - returns "not implemented"
   app.post("/api/percentages", (req, res) => {
-    const response: ApiResponse = createApiResponse(
-      false,
-      undefined,
-      "Not implemented"
-    );
+    const response = createApiResponse("Not implemented");
     res.status(501).json(response);
   });
 
   // Health check endpoint
   app.get("/health", (req, res) => {
-    const response: ApiResponse = createApiResponse(true, {
-      status: "healthy",
-    });
+    const response = createApiResponse({ status: "healthy" });
     res.json(response);
   });
 }
