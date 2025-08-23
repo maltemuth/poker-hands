@@ -1,31 +1,6 @@
 // import { HandInterface } from "@malte.muth/poker-hands";
 
-import {
-  Card,
-  HandType,
-  HandInterface,
-  HoleOdds,
-  HandPercentages,
-} from "@malte.muth/poker-hands";
-
-/**
- * Convert hand type to string
- */
-function handTypeToString(type: HandType): string {
-  const typeNames: Record<number, string> = {
-    1: "High Card",
-    2: "Pair",
-    3: "Two Pair",
-    4: "Three of a Kind",
-    5: "Straight",
-    6: "Flush",
-    7: "Full House",
-    8: "Four of a Kind",
-    9: "Straight Flush",
-    10: "Royal Flush",
-  };
-  return typeNames[type] || "Unknown";
-}
+import { Card, HoleOdds, HandPercentages } from "@malte.muth/poker-hands";
 
 /**
  * Format card for display
@@ -48,47 +23,6 @@ function formatCard({ value, suit }: Card): string {
   };
 
   return `${valueMap[value]}${suit}`;
-}
-
-/**
- * Format the best hand result for display
- */
-export function formatBestHand(hand: HandInterface, allCards: Card[]): string {
-  const handType = handTypeToString(hand.type);
-  const allCardsStr = allCards.map(formatCard).join(", ");
-
-  // Check if hand.value is a function or a value
-  const rank = typeof hand.value === "function" ? hand.value() : hand.value;
-
-  return `Best Hand: ${handType}
-Cards: ${allCardsStr}
-Rank: ${rank}`;
-}
-
-/**
- * Format comparison result between two hands
- */
-export function compareHands(
-  hand1: Card[],
-  hand2: Card[],
-  result: boolean | null
-): string {
-  const hand1Str = hand1.map(formatCard).join(", ");
-  const hand2Str = hand2.map(formatCard).join(", ");
-
-  if (result === true) {
-    return `Hand 1: ${hand1Str}
-Hand 2: ${hand2Str}
-Result: Hand 1 is better than Hand 2`;
-  } else if (result === false) {
-    return `Hand 1: ${hand1Str}
-Hand 2: ${hand2Str}
-Result: Hand 1 is worse than Hand 2`;
-  } else {
-    return `Hand 1: ${hand1Str}
-Hand 2: ${hand2Str}
-Result: Both hands are equal`;
-  }
 }
 
 /**
@@ -143,17 +77,13 @@ Total: ${(total * 100).toFixed(2)}%`;
 
 // Export the outputFormatter object
 export const outputFormatter = {
-  formatBestHand,
-  compareHands,
   formatOdds,
   formatPercentages,
   formatResult,
   formatHandType,
   // JSON functions
   formatOddsJson,
-  formatBestHandJson,
   formatPercentagesJson,
-  formatCompareJson,
   createJsonResponse,
 };
 
@@ -199,25 +129,6 @@ export function formatOddsJson(oddsResult: HoleOdds[]): object {
       tieChance: player.tieChance,
       ...(player.winChanceError && { winChanceError: player.winChanceError }),
     })),
-  };
-}
-
-/**
- * Format best hand result for JSON output
- */
-export function formatBestHandJson(
-  hand: HandInterface,
-  allCards: Card[]
-): object {
-  const rank = typeof hand.value === "function" ? hand.value() : hand.value;
-
-  return {
-    hand: {
-      type: handTypeToString(hand.type),
-      value: rank,
-      cards: hand.cards().map(formatCard),
-    },
-    allCards: allCards.map(formatCard),
   };
 }
 
@@ -268,45 +179,6 @@ export function formatPercentagesJson(
       percentage: percentagesResult.royalFlush.percentage,
       count: percentagesResult.royalFlush.count,
     },
-  };
-}
-
-/**
- * Format compare result for JSON output
- */
-export function formatCompareJson(
-  hand1Cards: Card[],
-  hand2Cards: Card[],
-  bestHand1: HandInterface | null,
-  bestHand2: HandInterface | null,
-  result: boolean | null
-): object {
-  return {
-    hand1: {
-      cards: hand1Cards.map(formatCard),
-      bestHand: bestHand1
-        ? {
-            type: handTypeToString(bestHand1.type),
-            value:
-              typeof bestHand1.value === "function"
-                ? bestHand1.value()
-                : bestHand1.value,
-          }
-        : null,
-    },
-    hand2: {
-      cards: hand2Cards.map(formatCard),
-      bestHand: bestHand2
-        ? {
-            type: handTypeToString(bestHand2.type),
-            value:
-              typeof bestHand2.value === "function"
-                ? bestHand2.value()
-                : bestHand2.value,
-          }
-        : null,
-    },
-    result,
   };
 }
 
