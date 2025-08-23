@@ -2,7 +2,10 @@ import { Command } from "commander";
 import { odds, Card } from "@malte.muth/poker-hands";
 import { parseCards } from "../utils/cardParser";
 import { outputFormatter } from "../utils/outputFormatter";
-import { OddsOptions } from "packages/library/dist/src/model/odds/odds";
+import {
+  HoleOdds,
+  OddsOptions,
+} from "packages/library/dist/src/model/odds/odds";
 
 function parseHoleCardsForPlayers(holes: string[]): Card[][] {
   return holes.map((holeString) => parseCards(holeString));
@@ -74,6 +77,88 @@ function handleError(error: unknown): void {
 
 let progressInterval: ReturnType<typeof setInterval> | null = null;
 
+function calculateOdds(
+  holes: string[],
+  options: {
+    board?: string;
+    mode?: string;
+    threshold?: number;
+    sampleSize?: number;
+    progress?: boolean;
+    json?: boolean;
+  }
+) {
+  // Parse hole cards for all players
+  const holeCardsList = parseHoleCardsForPlayers(holes);
+
+  // Parse board cards if provided
+  const boardCards = options.board ? parseCards(options.board) : [];
+
+  // Validate inputs
+  validateHoleCards(holeCardsList);
+
+  // Validate and normalize mode
+  const mode = validateAndNormalizeMode(options.mode);
+
+  // Build options object with mode-specific parameters
+  const oddsOptions = buildOddsOptions(mode, {
+    threshold: options.threshold,
+    sampleSize: options.sampleSize,
+    progress: options.progress && !options.json, // Don't show progress if JSON is requested
+  });
+
+  // Calculate odds
+  return odds(holeCardsList, boardCards, oddsOptions);
+}
+
+function displayOddsResult(
+  oddsResult: HoleOdds[],
+  options: {
+    progress?: boolean;
+    json?: boolean;
+  }
+) {
+  // Clean up progress display
+  handleProgressCleanup(options.progress && !options.json);
+
+  // Output results
+  if (options.json) {
+    console.log(
+      JSON.stringify(
+        outputFormatter.createJsonResponse(
+          true,
+          "odds",
+          outputFormatter.formatOddsJson(oddsResult)
+        )
+      )
+    );
+  } else {
+    console.log(outputFormatter.formatOdds(oddsResult));
+  }
+}
+
+function handleOddsError(
+  error: unknown,
+  options: {
+    json?: boolean;
+  }
+) {
+  if (options.json) {
+    console.log(
+      JSON.stringify(
+        outputFormatter.createJsonResponse(
+          false,
+          "odds",
+          undefined,
+          error instanceof Error ? error.message : "Unknown error occurred"
+        )
+      )
+    );
+  } else {
+    handleError(error);
+  }
+}
+
 export const oddsCommand = new Command()
   .name("odds")
   .description("Calculate winning odds for given hole cards and board")
@@ -109,62 +194,10 @@ export const oddsCommand = new Command()
       }
     ) => {
       try {
-        // Parse hole cards for all players
-        const holeCardsList = parseHoleCardsForPlayers(holes);
-
-        // Parse board cards if provided
-        const boardCards = options.board ? parseCards(options.board) : [];
-
-        // Validate inputs
-        validateHoleCards(holeCardsList);
-
-        // Validate and normalize mode
-        const mode = validateAndNormalizeMode(options.mode);
-
-        // Build options object with mode-specific parameters
-        const oddsOptions = buildOddsOptions(mode, {
-          threshold: options.threshold,
-          sampleSize: options.sampleSize,
-          progress: options.progress && !options.json, // Don't show progress if JSON is requested
-        });
-
-        // Calculate odds
-        const oddsResult = odds(holeCardsList, boardCards, oddsOptions);
-
-        // Clean up progress display
-        handleProgressCleanup(options.progress && !options.json);
-
-        // Output results
-        if (options.json) {
-          console.log(
-            JSON.stringify(
-              outputFormatter.createJsonResponse(
-                true,
-                "odds",
-                outputFormatter.formatOddsJson(oddsResult)
-              )
-            )
-          );
-        } else {
-          console.log(outputFormatter.formatOdds(oddsResult));
-        }
+        const oddsResult = calculateOdds(holes, options);
+        displayOddsResult(oddsResult, options);
       } catch (error) {
-        if (options.json) {
-          console.log(
-            JSON.stringify(
-              outputFormatter.createJsonResponse(
-                false,
-                "odds",
-                undefined,
-                error instanceof Error
-                  ? error.message
-                  : "Unknown error occurred"
-              )
-            )
-          );
-        } else {
-          handleError(error);
-        }
+        handleOddsError(error, options);
       }
     }
   );
