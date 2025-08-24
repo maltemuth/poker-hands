@@ -1,5 +1,5 @@
 import { exec } from "child_process";
-import { OddsRequest, CLIOddsResponse } from "../types";
+import { OddsRequest, CLIOddsResponse, OddsData } from "../types";
 import Ajv from "ajv";
 import oddsSchema from "../../../cli/schemas/odds.json";
 
@@ -102,8 +102,8 @@ export function validateCliOutput(cliOutput: string): {
 /**
  * Format CLI output to ServiceOddsResponse
  */
-export function formatCliOutput(cliOutput: string): CLIOddsResponse {
-  // Parse the CLI output and convert to ServiceOddsResponse format
+export function formatCliOutput(cliOutput: string): OddsData {
+  // Parse the CLI output and extract the data portion
   const parsedOutput = JSON.parse(cliOutput);
 
   // Validate against schema
@@ -112,37 +112,8 @@ export function formatCliOutput(cliOutput: string): CLIOddsResponse {
     throw new Error(`Invalid CLI output: ${validation.error}`);
   }
 
-  // Extract win probabilities from CLI output
-  const winProbabilities =
-    parsedOutput.data?.players?.map(
-      (player: { winChance: number }) => player.winChance
-    ) || [];
-
-  return {
-    success: true,
-    command: "odds",
-    data: {
-      players:
-        parsedOutput.data?.players?.map(
-          (
-            player: {
-              holeCards: string[];
-              winChance: number;
-              tieChance: number;
-              winChanceError?: number;
-            },
-            index: number
-          ) => ({
-            holeCards: player.holeCards,
-            winChance: winProbabilities[index] || 0,
-            tieChance: player.tieChance || 0,
-            ...(player.winChanceError && {
-              winChanceError: player.winChanceError,
-            }),
-          })
-        ) || [],
-    },
-  };
+  // Return only the data portion of the CLI response
+  return parsedOutput.data;
 }
 
 /**
