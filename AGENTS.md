@@ -18,7 +18,11 @@ nvm install && node <script>
 
 ## Project Overview
 
-This is a TypeScript library (`@malte.muth/poker-hands`) for handling Texas Hold'em poker games and more. The library provides functions for poker hand evaluation, odds calculation, and card manipulation.
+This is a TypeScript monorepo for poker-related applications, consisting of three main packages:
+
+- **`packages/library/`**: Core poker library (`@malte.muth/poker-hands`) for hand evaluation, odds calculation, and card manipulation
+- **`packages/cli/`**: Command-line interface for using the poker library
+- **`packages/service/`**: Service package for poker-related web services
 
 ### Key Features
 
@@ -30,36 +34,60 @@ This is a TypeScript library (`@malte.muth/poker-hands`) for handling Texas Hold
 
 ## Project Structure
 
-Do not attempt to read **tests**/full/poker-hand-testing.data as it is too large. If you want understand the file, look at **tests**/full/getBestHand.ts.
+Do not attempt to read **packages/library/**tests**/full/poker-hand-testing.data** as it is too large. If you want understand the file, look at **packages/library/**tests**/full/getBestHand.ts**.
 
 ```
-src/
-├── index.ts                 # Main entry point with all exports
-├── lib/                     # Utility functions
-│   ├── numericalSort.ts     # Numerical sorting utility
-│   └── purify.ts           # Memoization utility
-├── model/                   # Core business logic
-│   ├── card/               # Card-related functionality
-│   │   ├── Card.ts         # Card interface and enums
-│   │   ├── cards.ts        # Create cards from strings
-│   │   ├── fromString.ts   # Parse card from string
-│   │   ├── toString.ts     # Convert card to string
-│   │   ├── valueCounts.ts  # Count card values
-│   │   └── ...             # Other card utilities
-│   ├── hand/               # Hand evaluation logic
-│   │   ├── Hand.ts         # Hand interface and enums
-│   │   ├── getBestHand.ts  # Main hand evaluation
-│   │   ├── detect/         # Hand detection functions
-│   │   ├── get/            # Hand creation functions
-│   │   └── ...             # Other hand utilities
-│   ├── deck/               # Deck manipulation
-│   │   ├── create.ts       # Create full deck
-│   │   └── shuffle.ts      # Shuffle deck
-│   ├── combinatorics/      # Mathematical utilities
-│   │   └── combinations.ts # Calculate combinations
-│   └── odds/               # Odds calculation
-│       ├── odds.ts         # Main odds calculation
-│       └── percentages.ts  # Hand percentage calculation
+packages/
+├── library/                 # Core poker library package
+│   ├── src/                # Source code
+│   │   ├── index.ts        # Main entry point with all exports
+│   │   ├── lib/            # Utility functions
+│   │   │   ├── numericalSort.ts     # Numerical sorting utility
+│   │   │   └── purify.ts           # Memoization utility
+│   │   └── model/          # Core business logic
+│   │       ├── card/       # Card-related functionality
+│   │       │   ├── Card.ts         # Card interface and enums
+│   │       │   ├── cards.ts        # Create cards from strings
+│   │       │   ├── fromString.ts   # Parse card from string
+│   │       │   ├── toString.ts     # Convert card to string
+│   │       │   ├── valueCounts.ts  # Count card values
+│   │       │   └── ...             # Other card utilities
+│   │       ├── hand/       # Hand evaluation logic
+│   │       │   ├── getBestHand.ts  # Main hand evaluation
+│   │       │   ├── detect/         # Hand detection functions
+│   │       │   ├── get/            # Hand creation functions
+│   │       │   └── ...             # Other hand utilities
+│   │       ├── deck/       # Deck manipulation
+│   │       │   ├── create.ts       # Create full deck
+│   │       │   └── shuffle.ts      # Shuffle deck
+│   │       ├── combinatorics/      # Mathematical utilities
+│   │       │   └── combinations.ts # Calculate combinations
+│   │       └── odds/       # Odds calculation
+│   │           ├── odds.ts         # Main odds calculation
+│   │           └── percentages.ts  # Hand percentage calculation
+│   ├── __tests__/          # Test files
+│   │   ├── unit/           # Unit tests
+│   │   ├── full/           # Integration tests
+│   │   └── async/          # Async tests
+│   └── __perf__/           # Performance tests
+├── cli/                    # Command-line interface package
+│   ├── src/                # Source code
+│   │   ├── index.ts        # Main entry point
+│   │   ├── commands/       # CLI commands
+│   │   ├── types/          # Type definitions
+│   │   └── utils/          # Utility functions
+│   └── package.json        # Package configuration
+└── service/                # Service package
+    ├── src/                # Source code
+    │   ├── routes/         # API routes
+    │   ├── middleware/     # Express middleware
+    │   ├── types/          # Type definitions
+    │   ├── utils/          # Utility functions
+    │   └── db/             # Database configuration
+    ├── __tests__/          # Test files
+    │   ├── unit/           # Unit tests
+    │   └── integration/    # Integration tests
+    └── data/               # Data files
 ```
 
 ## Core API
@@ -132,9 +160,9 @@ src/
 
 ### Test Structure
 
-- **Unit Tests**: Located in `__tests__/unit/`
-- **Integration Tests**: Located in `__tests__/full/`
-- **Performance Tests**: Located in `__perf__/`
+- **Unit Tests**: Located in `__tests__/unit/` within each package
+- **Integration Tests**: Located in `__tests__/full/` (library) and `__tests__/integration/` (service)
+- **Performance Tests**: Located in `__perf__/` (library package only)
 
 ### Test Patterns
 
@@ -164,6 +192,13 @@ src/
 2. **Update Tests**: Update tests to reflect changes
 3. **Add Performance Tests**: If performance is affected, add benchmarks
 4. **Document Changes**: Update documentation for significant changes
+
+### For Monorepo Development
+
+1. **Package-Specific Development**: Work within the appropriate package directory
+2. **Cross-Package Dependencies**: Be mindful of dependencies between packages
+3. **Build Consistency**: Ensure all packages build successfully together
+4. **Version Management**: Keep package versions synchronized when needed
 
 ### Code Quality Standards
 
@@ -209,7 +244,7 @@ src/
 
 ### Performance Testing
 
-- **Benchmarking**: Use `__perf__/` directory for performance tests
+- **Benchmarking**: Use `packages/library/__perf__/` directory for performance tests
 - **Profiling**: Use Node.js profiler for performance analysis
 - **Memory Usage**: Monitor memory usage for large datasets
 
@@ -228,6 +263,13 @@ src/
 - **Add Tests**: Include comprehensive tests for new functionality
 - **Document APIs**: Provide clear documentation for new APIs
 - **Maintain Compatibility**: Ensure backward compatibility
+
+### For Library Users
+
+- **Import Pattern**: Use named imports from main module
+- **Type Safety**: Leverage TypeScript definitions for better IDE support
+- **Error Handling**: Handle potential errors from invalid inputs
+- **Performance**: Be aware of computational complexity for large inputs
 
 ## Future Enhancements
 
