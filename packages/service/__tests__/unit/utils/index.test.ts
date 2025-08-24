@@ -238,21 +238,23 @@ describe("Utils", () => {
   describe("formatCliOutput", () => {
     it("should format CLI output correctly", () => {
       const cliOutput = JSON.stringify({
-        winProbabilities: [0.65, 0.35],
-        handTypeProbabilities: [
-          {
-            highCard: 0.15,
-            pair: 0.25,
-            twoPair: 0.1,
-            threeOfAKind: 0.05,
-            straight: 0.2,
-            flush: 0.15,
-            fullHouse: 0.05,
-            fourOfAKind: 0.02,
-            straightFlush: 0.02,
-            royalFlush: 0.01,
-          },
-        ],
+        success: true,
+        command: "odds",
+        data: {
+          players: [
+            {
+              holeCards: ["Ah", "Kh"],
+              winChance: 0.65,
+              tieChance: 0.05,
+              winChanceError: 0.02,
+            },
+            {
+              holeCards: ["7c", "2d"],
+              winChance: 0.35,
+              tieChance: 0.05,
+            },
+          ],
+        },
       });
 
       const result = formatCliOutput(cliOutput);
@@ -260,16 +262,28 @@ describe("Utils", () => {
         winProbabilities: [0.65, 0.35],
         handTypeProbabilities: [
           {
-            highCard: 0.15,
-            pair: 0.25,
-            twoPair: 0.1,
-            threeOfAKind: 0.05,
-            straight: 0.2,
-            flush: 0.15,
-            fullHouse: 0.05,
-            fourOfAKind: 0.02,
-            straightFlush: 0.02,
-            royalFlush: 0.01,
+            highCard: 0,
+            pair: 0,
+            twoPair: 0,
+            threeOfAKind: 0,
+            straight: 0,
+            flush: 0,
+            fullHouse: 0,
+            fourOfAKind: 0,
+            straightFlush: 0,
+            royalFlush: 0,
+          },
+          {
+            highCard: 0,
+            pair: 0,
+            twoPair: 0,
+            threeOfAKind: 0,
+            straight: 0,
+            flush: 0,
+            fullHouse: 0,
+            fourOfAKind: 0,
+            straightFlush: 0,
+            royalFlush: 0,
           },
         ],
       });
@@ -277,8 +291,11 @@ describe("Utils", () => {
 
     it("should handle empty winProbabilities", () => {
       const cliOutput = JSON.stringify({
-        winProbabilities: [],
-        handTypeProbabilities: [],
+        success: true,
+        command: "odds",
+        data: {
+          players: [],
+        },
       });
 
       const result = formatCliOutput(cliOutput);
@@ -290,7 +307,11 @@ describe("Utils", () => {
 
     it("should handle missing winProbabilities", () => {
       const cliOutput = JSON.stringify({
-        handTypeProbabilities: [],
+        success: true,
+        command: "odds",
+        data: {
+          players: [],
+        },
       });
 
       const result = formatCliOutput(cliOutput);
@@ -302,14 +323,55 @@ describe("Utils", () => {
 
     it("should handle missing handTypeProbabilities", () => {
       const cliOutput = JSON.stringify({
-        winProbabilities: [0.65, 0.35],
+        success: true,
+        command: "odds",
+        data: {
+          players: [
+            {
+              holeCards: ["Ah", "Kh"],
+              winChance: 0.65,
+              tieChance: 0.05,
+            },
+          ],
+        },
       });
 
       const result = formatCliOutput(cliOutput);
       expect(result).toEqual({
-        winProbabilities: [0.65, 0.35],
-        handTypeProbabilities: [],
+        winProbabilities: [0.65],
+        handTypeProbabilities: [
+          {
+            highCard: 0,
+            pair: 0,
+            twoPair: 0,
+            threeOfAKind: 0,
+            straight: 0,
+            flush: 0,
+            fullHouse: 0,
+            fourOfAKind: 0,
+            straightFlush: 0,
+            royalFlush: 0,
+          },
+        ],
       });
+    });
+
+    it("should throw error for invalid CLI output", () => {
+      const cliOutput = JSON.stringify({
+        invalid: "output",
+      });
+
+      expect(() => formatCliOutput(cliOutput)).toThrow(
+        "Invalid CLI output: Schema validation failed: must have required property 'success', must have required property 'success', must match exactly one schema in oneOf"
+      );
+    });
+
+    it("should throw error for invalid JSON", () => {
+      const cliOutput = "invalid json";
+
+      expect(() => formatCliOutput(cliOutput)).toThrow(
+        "Unexpected token 'i', \"invalid json\" is not valid JSON"
+      );
     });
   });
 

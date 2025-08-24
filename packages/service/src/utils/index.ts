@@ -1,5 +1,7 @@
 import { exec } from "child_process";
-import { OddsRequest, OddsResponse } from "../types";
+import { OddsRequest, OddsResponse, CliOddsResponse } from "../types";
+import Ajv from "ajv";
+import oddsSchema from "../../../cli/schemas/odds.json";
 
 /**
  * Execute CLI command asynchronously
@@ -65,6 +67,39 @@ export function validateOddsInput(
 }
 
 /**
+ * Validate CLI output against JSON schema
+ */
+export function validateCliOutput(cliOutput: string): {
+  isValid: boolean;
+  error?: string;
+} {
+  try {
+    const parsedOutput = JSON.parse(cliOutput);
+    const ajv = new Ajv();
+    const validate = ajv.compile(oddsSchema);
+    const isValid = validate(parsedOutput);
+
+    if (!isValid) {
+      return {
+        isValid: false,
+        error: `Schema validation failed: ${validate.errors
+          ?.map((e) => e.message)
+          .join(", ")}`,
+      };
+    }
+
+    return { isValid: true };
+  } catch (error) {
+    return {
+      isValid: false,
+      error: `Invalid JSON: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`,
+    };
+  }
+}
+
+/**
  * Format CLI output to OddsResponse
  */
 export function formatCliOutput(cliOutput: string): OddsResponse {
@@ -72,10 +107,49 @@ export function formatCliOutput(cliOutput: string): OddsResponse {
   // This will depend on the actual CLI output format
   const parsedOutput = JSON.parse(cliOutput);
 
+  // Validate against schema
+  const validation = validateCliOutput(cliOutput);
+  if (!validation.isValid) {
+    throw new Error(`Invalid CLI output: ${validation.error}`);
+  }
+
   return {
-    winProbabilities: parsedOutput.winProbabilities || [],
-    handTypeProbabilities: parsedOutput.handTypeProbabilities || [],
+    winProbabilities:
+      parsedOutput.data?.players?.map(
+        (player: { winChance: number }) => player.winChance
+      ) || [],
+    handTypeProbabilities:
+      parsedOutput.data?.players?.map(() =>
+        // This is a placeholder - the CLI doesn't currently provide hand type probabilities
+        ({
+          highCard: 0,
+          pair: 0,
+          twoPair: 0,
+          threeOfAKind: 0,
+          straight: 0,
+          flush: 0,
+          fullHouse: 0,
+          fourOfAKind: 0,
+          straightFlush: 0,
+          royalFlush: 0,
+        })
+      ) || [],
   };
+}
+
+/**
+ * Parse CLI output as CliOddsResponse (raw format)
+ */
+export function parseCliOutput(cliOutput: string): CliOddsResponse {
+  const parsedOutput = JSON.parse(cliOutput);
+
+  // Validate against schema
+  const validation = validateCliOutput(cliOutput);
+  if (!validation.isValid) {
+    throw new Error(`Invalid CLI output: ${validation.error}`);
+  }
+
+  return parsedOutput as CliOddsResponse;
 }
 
 /**

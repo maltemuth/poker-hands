@@ -53,7 +53,9 @@ describe("Routes", () => {
       };
 
       validateOddsInput.mockReturnValue(null);
-      executeCliCommand.mockResolvedValue('{"winProbabilities": [0.65, 0.35]}');
+      executeCliCommand.mockResolvedValue(
+        '{"success": true, "command": "odds", "data": {"players": [{"holeCards": ["Ah", "Kh"], "winChance": 0.65, "tieChance": 0.05}, {"holeCards": ["7c", "2d"], "winChance": 0.35, "tieChance": 0.05}]}}'
+      );
       formatCliOutput.mockReturnValue({
         winProbabilities: [0.65, 0.35],
         handTypeProbabilities: [],
@@ -63,10 +65,10 @@ describe("Routes", () => {
 
       expect(response.status).toBe(200);
       expect(executeCliCommand).toHaveBeenCalledWith(
-        "npx poker-hands odds Ah Kh 7c 2d Ts 9h 8c --json"
+        "npx poker-hands odds AhKh 7c2d --board Ts 9h 8c --json"
       );
       expect(formatCliOutput).toHaveBeenCalledWith(
-        '{"winProbabilities": [0.65, 0.35]}'
+        '{"success": true, "command": "odds", "data": {"players": [{"holeCards": ["Ah", "Kh"], "winChance": 0.65, "tieChance": 0.05}, {"holeCards": ["7c", "2d"], "winChance": 0.35, "tieChance": 0.05}]}}'
       );
     });
 
