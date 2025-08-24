@@ -2,13 +2,14 @@
 
 import { Command } from "commander";
 import { PokerHandsService } from "./index";
+import { version } from "../package.json";
 
 const program = new Command();
 
 program
   .name("poker-hands-service")
   .description("CLI for starting the Poker Hands Service")
-  .version("0.3.1");
+  .version(version);
 
 program
   .command("start")

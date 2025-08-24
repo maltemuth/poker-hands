@@ -2,8 +2,6 @@
 
 [![npm](https://img.shields.io/npm/v/@malte.muth/poker-hands)](https://www.npmjs.com/package/@malte.muth/poker-hands)
 [![npm](https://img.shields.io/npm/dt/@malte.muth/poker-hands)](https://www.npmjs.com/package/@malte.muth/poker-hands)
-[![CI](https://img.shields.io/github/actions/workflow/status/malte-muth/poker-hands/ci.yml?branch=main)](https://github.com/malte-muth/poker-hands/actions/workflows/ci.yml)
-[![GitHub](https://img.shields.io/github/license/malte-muth/poker-hands)](https://github.com/malte-muth/poker-hands/blob/main/LICENSE)
 
 A comprehensive TypeScript library for Texas Hold'em poker hand evaluation and odds calculation.
 
@@ -14,8 +12,6 @@ A comprehensive TypeScript library for Texas Hold'em poker hand evaluation and o
 - **Odds Calculation**: Calculate winning probabilities using exhaustive or Monte Carlo methods
 - **Hand Type Percentages**: Calculate the probability of achieving each hand type
 - **Card Manipulation**: Create, shuffle, and manipulate poker decks and cards
-- **TypeScript Support**: Full type safety with comprehensive TypeScript definitions
-- **Performance Optimized**: Efficient algorithms with caching and smart selection
 
 ## Installation
 
@@ -613,33 +609,3 @@ npm run build
 ## License
 
 MIT License - see the [LICENSE](../../LICENSE) file for details.
-
-## Changelog
-
-### v0.3.1
-
-- Added TypeScript definitions
-- Improved performance optimizations
-- Fixed edge cases in hand evaluation
-
-### v0.3.0
-
-- Added Monte Carlo odds calculation
-- Added progress callback support
-- Improved error handling
-
-### v0.2.0
-
-- Initial release with basic hand evaluation
-- Added odds calculation
-- Added hand comparison functions
-
-## Support
-
-- [GitHub Issues](https://github.com/malte-muth/poker-hands/issues)
-- [Documentation](https://github.com/malte-muth/poker-hands/wiki)
-- [Examples](https://github.com/malte-muth/poker-hands/tree/main/examples)
-
-```
-
-```

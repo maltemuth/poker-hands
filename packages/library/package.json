@@ -1,9 +1,23 @@
 {
   "name": "@malte.muth/poker-hands",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "private": false,
+  "description": "A comprehensive TypeScript library for Texas Hold'em poker hand evaluation and odds calculation",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "keywords": [
+    "poker",
+    "texas-holdem",
+    "hand-evaluation",
+    "odds",
+    "typescript",
+    "library"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/malte-muth/poker-hands.git",
+    "directory": "packages/library"
+  },
   "scripts": {
     "build": "npm run clean && tsc",
     "test": "jest",

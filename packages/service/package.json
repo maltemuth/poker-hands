@@ -1,10 +1,24 @@
 {
   "name": "@malte.muth/poker-hands-service",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "private": false,
+  "description": "A HTTP API service for Texas Hold'em poker odds calculation. Built on Express.js with TypeScript.",
   "main": "dist/index.js",
   "bin": {
     "poker-hands-service": "dist/cli.js"
+  },
+  "keywords": [
+    "poker",
+    "texas-holdem",
+    "odds",
+    "api",
+    "express",
+    "rest"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/malte-muth/poker-hands.git",
+    "directory": "packages/service"
   },
   "scripts": {
     "build": "tsc",
