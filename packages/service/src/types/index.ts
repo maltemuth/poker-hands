@@ -27,6 +27,15 @@ export interface OddsRequest {
   holes: string[][];
   /** Community cards (optional) */
   board?: string[];
+  /** Calculation options (optional) */
+  options?: {
+    /** Calculation mode (auto, exhaustive, monteCarlo) */
+    mode?: "auto" | "exhaustive" | "monteCarlo";
+    /** Threshold for auto mode (default: 10000) */
+    threshold?: number;
+    /** Sample size for monte-carlo mode (default: 10000) */
+    sampleSize?: number;
+  };
 }
 
 /**

@@ -63,6 +63,34 @@ export function validateOddsInput(
     }
   }
 
+  // Validate options if provided
+  if (input.options) {
+    const validModes = ["auto", "exhaustive", "monteCarlo"];
+    if (input.options.mode && !validModes.includes(input.options.mode)) {
+      return {
+        error: `Invalid mode: ${
+          input.options.mode
+        }. Must be one of: ${validModes.join(", ")}`,
+      };
+    }
+
+    if (
+      input.options.threshold !== undefined &&
+      (typeof input.options.threshold !== "number" ||
+        input.options.threshold <= 0)
+    ) {
+      return { error: "Threshold must be a positive number" };
+    }
+
+    if (
+      input.options.sampleSize !== undefined &&
+      (typeof input.options.sampleSize !== "number" ||
+        input.options.sampleSize <= 0)
+    ) {
+      return { error: "Sample size must be a positive number" };
+    }
+  }
+
   return null;
 }
 

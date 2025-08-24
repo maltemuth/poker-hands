@@ -56,6 +56,14 @@ export function setupRoutes(app: express.Application): void {
       // Construct command with proper formatting:
       const cliCommand = `npx poker-hands odds ${playerHoleArgs.join(" ")}${
         boardArgs.length > 0 ? ` --board ${boardArgs.join(" ")}` : ""
+      }${input.options?.mode ? ` --mode ${input.options.mode}` : ""}${
+        input.options?.threshold !== undefined
+          ? ` --threshold ${input.options.threshold}`
+          : ""
+      }${
+        input.options?.sampleSize !== undefined
+          ? ` --sample-size ${input.options.sampleSize}`
+          : ""
       } --json`;
 
       // Execute CLI command asynchronously
