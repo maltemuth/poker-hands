@@ -1,6 +1,12 @@
 // import { HandInterface } from "@malte.muth/poker-hands";
 
 import { Card, HoleOdds, HandPercentages } from "@malte.muth/poker-hands";
+import {
+  OddsData,
+  PercentagesData,
+  CLISuccessResponse,
+  CLIErrorResponse,
+} from "../types/schemas";
 
 /**
  * Format card for display
@@ -121,7 +127,7 @@ export function formatHandType(
 /**
  * Format odds result for JSON output
  */
-export function formatOddsJson(oddsResult: HoleOdds[]): object {
+export function formatOddsJson(oddsResult: HoleOdds[]): OddsData {
   return {
     players: oddsResult.map((player) => ({
       holeCards: player.hole.map(formatCard),
@@ -137,7 +143,7 @@ export function formatOddsJson(oddsResult: HoleOdds[]): object {
  */
 export function formatPercentagesJson(
   percentagesResult: HandPercentages
-): object {
+): PercentagesData {
   return {
     highCard: {
       percentage: percentagesResult.highCard.percentage,
@@ -190,11 +196,18 @@ export function createJsonResponse(
   command: string,
   data?: object,
   error?: string
-): object {
-  return {
-    success,
-    command,
-    ...(data && { data }),
-    ...(error && { error }),
-  };
+): CLISuccessResponse<object> | CLIErrorResponse {
+  if (success) {
+    return {
+      success: true,
+      command,
+      data: data!,
+    };
+  } else {
+    return {
+      success: false,
+      command,
+      error: error!,
+    };
+  }
 }

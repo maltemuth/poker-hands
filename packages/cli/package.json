@@ -11,6 +11,7 @@
     "schemas",
     "README.md"
   ],
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "lint": "eslint src --ext .ts",

@@ -2,6 +2,23 @@
  * Type definitions for the Poker Hands Service
  */
 
+// Import CLI types from the CLI package for consistency
+import {
+  CLIResponseBase,
+  CLISuccessResponse,
+  CLIErrorResponse,
+  CLIResponse,
+  OddsData,
+  OddsPlayerData,
+  PercentagesData,
+  HandTypeData,
+  CommandName,
+  CLIOptions,
+  CardInput,
+  CLIOddsResponse,
+  CLIPercentagesResponse,
+} from "@malte.muth/poker-hands-cli";
+
 /**
  * Request interface for odds calculation
  */
@@ -15,7 +32,7 @@ export interface OddsRequest {
 /**
  * Response interface for odds calculation
  */
-export interface OddsResponse {
+export interface ServiceOddsResponse {
   /** Winning probabilities for each player */
   winProbabilities: number[];
   /** Hand type probabilities for each player */
@@ -34,32 +51,23 @@ export interface OddsResponse {
 }
 
 /**
- * CLI Odds Response format (matches CLI output schema)
- */
-export interface CliOddsResponse {
-  /** Whether the calculation was successful */
-  success: boolean;
-  /** The command that was executed */
-  command: "odds";
-  /** Odds data for players */
-  data?: {
-    /** Array of players with their hole cards and odds */
-    players: Array<{
-      /** The player's hole cards */
-      holeCards: string[];
-      /** Probability of winning (0-1) */
-      winChance: number;
-      /** Probability of tying (0-1) */
-      tieChance: number;
-      /** Confidence interval for win chance (Monte Carlo only) */
-      winChanceError?: number;
-    }>;
-  };
-  /** Error message if the calculation failed */
-  error?: string;
-}
-
-/**
  * API response wrapper
  */
 export type ApiResponse<T = unknown> = T | string;
+
+// Re-export CLI types for convenience
+export {
+  CLIResponseBase,
+  CLISuccessResponse,
+  CLIErrorResponse,
+  CLIResponse,
+  OddsData,
+  OddsPlayerData,
+  PercentagesData,
+  HandTypeData,
+  CommandName,
+  CLIOptions,
+  CardInput,
+  CLIOddsResponse,
+  CLIPercentagesResponse,
+};

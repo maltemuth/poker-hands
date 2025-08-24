@@ -1,5 +1,5 @@
 import { exec } from "child_process";
-import { OddsRequest, OddsResponse, CliOddsResponse } from "../types";
+import { OddsRequest, CLIOddsResponse } from "../types";
 import Ajv from "ajv";
 import oddsSchema from "../../../cli/schemas/odds.json";
 
@@ -100,11 +100,10 @@ export function validateCliOutput(cliOutput: string): {
 }
 
 /**
- * Format CLI output to OddsResponse
+ * Format CLI output to ServiceOddsResponse
  */
-export function formatCliOutput(cliOutput: string): OddsResponse {
-  // Parse the CLI output and convert to OddsResponse format
-  // This will depend on the actual CLI output format
+export function formatCliOutput(cliOutput: string): CLIOddsResponse {
+  // Parse the CLI output and convert to ServiceOddsResponse format
   const parsedOutput = JSON.parse(cliOutput);
 
   // Validate against schema
@@ -113,34 +112,43 @@ export function formatCliOutput(cliOutput: string): OddsResponse {
     throw new Error(`Invalid CLI output: ${validation.error}`);
   }
 
+  // Extract win probabilities from CLI output
+  const winProbabilities =
+    parsedOutput.data?.players?.map(
+      (player: { winChance: number }) => player.winChance
+    ) || [];
+
   return {
-    winProbabilities:
-      parsedOutput.data?.players?.map(
-        (player: { winChance: number }) => player.winChance
-      ) || [],
-    handTypeProbabilities:
-      parsedOutput.data?.players?.map(() =>
-        // This is a placeholder - the CLI doesn't currently provide hand type probabilities
-        ({
-          highCard: 0,
-          pair: 0,
-          twoPair: 0,
-          threeOfAKind: 0,
-          straight: 0,
-          flush: 0,
-          fullHouse: 0,
-          fourOfAKind: 0,
-          straightFlush: 0,
-          royalFlush: 0,
-        })
-      ) || [],
+    success: true,
+    command: "odds",
+    data: {
+      players:
+        parsedOutput.data?.players?.map(
+          (
+            player: {
+              holeCards: string[];
+              winChance: number;
+              tieChance: number;
+              winChanceError?: number;
+            },
+            index: number
+          ) => ({
+            holeCards: player.holeCards,
+            winChance: winProbabilities[index] || 0,
+            tieChance: player.tieChance || 0,
+            ...(player.winChanceError && {
+              winChanceError: player.winChanceError,
+            }),
+          })
+        ) || [],
+    },
   };
 }
 
 /**
  * Parse CLI output as CliOddsResponse (raw format)
  */
-export function parseCliOutput(cliOutput: string): CliOddsResponse {
+export function parseCliOutput(cliOutput: string): CLIOddsResponse {
   const parsedOutput = JSON.parse(cliOutput);
 
   // Validate against schema
@@ -149,7 +157,7 @@ export function parseCliOutput(cliOutput: string): CliOddsResponse {
     throw new Error(`Invalid CLI output: ${validation.error}`);
   }
 
-  return parsedOutput as CliOddsResponse;
+  return parsedOutput as CLIOddsResponse;
 }
 
 /**

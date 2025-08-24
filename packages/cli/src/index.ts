@@ -1,21 +1,3 @@
-#!/usr/bin/env node
-
-import { Command } from "commander";
-import { oddsCommand } from "./commands/odds";
-import { percentagesCommand } from "./commands/percentages";
-
-const program = new Command();
-
-program
-  .name("poker-hands")
-  .description(
-    "CLI for poker hands library - evaluate hands, calculate odds, and more"
-  )
-  .version("0.3.1");
-
-// Add commands
-program.addCommand(oddsCommand);
-program.addCommand(percentagesCommand);
-
-// Parse command line arguments
-program.parse();
+// Main entry point for CLI package
+export * from "./types";
+export * from "./utils";
