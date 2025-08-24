@@ -6,6 +6,11 @@
   "bin": {
     "poker-hands": "dist/index.js"
   },
+  "files": [
+    "dist",
+    "schemas",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsc",
     "lint": "eslint src --ext .ts",

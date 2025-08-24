@@ -1,242 +1,156 @@
-# @malte.muth/poker-hands-cli
+# Poker Hands CLI
 
-[![npm](https://img.shields.io/npm/v/@malte.muth/poker-hands-cli)](https://www.npmjs.com/package/@malte.muth/poker-hands-cli)
-[![npm](https://img.shields.io/npm/dt/@malte.muth/poker-hands-cli)](https://www.npmjs.com/package/@malte.muth/poker-hands-cli)
-
-A command-line interface for Texas Hold'em poker hand evaluation, odds calculation, and more. Built with Commander.js and TypeScript.
-
-This package is almost entirely AI-generated.
+A command-line interface for the poker hands library, providing tools for calculating odds and hand percentages.
 
 ## Installation
-
-### Global Installation
 
 ```bash
 npm install -g @malte.muth/poker-hands-cli
 ```
 
-### Local Installation
+## Usage
+
+### Odds Calculation
+
+Calculate winning odds for given hole cards and board:
 
 ```bash
-npm install @malte.muth/poker-hands-cli
+poker-hands odds "AhKh" "QdJdTs"
 ```
 
-## Quick Start
+### Percentages Calculation
 
-After installation, you can use the CLI from anywhere:
+Calculate hand type percentages for given hole cards and board:
 
 ```bash
-# Get help
-poker-hands --help
-
-# Calculate odds
-poker-hands odds AhKh 7c2d Ts9h8c
-
-# Calculate percentages
-poker-hands percentages AhKh 7c2d Ts9h8c
+poker-hands percentages "AhKh" "QdJdTs"
 ```
 
-## Commands
+## JSON Output
 
-### `odds`
-
-Calculate winning odds for given hole cards and board.
+The CLI supports JSON output for interoperability with other tools:
 
 ```bash
-poker-hands odds <hole1> <hole2> [board...]
+poker-hands odds "AhKh" "QdJdTs" --json
+poker-hands percentages "AhKh" "QdJdTs" --json
 ```
 
-**Arguments:**
+## JSON Schemas
 
-- `hole1`: First player hole cards (e.g., "2h Td")
-- `hole2`: Second player hole cards (e.g., "3c 4d")
-- `board...`: Community board cards (optional)
+For programmatic use, JSON schemas are provided to validate the output format:
 
-**Example:**
+### Odds Command Schema
 
-```bash
-# Pre-flop odds
-poker-hands odds AhKh 7c2d
+The odds command returns a JSON object with the following structure:
 
-# Post-flop odds
-poker-hands odds AhKh 7c2d Ts9h8c
-
-# Output:
-# Player 1 (Ah Kh): 65.23% win probability
-# Player 2 (7c 2d): 34.77% win probability
-#
-# Hand Type Probabilities:
-# Player 1:
-#   High Card: 15.2%
-#   Pair: 25.1%
-#   Two Pair: 10.3%
-#   Three of a Kind: 5.1%
-#   Straight: 20.4%
-#   Flush: 15.2%
-#   Full House: 5.1%
-#   Four of a Kind: 2.1%
-#   Straight Flush: 1.9%
-#   Royal Flush: 0.6%
-#
-# Player 2:
-#   High Card: 25.4%
-#   Pair: 30.2%
-#   Two Pair: 15.1%
-#   Three of a Kind: 8.3%
-#   Straight: 10.2%
-#   Flush: 8.1%
-#   Full House: 2.8%
-#   Four of a Kind: 0.8%
-#   Straight Flush: 0.1%
-#   Royal Flush: 0.0%
+```json
+{
+  "success": true,
+  "command": "odds",
+  "data": {
+    "players": [
+      {
+        "holeCards": ["Ah", "Kh"],
+        "winChance": 0.65,
+        "tieChance": 0.05,
+        "winChanceError": 0.02
+      }
+    ]
+  }
+}
 ```
 
-### `percentages`
+**Schema Location:** [`schemas/odds.json`](./schemas/odds.json)
 
-Calculate hand type percentages for given hole cards and board.
+### Percentages Command Schema
 
-```bash
-poker-hands percentages <hole1> <hole2> [board...]
+The percentages command returns a JSON object with the following structure:
+
+```json
+{
+  "success": true,
+  "command": "percentages",
+  "data": {
+    "highCard": {
+      "count": 123456,
+      "percentage": 0.123456
+    },
+    "pair": {
+      "count": 98765,
+      "percentage": 0.098765
+    }
+    // ... other hand types
+  }
+}
 ```
 
-**Arguments:**
+**Schema Location:** [`schemas/percentages.json`](./schemas/percentages.json)
 
-- `hole1`: First player hole cards (e.g., 2hTd)
-- `hole2`: Second player hole cards (e.g., 3c4d)
-- `board...`: Community board cards (optional)
+## Command Options
 
-**Example:**
+### Odds Command
 
-```bash
-# Pre-flop percentages
-poker-hands percentages AhKh 7c2d
+- `--board <board>`: Community board cards (e.g., "2h5d9c")
+- `-m, --mode <mode>`: Calculation mode (auto, exhaustive, monteCarlo)
+- `-t, --threshold <threshold>`: Threshold for auto mode (default: 10000)
+- `-s, --sample-size <sampleSize>`: Sample size for monte-carlo mode (default: 10000)
+- `--progress`: Show progress during calculation
+- `--json`: Output results in JSON format
 
-# Post-flop percentages
-poker-hands percentages AhKh 7c2d Ts9h8c
+### Percentages Command
 
-# Output:
-# Player 1 (Ah Kh):
-#   High Card: 15.2%
-#   Pair: 25.1%
-#   Two Pair: 10.3%
-#   Three of a Kind: 5.1%
-#   Straight: 20.4%
-#   Flush: 15.2%
-#   Full House: 5.1%
-#   Four of a Kind: 2.1%
-#   Straight Flush: 1.9%
-#   Royal Flush: 0.6%
-#
-# Player 2 (7c 2d):
-#   High Card: 25.4%
-#   Pair: 30.2%
-#   Two Pair: 15.1%
-#   Three of a Kind: 8.3%
-#   Straight: 10.2%
-#   Flush: 8.1%
-#   Full House: 2.8%
-#   Four of a Kind: 0.8%
-#   Straight Flush: 0.1%
-#   Royal Flush: 0.0%
+- `--json`: Output results in JSON format
+
+## Error Handling
+
+Both commands return error information in JSON format when the `--json` flag is used:
+
+```json
+{
+  "success": false,
+  "command": "odds",
+  "error": "Invalid card format: 'invalid'"
+}
 ```
 
 ## Card Format
 
-The CLI uses the standard poker card format:
+Cards are specified in the format "valueSuit":
 
-- **Values**: `2`, `3`, `4`, `5`, `6`, `7`, `8`, `9`, `T` (Ten), `J` (Jack), `Q` (Queen), `K` (King), `A` (Ace)
-- **Suits**: `h` (hearts), `d` (diamonds), `c` (clubs), `s` (spades)
+- Values: 2-9, T (10), J (Jack), Q (Queen), K (King), A (Ace)
+- Suits: h (hearts), d (diamonds), c (clubs), s (spades)
 
-**Examples:**
+Examples: "Ah" (Ace of hearts), "Td" (10 of diamonds), "2c" (2 of clubs)
 
-- `Ah` - Ace of hearts
-- `Td` - Ten of diamonds
-- `Kc` - King of clubs
-- `Qs` - Queen of spades
+## Examples
 
-## Usage Examples
-
-### Odds Calculation
+### Basic Odds Calculation
 
 ```bash
-# Calculate pre-flop odds
-poker-hands odds AhKh 7c2d
+# Two players with hole cards, no board
+poker-hands odds "AhKh" "QdJd"
 
-# Calculate post-flop odds
-poker-hands odds AhKh 7c2d Ts9h8c
-
-# Calculate turn odds
-poker-hands odds AhKh 7c2d Ts9h8c 7d
-
-# Calculate river odds
-poker-hands odds AhKh 7c2d Ts9h8c 7d 2h
+# With community cards
+poker-hands odds "AhKh" "QdJd" --board "2s3s4s"
 ```
 
-### Hand Type Percentages
+### JSON Output for Integration
 
 ```bash
-# Calculate pre-flop percentages
-poker-hands percentages AhKh 7c2d
-
-# Calculate post-flop percentages
-poker-hands percentages AhKh 7c2d Ts9h8c
+# Get odds in JSON format for processing
+poker-hands odds "AhKh" "QdJdTs" --json | jq '.data.players[0].winChance'
 ```
 
-## Error Handling
-
-The CLI provides clear error messages for invalid inputs:
+### Percentages Calculation
 
 ```bash
-# Invalid card
-poker-hands best-hand 1hXz
-# Error: Invalid card: 1h (invalid value)
-# Error: Invalid card: Xz (invalid value and suit)
+# Pre-flop hand percentages
+poker-hands percentages "AhKh"
 
-# Missing cards
-poker-hands best-hand Ah
-# Error: Need at least 5 cards to form a hand
-
-# Invalid odds calculation
-poker-hands odds Ah Kh
-# Error: Need at least 2 hole card sets for odds calculation
+# With flop cards
+poker-hands percentages "AhKh" "2s3s4s"
 ```
 
-## Advanced Usage
+## Development
 
-### JSON Output
-
-```bash
-# Enable JSON output
-poker-hands --format json best-hand Ah Kh Qh Jh Th
-
-# Output:
-{
-  "bestHand": {
-    "type": "royalFlush",
-    "cards": ["Ah", "Kh", "Qh", "Jh", "Th"],
-    "rank": 10
-  },
-  "allHands": [
-    {
-      "type": "royalFlush",
-      "cards": ["Ah", "Kh", "Qh", "Jh", "Th"],
-      "rank": 10
-    },
-    {
-      "type": "flush",
-      "cards": ["Ah", "Kh", "Qh", "Jh", "9h"],
-      "rank": 6
-    }
-  ]
-}
-```
-
-## Performance Considerations
-
-- Odds calculations can take time for complex scenarios
-- Use the `--help` flag to see all available options
-- For large batch processing, consider using the library directly
-
-## License
-
-MIT License - see the [LICENSE](../../LICENSE) file for details.
+See the main [poker-hands](../library) package for library documentation.
