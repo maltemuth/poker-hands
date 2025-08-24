@@ -13,6 +13,54 @@ This package is almost entirely AI-generated.
 npm install @malte.muth/poker-hands-service
 ```
 
+## CLI Usage
+
+The package includes a command-line interface for starting the service with custom configuration.
+
+### Basic CLI Usage
+
+```bash
+# Start the service with default settings (port 3000, CORS enabled, 5 max concurrent requests)
+poker-hands-service start
+
+# Start with custom port
+poker-hands-service start --port 8080
+
+# Start with CORS disabled
+poker-hands-service start --no-cors
+
+# Start with custom max concurrent requests
+poker-hands-service start --max-requests 10
+
+# Start with both custom port and CORS disabled
+poker-hands-service start --port 8080 --no-cors
+
+# Start with all custom settings
+poker-hands-service start -p 8080 --no-cors -r 3
+
+# Short form for port and max requests
+poker-hands-service start -p 8080 -r 10
+```
+
+### CLI Options
+
+- `-p, --port <port>`: Port to run the service on (default: 3000)
+- `--no-cors`: Disable CORS headers
+- `-r, --max-requests <maxRequests>`: Maximum concurrent requests (default: 5, range: 1-100)
+- `-h, --help`: Display help information
+
+### Global Installation
+
+After installing the package, you can use the CLI globally:
+
+```bash
+# Install the package globally
+npm install -g @malte.muth/poker-hands-service
+
+# Use the CLI from anywhere
+poker-hands-service start --port 8080
+```
+
 ## Quick Start
 
 ### Basic Usage
@@ -129,6 +177,7 @@ Health check endpoint.
 interface ServiceConfig {
   port?: number; // Server port (default: 3000)
   cors?: boolean; // Enable CORS (default: true)
+  maxConcurrentRequests?: number; // Maximum concurrent requests (default: 5, range: 1-100)
 }
 ```
 
@@ -140,6 +189,7 @@ import { PokerHandsService } from "@malte.muth/poker-hands-service";
 const service = new PokerHandsService({
   port: 8080,
   cors: true,
+  maxConcurrentRequests: 10,
 });
 ```
 
@@ -195,6 +245,40 @@ npm run build
 
 # Run the built service
 npm start
+
+# Run the CLI (development mode)
+npm run cli
+
+# Run the CLI with options
+npm run cli -- start --port 8080 --no-cors --max-requests 10
+```
+
+### Using the CLI
+
+The CLI provides a convenient way to start the service with custom configuration:
+
+```bash
+# Start with default settings
+poker-hands-service start
+
+# Start with custom port
+poker-hands-service start --port 8080
+
+# Start with CORS disabled
+poker-hands-service start --no-cors
+
+# Start with custom max concurrent requests
+poker-hands-service start --max-requests 10
+
+# Start with both custom port and CORS disabled
+poker-hands-service start --port 8080 --no-cors
+
+# Start with all custom settings
+poker-hands-service start -p 8080 --no-cors -r 3
+
+# View help
+poker-hands-service --help
+poker-hands-service start --help
 ```
 
 ### Testing

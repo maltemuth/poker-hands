@@ -2,6 +2,7 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "dist",
+    "rootDir": "src",
     "baseUrl": ".",
     "paths": {
       "@src/*": ["src/*"]
@@ -25,5 +26,5 @@
   },
   "include": ["src/**/*", "**/*.test.ts", "**/*.spec.ts"],
   "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"],
-  "files": ["src/index.ts"]
+  "files": ["src/index.ts", "src/cli.ts"]
 }
