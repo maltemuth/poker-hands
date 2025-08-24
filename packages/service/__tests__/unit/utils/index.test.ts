@@ -235,6 +235,182 @@ describe("Utils", () => {
     });
   });
 
+  describe("validateOddsInput with options", () => {
+    it("should return null for valid input with mode option", () => {
+      const input = {
+        holes: [
+          ["Ah", "Kh"],
+          ["7c", "2d"],
+        ],
+        options: {
+          mode: "exhaustive" as const,
+        },
+      };
+
+      const result = validateOddsInput(input);
+      expect(result).toBeNull();
+    });
+
+    it("should return null for valid input with threshold option", () => {
+      const input = {
+        holes: [
+          ["Ah", "Kh"],
+          ["7c", "2d"],
+        ],
+        options: {
+          threshold: 5000,
+        },
+      };
+
+      const result = validateOddsInput(input);
+      expect(result).toBeNull();
+    });
+
+    it("should return null for valid input with sampleSize option", () => {
+      const input = {
+        holes: [
+          ["Ah", "Kh"],
+          ["7c", "2d"],
+        ],
+        options: {
+          sampleSize: 1000,
+        },
+      };
+
+      const result = validateOddsInput(input);
+      expect(result).toBeNull();
+    });
+
+    it("should return null for valid input with all options", () => {
+      const input = {
+        holes: [
+          ["Ah", "Kh"],
+          ["7c", "2d"],
+        ],
+        options: {
+          mode: "monteCarlo" as const,
+          threshold: 5000,
+          sampleSize: 1000,
+        },
+      };
+
+      const result = validateOddsInput(input);
+      expect(result).toBeNull();
+    });
+
+    it("should return error for invalid mode", () => {
+      const input = {
+        holes: [
+          ["Ah", "Kh"],
+          ["7c", "2d"],
+        ],
+        options: {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          mode: "invalidMode" as any,
+        },
+      };
+
+      const result = validateOddsInput(input);
+      expect(result).toEqual({
+        error:
+          "Invalid mode: invalidMode. Must be one of: auto, exhaustive, monteCarlo",
+      });
+    });
+
+    it("should return error for negative threshold", () => {
+      const input = {
+        holes: [
+          ["Ah", "Kh"],
+          ["7c", "2d"],
+        ],
+        options: {
+          threshold: -100,
+        },
+      };
+
+      const result = validateOddsInput(input);
+      expect(result).toEqual({
+        error: "Threshold must be a positive number",
+      });
+    });
+
+    it("should return error for zero threshold", () => {
+      const input = {
+        holes: [
+          ["Ah", "Kh"],
+          ["7c", "2d"],
+        ],
+        options: {
+          threshold: 0,
+        },
+      };
+
+      const result = validateOddsInput(input);
+      expect(result).toEqual({
+        error: "Threshold must be a positive number",
+      });
+    });
+
+    it("should return error for negative sampleSize", () => {
+      const input = {
+        holes: [
+          ["Ah", "Kh"],
+          ["7c", "2d"],
+        ],
+        options: {
+          sampleSize: -100,
+        },
+      };
+
+      const result = validateOddsInput(input);
+      expect(result).toEqual({
+        error: "Sample size must be a positive number",
+      });
+    });
+
+    it("should return error for zero sampleSize", () => {
+      const input = {
+        holes: [
+          ["Ah", "Kh"],
+          ["7c", "2d"],
+        ],
+        options: {
+          sampleSize: 0,
+        },
+      };
+
+      const result = validateOddsInput(input);
+      expect(result).toEqual({
+        error: "Sample size must be a positive number",
+      });
+    });
+
+    it("should return null when options is undefined", () => {
+      const input = {
+        holes: [
+          ["Ah", "Kh"],
+          ["7c", "2d"],
+        ],
+      };
+
+      const result = validateOddsInput(input);
+      expect(result).toBeNull();
+    });
+
+    it("should return null when options is empty object", () => {
+      const input = {
+        holes: [
+          ["Ah", "Kh"],
+          ["7c", "2d"],
+        ],
+        options: {},
+      };
+
+      const result = validateOddsInput(input);
+      expect(result).toBeNull();
+    });
+  });
+
   describe("formatCliOutput", () => {
     it("should format CLI output correctly", () => {
       const cliOutput = JSON.stringify({

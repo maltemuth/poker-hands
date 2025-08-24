@@ -72,6 +72,150 @@ describe("Routes", () => {
       );
     });
 
+    it("should execute CLI command with mode option", async () => {
+      const validInput = {
+        holes: [
+          ["Ah", "Kh"],
+          ["7c", "2d"],
+        ],
+        options: {
+          mode: "exhaustive",
+        },
+      };
+
+      validateOddsInput.mockReturnValue(null);
+      executeCliCommand.mockResolvedValue(
+        '{"success": true, "command": "odds", "data": {"players": [{"holeCards": ["Ah", "Kh"], "winChance": 0.65, "tieChance": 0.05}, {"holeCards": ["7c", "2d"], "winChance": 0.35, "tieChance": 0.05}]}}'
+      );
+      formatCliOutput.mockReturnValue({
+        winProbabilities: [0.65, 0.35],
+        handTypeProbabilities: [],
+      });
+
+      const response = await request(app).post("/api/odds").send(validInput);
+
+      expect(response.status).toBe(200);
+      expect(executeCliCommand).toHaveBeenCalledWith(
+        "npx poker-hands odds AhKh 7c2d --mode exhaustive --json"
+      );
+    });
+
+    it("should execute CLI command with threshold option", async () => {
+      const validInput = {
+        holes: [
+          ["Ah", "Kh"],
+          ["7c", "2d"],
+        ],
+        options: {
+          threshold: 5000,
+        },
+      };
+
+      validateOddsInput.mockReturnValue(null);
+      executeCliCommand.mockResolvedValue(
+        '{"success": true, "command": "odds", "data": {"players": [{"holeCards": ["Ah", "Kh"], "winChance": 0.65, "tieChance": 0.05}, {"holeCards": ["7c", "2d"], "winChance": 0.35, "tieChance": 0.05}]}}'
+      );
+      formatCliOutput.mockReturnValue({
+        winProbabilities: [0.65, 0.35],
+        handTypeProbabilities: [],
+      });
+
+      const response = await request(app).post("/api/odds").send(validInput);
+
+      expect(response.status).toBe(200);
+      expect(executeCliCommand).toHaveBeenCalledWith(
+        "npx poker-hands odds AhKh 7c2d --threshold 5000 --json"
+      );
+    });
+
+    it("should execute CLI command with sampleSize option", async () => {
+      const validInput = {
+        holes: [
+          ["Ah", "Kh"],
+          ["7c", "2d"],
+        ],
+        options: {
+          sampleSize: 1000,
+        },
+      };
+
+      validateOddsInput.mockReturnValue(null);
+      executeCliCommand.mockResolvedValue(
+        '{"success": true, "command": "odds", "data": {"players": [{"holeCards": ["Ah", "Kh"], "winChance": 0.65, "tieChance": 0.05}, {"holeCards": ["7c", "2d"], "winChance": 0.35, "tieChance": 0.05}]}}'
+      );
+      formatCliOutput.mockReturnValue({
+        winProbabilities: [0.65, 0.35],
+        handTypeProbabilities: [],
+      });
+
+      const response = await request(app).post("/api/odds").send(validInput);
+
+      expect(response.status).toBe(200);
+      expect(executeCliCommand).toHaveBeenCalledWith(
+        "npx poker-hands odds AhKh 7c2d --sample-size 1000 --json"
+      );
+    });
+
+    it("should execute CLI command with all options", async () => {
+      const validInput = {
+        holes: [
+          ["Ah", "Kh"],
+          ["7c", "2d"],
+        ],
+        options: {
+          mode: "monteCarlo",
+          threshold: 5000,
+          sampleSize: 1000,
+        },
+      };
+
+      validateOddsInput.mockReturnValue(null);
+      executeCliCommand.mockResolvedValue(
+        '{"success": true, "command": "odds", "data": {"players": [{"holeCards": ["Ah", "Kh"], "winChance": 0.65, "tieChance": 0.05}, {"holeCards": ["7c", "2d"], "winChance": 0.35, "tieChance": 0.05}]}}'
+      );
+      formatCliOutput.mockReturnValue({
+        winProbabilities: [0.65, 0.35],
+        handTypeProbabilities: [],
+      });
+
+      const response = await request(app).post("/api/odds").send(validInput);
+
+      expect(response.status).toBe(200);
+      expect(executeCliCommand).toHaveBeenCalledWith(
+        "npx poker-hands odds AhKh 7c2d --mode monteCarlo --threshold 5000 --sample-size 1000 --json"
+      );
+    });
+
+    it("should execute CLI command with board and options", async () => {
+      const validInput = {
+        holes: [
+          ["Ah", "Kh"],
+          ["7c", "2d"],
+        ],
+        board: ["Ts", "9h", "8c"],
+        options: {
+          mode: "exhaustive",
+          threshold: 5000,
+        },
+      };
+
+      validateOddsInput.mockReturnValue(null);
+      executeCliCommand.mockResolvedValue(
+        '{"success": true, "command": "odds", "data": {"players": [{"holeCards": ["Ah", "Kh"], "winChance": 0.65, "tieChance": 0.05}, {"holeCards": ["7c", "2d"], "winChance": 0.35, "tieChance": 0.05}]}}'
+      );
+      formatCliOutput.mockReturnValue({
+        winProbabilities: [0.65, 0.35],
+        handTypeProbabilities: [],
+      });
+
+      const response = await request(app).post("/api/odds").send(validInput);
+
+      expect(response.status).toBe(200);
+      expect(executeCliCommand).toHaveBeenCalledWith(
+        "npx poker-hands odds AhKh 7c2d --board Ts 9h 8c --mode exhaustive --threshold 5000 --json"
+      );
+    });
+
     it("should return 500 when CLI command fails", async () => {
       const validInput = {
         holes: [
