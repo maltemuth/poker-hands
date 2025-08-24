@@ -1,3 +1,1 @@
-import { createService } from "./src/index";
-
-createService();
+export { PokerHandsService } from "./src/index";
