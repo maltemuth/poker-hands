@@ -21,11 +21,42 @@ export function setupRoutes(app: express.Application): void {
       }
 
       // Build CLI command
-      const holeArgs = input.holes.flatMap((hole) => hole);
+      //
+      // CLI Command Format Analysis:
+      // - The poker-hands CLI expects hole cards as separate arguments for each player
+      // - Each player's hole cards should be a single space-separated string
+      // - Board cards are provided via the --board option as a single space-separated string
+      // - JSON output is enabled with --json flag
+      //
+      // Example: npx poker-hands odds "AhAs" "KdKh" "QcQd" --board "2h5d9c" --json
+      //          ^         ^    ^    ^    ^    ^    ^    ^    ^    ^    ^    ^
+      //          |         |    |    |    |    |    |    |    |    |    |    |
+      //          program   cmd  p1   p2   p3   |    |    |    |    |    |    |
+      //                                        |    |    |    |    |    |    |
+      //                                        |    |    |    |    |    |    +-- JSON output
+      //                                        |    |    |    |    |    +-------- Board cards
+      //                                        |    |    |    |    +------------- Option separator
+      //                                        |    |    |    +------------------ Board cards (space-separated)
+      //                                        |    |    +----------------------- Player 3 hole cards (concatenated)
+      //                                        |    +--------------------------- Player 2 hole cards (concatenated)
+      //                                        +------------------------------ Player 1 hole cards (concatenated)
+      //
+      // Input Format:
+      // - input.holes: string[][] - Array of player hole cards, e.g., [["Ah", "As"], ["Kd", "Kh"]]
+      // - input.board: string[] | undefined - Community cards, e.g., ["2h", "5d", "9c"]
+      //
+      // Transformation Steps:
+      // 1. Map each player's hole cards array to a concatenated string (e.g., ["Ah", "As"] -> "AhAs")
+      // 2. Join all player arguments with spaces to create separate CLI arguments
+      // 3. Add --board option if board cards exist
+      // 4. Add --json flag for structured output
+      const playerHoleArgs = input.holes.map((hole) => hole.join(""));
       const boardArgs = input.board || [];
-      const cliCommand = `npx poker-hands odds ${holeArgs.join(
-        " "
-      )} ${boardArgs.join(" ")} --json`;
+
+      // Construct command with proper formatting:
+      const cliCommand = `npx poker-hands odds ${playerHoleArgs.join(" ")}${
+        boardArgs.length > 0 ? ` --board ${boardArgs.join(" ")}` : ""
+      } --json`;
 
       // Execute CLI command asynchronously
       executeCliCommand(cliCommand)
