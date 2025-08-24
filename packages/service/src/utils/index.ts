@@ -1,5 +1,5 @@
 import { exec } from "child_process";
-import { OddsRequest, OddsResponse, ApiResponse } from "../types";
+import { OddsRequest, OddsResponse } from "../types";
 
 /**
  * Execute CLI command asynchronously
@@ -81,8 +81,6 @@ export function formatCliOutput(cliOutput: string): OddsResponse {
 /**
  * Create standardized API response
  */
-export function createApiResponse<T>(data: T): T;
-export function createApiResponse<T>(error: string): string;
 export function createApiResponse<T>(dataOrError: T | string): T | string {
   return dataOrError;
 }

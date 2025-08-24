@@ -38,7 +38,8 @@ export function setupRoutes(app: express.Application): void {
           const response = createApiResponse(error.message);
           res.status(500).json(response);
         });
-    } catch (_error) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
       const response = createApiResponse("Internal server error");
       res.status(500).json(response);
     }

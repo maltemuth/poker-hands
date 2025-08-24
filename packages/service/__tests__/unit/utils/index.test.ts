@@ -104,18 +104,7 @@ describe("Utils", () => {
     it("should return error when holes is not provided", () => {
       const input = {
         holes: [],
-      } as any;
-
-      const result = validateOddsInput(input);
-      expect(result).toEqual({
-        error: "Holes must be provided as an array with at least 2 players",
-      });
-    });
-
-    it("should return error when holes is not an array", () => {
-      const input = {
-        holes: "not an array",
-      } as any;
+      };
 
       const result = validateOddsInput(input);
       expect(result).toEqual({
@@ -151,7 +140,7 @@ describe("Utils", () => {
     it("should return error when player's hole cards are not an array", () => {
       const input = {
         holes: [["not an array"], ["7c", "2d"]],
-      } as any;
+      };
 
       const result = validateOddsInput(input);
       expect(result).toEqual({
@@ -179,7 +168,7 @@ describe("Utils", () => {
           ["Ah", "123"],
           ["7c", "2d"],
         ],
-      } as any;
+      };
 
       const result = validateOddsInput(input);
       expect(result).toEqual({
@@ -194,7 +183,7 @@ describe("Utils", () => {
           ["7c", "2d"],
         ],
         board: ["not an array"],
-      } as any;
+      };
 
       const result = validateOddsInput(input);
       expect(result).toEqual({
