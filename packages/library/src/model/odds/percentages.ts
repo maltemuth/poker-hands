@@ -27,6 +27,46 @@ export interface HandPercentages {
   };
 }
 
+/**
+ * Calculates the probability distribution of all possible poker hand types
+ * for a given hole card and board combination.
+ *
+ * This function performs an exhaustive calculation of all possible board
+ * combinations that could be dealt from the remaining deck, and determines
+ * what percentage of the time each type of poker hand (from high card to
+ * royal flush) would be made.
+ *
+ * @param hole - The player's hole cards as an array of Card objects
+ * @param board - Currently revealed board cards (optional). Defaults to empty array.
+ * @returns An object mapping hand type names to their occurrence counts
+ *          and percentages. Each hand type has:
+ *          - count: Number of times this hand type appears
+ *          - percentage: Probability of this hand type (0-1)
+ *
+ * @example
+ * ```typescript
+ * import cards from '../card/cards';
+ * import percentages from './percentages';
+ *
+ * const hole = cards('As', 'Ks');
+ * const board = cards('Ts', 'Js', 'Qs');
+ *
+ * const results = percentages(hole, board);
+ *
+ * // Results show probability of each hand type with current hole and board
+ * console.log(`Royal flush chance: ${(results.royalFlush.percentage * 100).toFixed(2)}%`);
+ * console.log(`Straight flush chance: ${(results.straightFlush.percentage * 100).toFixed(2)}%`);
+ * console.log(`Full house chance: ${(results.fullHouse.percentage * 100).toFixed(2)}%`);
+ * ```
+ *
+ * @example
+ * ```typescript
+ * // With hole cards only (pre-flop)
+ * const preFlopResults = percentages(hole);
+ * console.log(`Pair chance: ${(preFlopResults.pair.percentage * 100).toFixed(2)}%`);
+ * console.log(`High card chance: ${(preFlopResults.highCard.percentage * 100).toFixed(2)}%`);
+ * ```
+ */
 const percentages = (hole: Card[], board: Card[] = []): HandPercentages => {
   const deckWithoutHoleCards = without(create(), ...hole);
   const deckWithoutKnownBoard = without(deckWithoutHoleCards, ...board);

@@ -23,6 +23,29 @@ import hasThreeOfAKind from "./detect/hasThreeOfAKind";
 import hasTwoPair from "./detect/hasTwoPair";
 import sortValueCounts from "../card/sortValueCounts";
 
+/**
+ * Determines the best possible poker hand from a given set of cards.
+ *
+ * This function evaluates all possible 5-card combinations from the input cards
+ * and returns the highest-ranking poker hand. It checks for all hand types
+ * from royal flush down to high card, returning the best possible hand.
+ *
+ * @param cards - An array of Card objects to evaluate. Must contain at least 5 cards.
+ * @returns The best HandInterface object representing the highest-ranking poker hand,
+ *          or null if fewer than 5 cards are provided.
+ *
+ * @throws {Error} If fewer than 5 cards are provided.
+ *
+ * @example
+ * ```typescript
+ * import cards from './cards';
+ * import getBestHand from './getBestHand';
+ *
+ * const myCards = cards('Ah', 'Kh', 'Qh', 'Jh', 'Th');
+ * const bestHand = getBestHand(myCards);
+ * // Returns a HandInterface representing a royal flush
+ * ```
+ */
 const getBestHand = (cards: Card[]): HandInterface | null => {
   const presortedSuits = sortedSuits(cards);
   const presortedValues = sortedValues(cards);

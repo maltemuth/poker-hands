@@ -10,6 +10,29 @@ const serializeValues = (cards: Card[]): string =>
     .map(valueToString)
     .join("");
 
+/**
+ * Determines if two poker hands have equal value.
+ *
+ * This function compares two hands by checking their type, value, subvalue,
+ * and the specific cards they contain. It returns true only if all aspects
+ * of the hands are equal.
+ *
+ * @param a - The first hand to compare
+ * @param b - The second hand to compare
+ * @returns true if both hands have equal value, false otherwise
+ *
+ * @example
+ * ```typescript
+ * import cards from '../card/cards';
+ * import getBestHand from './getBestHand';
+ * import hasEqualValue from './hasEqualValue';
+ *
+ * const hand1 = getBestHand(cards('Ah', 'Kh', 'Qh', 'Jh', 'Th'));
+ * const hand2 = getBestHand(cards('As', 'Ks', 'Qs', 'Js', 'Ts'));
+ *
+ * console.log(hasEqualValue(hand1, hand2)); // true (both are royal flushes)
+ * ```
+ */
 const hasEqualValue = (a: Hand<any>, b: Hand<any>): boolean => {
   if (a.type !== b.type) return false;
   if (a.value() !== b.value()) return false;

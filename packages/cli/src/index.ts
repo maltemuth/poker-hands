@@ -11,7 +11,7 @@ program
   .description(
     "CLI for poker hands library - evaluate hands, calculate odds, and more"
   )
-  .version("0.1.0");
+  .version("0.3.1");
 
 // Add commands
 program.addCommand(oddsCommand);

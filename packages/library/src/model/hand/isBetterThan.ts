@@ -1,6 +1,31 @@
 import { Hand } from "./Hand";
 import hasBetterValues from "../card/hasBetterValues";
 
+/**
+ * Determines if one poker hand is better than another.
+ *
+ * This function compares two hands using standard poker hand ranking rules:
+ * 1. First compares hand types (e.g., flush beats straight)
+ * 2. If types are equal, compares primary values (e.g., higher pair wins)
+ * 3. If primary values are equal, compares secondary values (e.g., in full house)
+ * 4. If all else fails, compares kickers (remaining cards)
+ *
+ * @param a - The first hand to compare
+ * @param b - The second hand to compare
+ * @returns true if hand a is better than hand b, false otherwise
+ *
+ * @example
+ * ```typescript
+ * import cards from '../card/cards';
+ * import getBestHand from './getBestHand';
+ * import isBetterThan from './isBetterThan';
+ *
+ * const hand1 = getBestHand(cards('Ah', 'Kh', 'Qh', 'Jh', 'Th')); // Royal flush
+ * const hand2 = getBestHand(cards('Kd', 'Kd', 'Qd', 'Jd', 'Td')); // King-high straight
+ *
+ * console.log(isBetterThan(hand1, hand2)); // true (royal flush beats straight)
+ * ```
+ */
 const isBetterThan = (a: Hand<any>, b: Hand<any>): boolean => {
   if (a.type > b.type) return true;
   if (a.type === b.type) {

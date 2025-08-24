@@ -19,6 +19,25 @@ export interface HoleOdds {
   tieChanceError?: number;
 }
 
+/**
+ * Callback function type for reporting calculation progress.
+ *
+ * This callback is used to report the progress of odds calculations,
+ * allowing applications to show progress bars or update UI elements.
+ * The progress value ranges from 0 to 1, where 0 represents 0% completion
+ * and 1 represents 100% completion.
+ *
+ * @param progress - A number between 0 and 1 representing the completion percentage
+ *
+ * @example
+ * ```typescript
+ * const progressCallback = (progress: number) => {
+ *   console.log(`Calculation progress: ${Math.round(progress * 100)}%`);
+ * };
+ *
+ * const oddsResult = odds(holeCards, boardCards, { progress: progressCallback });
+ * ```
+ */
 export type ProgressCallback = (progress: number) => void;
 
 /**
@@ -64,6 +83,54 @@ export type OddsOptions = (
  * @param board Currently revealed board cards
  * @param sampleSize Number of random simulations to run for Monte Carlo (default: 10000)
  * @param threshold Maximum number of combinations to use exhaustive algorithm (default: 10000)
+ */
+/**
+ * Calculates winning odds for poker hands using either exhaustive or Monte Carlo simulation.
+ *
+ * This function determines the probability of each player's hole cards winning
+ * against other players' hole cards, given the current board cards. It automatically
+ * selects the most appropriate calculation method based on the number of possible
+ * combinations to evaluate.
+ *
+ * @param holes - Array of hole cards for each player. Each player's hole cards
+ *                should be provided as an array of Card objects.
+ * @param board - Currently revealed board cards (optional). Defaults to empty array.
+ * @param options - Configuration options for odds calculation:
+ *   - mode: Calculation method ("auto", "exhaustive", or "monteCarlo")
+ *   - threshold: For "auto" mode, maximum combinations for exhaustive calculation
+ *   - sampleSize: For "monteCarlo" mode, number of simulations to run
+ *   - progress: Optional callback function to report calculation progress
+ * @returns Array of HoleOdds objects, one for each player's hole cards,
+ *          containing wins, ties, and win/tie probabilities.
+ *
+ * @throws {Error} If no hole cards are provided.
+ *
+ * @example
+ * ```typescript
+ * import cards from '../card/cards';
+ * import odds from './odds';
+ *
+ * // Calculate odds for two players with given hole cards and no board
+ * const hole1 = cards('As', 'Ks');
+ * const hole2 = cards('Qd', 'Jd');
+ * const results = odds([hole1, hole2]);
+ *
+ * // results[0] contains odds for hole1, results[1] for hole2
+ * console.log(`Player 1 win chance: ${(results[0].winChance * 100).toFixed(2)}%`);
+ * console.log(`Player 2 win chance: ${(results[1].winChance * 100).toFixed(2)}%`);
+ * ```
+ *
+ * @example
+ * ```typescript
+ * // With progress callback and Monte Carlo simulation
+ * const options = {
+ *   mode: "monteCarlo" as const,
+ *   sampleSize: 50000,
+ *   progress: (progress: number) => console.log(`Progress: ${Math.round(progress * 100)}%`)
+ * };
+ *
+ * const results = odds([hole1, hole2], [], options);
+ * ```
  */
 const odds = (
   holes: Hole[],
