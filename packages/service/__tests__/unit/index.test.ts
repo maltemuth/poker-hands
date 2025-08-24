@@ -74,7 +74,7 @@ describe("PokerHandsService", () => {
 
       new PokerHandsService();
       expect(mockApp.use).toHaveBeenCalledWith(expect.any(Function));
-      expect(mockJsonForTesting).toHaveBeenCalledWith({ limit: "10mb" });
+      expect(mockJsonForTesting).toHaveBeenCalledWith({ limit: "1kb" });
     });
 
     it("should setup routes", () => {
