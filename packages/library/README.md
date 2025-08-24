@@ -1,8 +1,5 @@
 # @malte.muth/poker-hands
 
-[![npm](https://img.shields.io/npm/v/@malte.muth/poker-hands)](https://www.npmjs.com/package/@malte.muth/poker-hands)
-[![npm](https://img.shields.io/npm/dt/@malte.muth/poker-hands)](https://www.npmjs.com/package/@malte.muth/poker-hands)
-
 A comprehensive TypeScript library for Texas Hold'em poker hand evaluation and odds calculation.
 
 ## Features

@@ -1,10 +1,5 @@
 # Poker Hands
 
-[![npm](https://img.shields.io/npm/v/@malte.muth/poker-hands)](https://www.npmjs.com/package/@malte.muth/poker-hands)
-[![npm](https://img.shields.io/npm/v/@malte.muth/poker-hands-service)](https://www.npmjs.com/package/@malte.muth/poker-hands-service)
-[![npm](https://img.shields.io/npm/v/@malte.muth/poker-hands-cli)](https://www.npmjs.com/package/@malte.muth/poker-hands-cli)
-[![CI](https://img.shields.io/github/actions/workflow/status/malte-muth/poker-hands/ci.yml?branch=main)](https://github.com/malte-muth/poker-hands/actions/workflows/ci.yml)
-
 A project for Texas Hold'em poker hand evaluation, odds calculation, and more. This project provides three packages: a core library, an HTTP/WebSocket service, and a command-line interface.
 
 What started as a code-workout has become an exercise in vibe coding – substantial parts of this code has been AI-generated.

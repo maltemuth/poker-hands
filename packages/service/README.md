@@ -1,8 +1,5 @@
 # @malte.muth/poker-hands-service
 
-[![npm](https://img.shields.io/npm/v/@malte.muth/poker-hands-service)](https://www.npmjs.com/package/@malte.muth/poker-hands-service)
-[![npm](https://img.shields.io/npm/dt/@malte.muth/poker-hands-service)](https://www.npmjs.com/package/@malte.muth/poker-hands-service)
-
 A REST API service for Texas Hold'em poker odds calculation. Built on Express.js with TypeScript.
 
 This package is almost entirely AI-generated.
