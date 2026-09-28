@@ -1,22 +1,10 @@
 import { Card } from "../card/Card";
 import combinationCount from "../combinatorics/combinationCount";
-import {
-  SUIT_INDEX,
-  addCard,
-  createHandState,
-  rankOf,
-  removeCard,
-} from "../hand/handState";
+import { SUIT_INDEX, addCard, removeCard } from "../hand/handState";
+import createBoardTally, { Tally } from "./boardTally";
 import { Hole, ProgressCallback } from "./HoleOdds";
 
-/**
- * How often each hole wins or ties, over a number of boards
- */
-export interface Tally {
-  wins: number[];
-  ties: number[];
-  boards: number;
-}
+export type { Tally } from "./boardTally";
 
 /**
  * Counts which holes win or tie on every way to complete the board with the
@@ -40,62 +28,17 @@ const tallyBoards = (
   rest: Card[],
   progressCallback?: ProgressCallback
 ): Tally => {
-  const state = createHandState();
-  for (const card of board) addCard(state, SUIT_INDEX[card.suit], card.value);
+  const missing = 5 - board.length;
+  const { state, tallyBoard, result } = createBoardTally(
+    holes,
+    board,
+    combinationCount(rest.length, missing),
+    progressCallback
+  );
 
   // suit indices and values, looked up once instead of for every board
   const restSuits = rest.map((card) => SUIT_INDEX[card.suit]);
   const restValues = rest.map((card) => card.value);
-  const holeSuits = holes.map((hole) =>
-    hole.map((card) => SUIT_INDEX[card.suit])
-  );
-  const holeValues = holes.map((hole) => hole.map((card) => card.value));
-
-  const wins = holes.map(() => 0);
-  const ties = holes.map(() => 0);
-  const ranks = holes.map(() => 0);
-  const missing = 5 - board.length;
-  const total = combinationCount(rest.length, missing);
-  let boards = 0;
-
-  // the board in the state is complete: rank each hole on it
-  const tallyBoard = () => {
-    let best = 0;
-    let winners = 0;
-    for (let hole = 0; hole < holes.length; hole++) {
-      const suits = holeSuits[hole];
-      const values = holeValues[hole];
-      for (let i = 0; i < suits.length; i++) {
-        addCard(state, suits[i], values[i]);
-      }
-      const rank = rankOf(state);
-      for (let i = 0; i < suits.length; i++) {
-        removeCard(state, suits[i], values[i]);
-      }
-
-      ranks[hole] = rank;
-      if (rank > best) {
-        best = rank;
-        winners = 1;
-      } else if (rank === best) {
-        winners++;
-      }
-    }
-
-    // a single winner gets a win, otherwise each tied hole gets a tie
-    if (winners === 1) {
-      wins[ranks.indexOf(best)]++;
-    } else {
-      for (let hole = 0; hole < holes.length; hole++) {
-        if (ranks[hole] === best) ties[hole]++;
-      }
-    }
-
-    boards++;
-    if (progressCallback && (boards % 100 === 0 || boards === total)) {
-      progressCallback(boards / total);
-    }
-  };
 
   // adds the missing board cards in every combination, from rest[start] on
   const completeBoard = (start: number, missingCards: number) => {
@@ -112,7 +55,7 @@ const tallyBoards = (
 
   completeBoard(0, missing);
 
-  return { wins, ties, boards };
+  return result();
 };
 
 export default tallyBoards;
