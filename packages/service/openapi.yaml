@@ -29,6 +29,12 @@ info:
     name: MIT
     url: https://opensource.org/licenses/MIT
 
+servers:
+  - url: http://localhost:3000
+    description: Local service (default port)
+
+# the API has no authentication
+security: []
 
 paths:
   /api/odds:
@@ -54,26 +60,16 @@ paths:
               example1:
                 summary: Two players with no board cards
                 value:
-                  holes: [
-                    ["Ah", "Kh"],
-                    ["Qd", "Jd"]
-                  ]
+                  holes: [["Ah", "Kh"], ["Qd", "Jd"]]
               example2:
                 summary: Three players with community board
                 value:
-                  holes: [
-                    ["Ah", "As"],
-                    ["Kd", "Kh"],
-                    ["Qc", "Qd"]
-                  ]
+                  holes: [["Ah", "As"], ["Kd", "Kh"], ["Qc", "Qd"]]
                   board: ["2h", "5d", "9c"]
               example3:
                 summary: Monte Carlo mode with custom settings
                 value:
-                  holes: [
-                    ["Ah", "Kh"],
-                    ["Qd", "Jd"]
-                  ]
+                  holes: [["Ah", "Kh"], ["Qd", "Jd"]]
                   options:
                     mode: "monteCarlo"
                     sampleSize: 50000
@@ -83,29 +79,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OddsResponse'
+                $ref: '#/components/schemas/OddsData'
               examples:
                 success:
                   summary: Successful calculation
                   value:
-                    success: true
-                    command: "odds"
-                    data:
-                      players: [
-                        {
-                          holeCards: ["Ah", "Kh"],
-                          winChance: 0.65,
-                          tieChance: 0.05,
-                          winChanceError: 0.02
-                        },
-                        {
-                          holeCards: ["Qd", "Jd"],
-                          winChance: 0.3,
-                          tieChance: 0.05
-                        }
-                      ]
+                    players:
+                      - holeCards: ["Ah", "Kh"]
+                        winChance: 0.65
+                        tieChance: 0.05
+                        winChanceError: 0.02
+                      - holeCards: ["Qd", "Jd"]
+                        winChance: 0.3
+                        tieChance: 0.05
         '400':
-          description: Invalid input parameters
+          description: Invalid input, or cards the library rejects (e.g. a card used twice)
           content:
             application/json:
               schema:
@@ -113,29 +101,23 @@ paths:
               examples:
                 invalidCards:
                   summary: Invalid card format
-                  value:
-                    success: false
-                    command: "odds"
-                    error: "Invalid card format: invalid"
+                  value: "Invalid card format: invalid"
                 insufficientPlayers:
                   summary: Not enough players
-                  value:
-                    success: false
-                    command: "odds"
-                    error: "Holes must be provided as an array with at least 2 players"
+                  value: "Holes must be provided as an array with at least 2 players"
+                duplicateCards:
+                  summary: A card is used twice
+                  value: "Duplicates found in card list 'Ah,As,Ah,Kh'"
         '429':
-          description: Too many requests
+          description: All calculation slots are busy
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
-                rateLimitExceeded:
-                  summary: Rate limit exceeded
-                  value:
-                    success: false
-                    command: "odds"
-                    error: "Rate limit exceeded. Please try again later."
+                tooManyRequests:
+                  summary: Too many concurrent calculations
+                  value: "Too many concurrent requests"
         '500':
           description: Internal server error
           content:
@@ -143,12 +125,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
-                cliError:
-                  summary: CLI execution error
-                  value:
-                    success: false
-                    command: "odds"
-                    error: "CLI execution failed: Invalid input"
+                internalError:
+                  summary: Unexpected error
+                  value: "Internal server error"
 
   /api/percentages:
     post:
@@ -170,18 +149,15 @@ paths:
               $ref: '#/components/schemas/PercentagesRequest'
       responses:
         '429':
-          description: Too many requests
+          description: All calculation slots are busy
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
-                rateLimitExceeded:
-                  summary: Rate limit exceeded
-                  value:
-                    success: false
-                    command: "percentages"
-                    error: "Rate limit exceeded. Please try again later."
+                tooManyRequests:
+                  summary: Too many concurrent calculations
+                  value: "Too many concurrent requests"
         '501':
           description: Not implemented
           content:
@@ -191,10 +167,7 @@ paths:
               examples:
                 notImplemented:
                   summary: Endpoint not implemented
-                  value:
-                    success: false
-                    command: "percentages"
-                    error: "Not implemented"
+                  value: "Not implemented"
 
   /health:
     get:
@@ -216,24 +189,10 @@ paths:
                 healthy:
                   summary: Healthy service
                   value:
-                    success: true
-                    data:
-                      status: "healthy"
+                    status: "healthy"
 
 components:
   schemas:
-    # Base response types
-    ApiResponseBase:
-      type: object
-      properties:
-        success:
-          type: boolean
-          description: Whether the operation was successful
-        command:
-          type: string
-          description: The command that was executed
-          enum: [odds, percentages]
-    
     # Odds calculation schemas
     OddsRequest:
       type: object
@@ -269,17 +228,17 @@ components:
             mode:
               type: string
               enum: [auto, exhaustive, monteCarlo]
-              description: Calculation mode (default: auto)
+              description: "Calculation mode (default: auto)"
               example: "monteCarlo"
             threshold:
               type: integer
               minimum: 1
-              description: Threshold for auto mode (default: 10000)
+              description: "Threshold for auto mode (default: 10000)"
               example: 50000
             sampleSize:
               type: integer
               minimum: 1
-              description: Sample size for Monte Carlo mode (default: 10000)
+              description: "Sample size for Monte Carlo mode (default: 10000)"
               example: 100000
           example:
             mode: "monteCarlo"
@@ -317,7 +276,7 @@ components:
           format: float
           minimum: 0
           maximum: 1
-          description: Confidence interval for win chance (Monte Carlo only)
+          description: 95% margin of error of winChance (Monte Carlo results only)
           example: 0.02
     
     OddsData:
@@ -330,25 +289,6 @@ components:
           description: Array of players with their hole cards and odds
           items:
             $ref: '#/components/schemas/OddsPlayerData'
-    
-    OddsResponse:
-      oneOf:
-        - $ref: '#/components/schemas/OddsSuccessResponse'
-        - $ref: '#/components/schemas/ErrorResponse'
-    
-    OddsSuccessResponse:
-      allOf:
-        - $ref: '#/components/schemas/ApiResponseBase'
-        - type: object
-          required:
-            - success
-            - command
-            - data
-          properties:
-            success:
-              const: true
-            data:
-              $ref: '#/components/schemas/OddsData'
     
     # Percentages calculation schemas
     PercentagesRequest:
@@ -435,39 +375,20 @@ components:
     
     # Error response schema
     ErrorResponse:
-      allOf:
-        - $ref: '#/components/schemas/ApiResponseBase'
-        - type: object
-          required:
-            - success
-            - command
-            - error
-          properties:
-            success:
-              const: false
-            error:
-              type: string
-              description: Error message describing what went wrong
+      type: string
+      description: Error message describing what went wrong
     
     # Health check schema
     HealthResponse:
-      allOf:
-        - $ref: '#/components/schemas/ApiResponseBase'
-        - type: object
-          required:
-            - success
-            - data
-          properties:
-            success:
-              const: true
-            data:
-              type: object
-              properties:
-                status:
-                  type: string
-                  description: Service health status
-                  enum: [healthy]
-                  example: "healthy"
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          description: Service health status
+          enum: [healthy]
+          example: "healthy"
 
 tags:
   - name: Odds Calculation
