@@ -1,5 +1,6 @@
 import cards from "../../../../src/model/card/cards";
 import monteCarloOdds from "../../../../src/model/odds/monteCarloOdds";
+import exhaustive from "../../../../src/model/odds/exhaustive";
 
 describe("monteCarloOdds", () => {
   test("equal value hands have approximately equal win chance", () => {
@@ -16,6 +17,31 @@ describe("monteCarloOdds", () => {
 
     // Ties should be the majority of outcomes
     expect(results[0].tieChance).toBeGreaterThan(0.9);
+  });
+
+  test("every remaining card can complete the board", () => {
+    // only the two remaining aces, Ac and As, win for the aces
+    const holes = [cards("Ah", "Ad"), cards("Kh", "Ks")];
+    const board = cards("Kd", "7c", "2h", "3d");
+
+    const exact = exhaustive(holes, board)[0].winChance; // 2 of 44 cards
+    const results = monteCarloOdds(holes, board, 20_000);
+
+    expect(exact).toBeCloseTo(2 / 44, 5);
+    // the margin of error is about 0.3 percentage points
+    expect(Math.abs(results[0].winChance - exact)).toBeLessThan(0.012);
+  });
+
+  test("agrees with the exact result pre-flop", () => {
+    // exhaustive: 42.66% for AK against QQ
+    const results = monteCarloOdds(
+      [cards("Ah", "Kd"), cards("Qc", "Qs")],
+      [],
+      30_000
+    );
+
+    // the margin of error is about 0.6 percentage points
+    expect(Math.abs(results[0].winChance - 0.4266)).toBeLessThan(0.015);
   });
 
   test("pocket rockets versus tens", () => {

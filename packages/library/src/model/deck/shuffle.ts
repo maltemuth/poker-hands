@@ -39,7 +39,8 @@ const shuffle = <T>(items: T[]): T[] => {
   const remainingItems = items.concat();
   const result: T[] = [];
   for (let i = items.length - 1; i >= 0; i--) {
-    const randomIndex = Math.floor(Math.random() * i);
+    // any of the i + 1 remaining items, including the last one
+    const randomIndex = Math.floor(Math.random() * (i + 1));
 
     result.push(remainingItems[randomIndex]);
     remainingItems.splice(randomIndex, 1);

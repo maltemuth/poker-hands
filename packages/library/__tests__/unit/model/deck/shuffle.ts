@@ -19,4 +19,21 @@ describe("shuffle decks", () => {
     );
     expect(uniqueCardIds.length).toBe(52);
   });
+
+  test("every item ends up in every position equally often", () => {
+    const shuffles = 20_000;
+    // counts[item][position]
+    const counts = [0, 1, 2, 3, 4].map(() => [0, 0, 0, 0, 0]);
+    for (let i = 0; i < shuffles; i++) {
+      shuffle([0, 1, 2, 3, 4]).forEach((item, position) => {
+        counts[item][position]++;
+      });
+    }
+
+    // expected 4,000 each, with a standard deviation of about 57
+    counts.flat().forEach((count) => {
+      expect(count).toBeGreaterThan(3500);
+      expect(count).toBeLessThan(4500);
+    });
+  });
 });
