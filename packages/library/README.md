@@ -175,7 +175,7 @@ const resultWithProgress = odds([hole1, hole2], board, {
 });
 ```
 
-#### `percentages(hole: Card[], board: Card[] = []): HandPercentages`
+#### `percentages(hole: Card[], board: Card[] = [], dead: Card[] = []): HandPercentages`
 
 Calculates the probability of achieving each hand type for given hole cards and board.
 
@@ -183,6 +183,10 @@ Calculates the probability of achieving each hand type for given hole cards and 
 
 - `hole`: Hole cards for a single player
 - `board`: Currently revealed board cards (optional)
+- `dead`: Cards that can no longer appear on the board, e.g. other players'
+  hole cards (optional)
+
+Throws an error if a card appears more than once in `hole`, `board` and `dead`.
 
 **Returns:**
 

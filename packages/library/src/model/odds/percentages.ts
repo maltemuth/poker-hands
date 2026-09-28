@@ -39,12 +39,14 @@ export interface HandPercentages {
  *
  * @param hole - The player's hole cards as an array of Card objects
  * @param board - Currently revealed board cards (optional). Defaults to empty array.
+ * @param dead - Cards that can no longer appear on the board, e.g. other
+ *               players' hole cards (optional). Defaults to empty array.
  * @returns An object mapping hand type names to their occurrence counts
  *          and percentages. Each hand type has:
  *          - count: Number of times this hand type appears
  *          - percentage: Probability of this hand type (0-1)
  *
- * @throws {Error} If a card appears more than once in the hole and board.
+ * @throws {Error} If a card appears more than once in the hole, board and dead cards.
  *
  * @example
  * ```typescript
@@ -70,11 +72,19 @@ export interface HandPercentages {
  * console.log(`High card chance: ${(preFlopResults.highCard.percentage * 100).toFixed(2)}%`);
  * ```
  */
-const percentages = (hole: Card[], board: Card[] = []): HandPercentages => {
-  assertUnique([...hole, ...board]);
+const percentages = (
+  hole: Card[],
+  board: Card[] = [],
+  dead: Card[] = []
+): HandPercentages => {
+  assertUnique([...hole, ...board, ...dead]);
 
   const deckWithoutHoleCards = without(create(), ...hole);
-  const deckWithoutKnownBoard = without(deckWithoutHoleCards, ...board);
+  const deckWithoutKnownBoard = without(
+    deckWithoutHoleCards,
+    ...board,
+    ...dead
+  );
   const restBoards = combinations(deckWithoutKnownBoard, 5 - board.length);
 
   const totalNumberOfSimulations = restBoards.length;
