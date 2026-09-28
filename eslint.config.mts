@@ -1,23 +1,8 @@
+import { defineConfig } from "eslint/config";
 import eslint from "@eslint/js";
-import tseslint from "@typescript-eslint/eslint-plugin";
-import parser from "@typescript-eslint/parser";
+import tseslint from "typescript-eslint";
 
-export default [
+export default defineConfig(
   eslint.configs.recommended,
-  {
-    files: ["**/*.{ts,tsx}"],
-    languageOptions: {
-      parser,
-      parserOptions: {
-        ecmaVersion: 2022,
-        sourceType: "module",
-      },
-    },
-    plugins: {
-      "@typescript-eslint": tseslint,
-    },
-    rules: {
-      ...tseslint.configs.recommended.rules,
-    },
-  },
-];
+  tseslint.configs.recommended
+);

@@ -1,29 +1,17 @@
-import eslint from "@eslint/js";
-import tseslint from "@typescript-eslint/eslint-plugin";
-import parser from "@typescript-eslint/parser";
+import { defineConfig } from "eslint/config";
 import globals from "globals";
+import rootConfig from "../../eslint.config.mts";
 
-export default [
-  eslint.configs.recommended,
+export default defineConfig(
+  rootConfig,
   {
-    files: ["**/*.{ts,tsx}"],
     languageOptions: {
-      parser,
-      parserOptions: {
-        ecmaVersion: 2022,
-        sourceType: "module",
-        tsconfigRootDir: import.meta.dirname,
-      },
       globals: {
         ...globals.node,
         ...globals.jest,
       },
     },
-    plugins: {
-      "@typescript-eslint": tseslint,
-    },
     rules: {
-      ...tseslint.configs.recommended.rules,
       // Additional rules specific to the library
       "@typescript-eslint/no-unused-vars": "error",
       "@typescript-eslint/no-explicit-any": "warn",
@@ -37,5 +25,5 @@ export default [
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
     },
-  },
-];
+  }
+);
