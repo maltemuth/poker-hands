@@ -7,7 +7,10 @@ import { toString, cards, Card } from "@malte.muth/poker-hands";
  * @throws Error if input format is invalid
  */
 export function parseCards(input: string): Card[] {
-  return cards(...input.split(/([2-9TJQKA][hdsc])/).filter((_) => _));
+  // whitespace between cards is allowed, anything else is left for cards() to reject
+  return cards(
+    ...input.split(/([2-9TJQKA][hdsc])/).filter((part) => part.trim() !== "")
+  );
 }
 
 /**

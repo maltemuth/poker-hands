@@ -78,6 +78,14 @@ describe("poker-hands CLI", () => {
       expect(result.data.players[0].winChanceError).toBeGreaterThan(0);
     });
 
+    it("accepts a space-separated board", () => {
+      const result = JSON.parse(
+        run("odds", "AsKd", "Ah9c", "--board", "8c 7d 5h 3s 2c", "--json")
+      );
+
+      expect(result.data.players[0].winChance).toBe(1);
+    });
+
     it("reports invalid input as a JSON error", () => {
       const result = JSON.parse(run("odds", "AhAs", "AhKh", "--json"));
 
@@ -87,6 +95,15 @@ describe("poker-hands CLI", () => {
   });
 
   describe("percentages", () => {
+    it("accepts the board as separate arguments", () => {
+      const result = JSON.parse(
+        run("percentages", "AhKh", "QhJhTh", "2c", "3d", "--json")
+      );
+
+      expect(result.success).toBe(true);
+      expect(result.data.royalFlush.percentage).toBe(1);
+    });
+
     it("prints JSON hand type percentages", () => {
       const result = JSON.parse(
         run("percentages", "AhKh", "QhJhTh2c3d", "--json")
