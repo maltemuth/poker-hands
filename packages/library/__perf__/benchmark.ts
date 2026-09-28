@@ -23,6 +23,7 @@ import getBestHand from "../src/model/hand/getBestHand";
 import { HandType } from "../src/model/hand/Hand";
 import exhaustive from "../src/model/odds/exhaustive";
 import monteCarloOdds from "../src/model/odds/monteCarloOdds";
+import percentages, { HandPercentages } from "../src/model/odds/percentages";
 import winningHoles from "../src/model/odds/winningHoles";
 import { Hole, HoleOdds } from "../src/model/odds/HoleOdds";
 
@@ -292,5 +293,31 @@ for (const [name, holes, board, enabled] of oddsCases) {
     measured,
     `${format((10_000 / measured.ms) * 1000)} boards/s`,
     ""
+  );
+}
+
+// hand type percentages of one hole, over every possible board
+const percentagesCases: [string, Card[], Card[], boolean][] = [
+  ["percentages, flop", cards("Ah", "Kh"), cards("Qh", "7c", "2d"), true],
+  ["percentages, pre-flop", cards("Ah", "Kh"), [], !quick],
+];
+
+for (const [name, hole, board, enabled] of percentagesCases) {
+  if (!enabled) continue;
+  const boards = combinationCount(50 - board.length, 5 - board.length);
+  let result: HandPercentages | undefined;
+  const long = boards > 100_000;
+  const measured = measure(
+    () => {
+      result = percentages(hole, board);
+    },
+    long ? 0 : 3000,
+    !long
+  );
+  report(
+    `${name} (${format(boards)} boards)`,
+    measured,
+    `${format((boards / measured.ms) * 1000)} boards/s`,
+    result ? `${result.pair.count} pairs, ${result.flush.count} flushes` : ""
   );
 }
