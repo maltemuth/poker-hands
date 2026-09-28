@@ -30,7 +30,7 @@ poker-hands/
 
 ### Prerequisites
 
-- Node.js >= 24.6.0 (see [`.nvmrc`](.nvmrc))
+- Node.js >= 24.21.0 (see [`.nvmrc`](.nvmrc))
 - npm >= 10.8.2
 
 ### Workspace Installation

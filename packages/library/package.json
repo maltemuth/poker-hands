@@ -30,7 +30,7 @@
   "author": "Malte Muth",
   "license": "MIT",
   "engines": {
-    "node": ">=24.6.0",
+    "node": ">=24.21.0",
     "npm": ">=10.8.2"
   },
   "devDependencies": {

@@ -2,7 +2,7 @@
 
 ## Node.js Version Requirements
 
-This project requires Node.js v24.6.0 as specified in the `.nvmrc` file. IMPORTANT: Always run `nvm use` with any npm or node command to ensure you're using the correct Node.js version:
+This project requires Node.js v24.21.0 as specified in the `.nvmrc` file. IMPORTANT: Always run `nvm use` with any npm or node command to ensure you're using the correct Node.js version:
 
 ```bash
 # Run npm commands with nvm use to ensure correct Node.js version
