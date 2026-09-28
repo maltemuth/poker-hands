@@ -12,6 +12,8 @@ const config: Config = {
   },
   moduleNameMapper: {
     "^@service/(.*)$": "<rootDir>/src/$1",
+    // test against the library sources, not whatever was last built into its dist
+    "^@malte\\.muth/poker-hands$": "<rootDir>/../library/index.ts",
   },
   moduleFileExtensions: ["ts", "js", "json"],
   collectCoverageFrom: ["src/**/*.ts", "!src/**/*.d.ts", "!src/index.ts"],
