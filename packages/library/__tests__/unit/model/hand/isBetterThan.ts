@@ -299,6 +299,20 @@ describe("compare hands", () => {
     expect(otherHighCard!.type).toEqual(HandType.HighCard);
     expect(isBetterThan(otherHighCard!, highCard!)).toBe(true);
   });
+
+  test("high cards are equal when their best five cards are", () => {
+    // both play A K Q J 9; the 7 and the 6 don't play
+    const highCard = getBestHand(
+      cards("As", "Kd", "Qc", "Jh", "9s", "7h", "2c")
+    );
+    const otherHighCard = getBestHand(
+      cards("As", "Kd", "Qc", "Jh", "9s", "6d", "3s")
+    );
+    expect(highCard!.type).toEqual(HandType.HighCard);
+    expect(isBetterThan(highCard!, otherHighCard!)).toBe(false);
+    expect(isBetterThan(otherHighCard!, highCard!)).toBe(false);
+    expect(hasEqualValue(highCard!, otherHighCard!)).toBe(true);
+  });
 });
 
 describe("compare hands consistently", () => {

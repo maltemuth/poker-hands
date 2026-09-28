@@ -10,7 +10,8 @@ const getHighCard = (cards: Card[]): Hand<HandType.HighCard> | null => {
     value: () => highCard.value,
     subvalue: () => null,
     cards: () => [highCard],
-    kickers: () => kickers,
+    // only the best five cards play: the high card and four kickers
+    kickers: () => kickers.slice(0, 4),
   };
 };
 

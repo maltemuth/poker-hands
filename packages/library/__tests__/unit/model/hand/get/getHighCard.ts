@@ -21,4 +21,12 @@ describe("retrieve high cards", () => {
     expect(highCard!.kickers().map(toString)).toEqual(["5s"]);
     expect(highCard!.value()).toEqual(Value.seven);
   });
+
+  test("retrieve only the four best kickers of seven cards", () => {
+    const highCard = getHighCard(
+      cards("2c", "Js", "7h", "As", "9d", "3h", "Kc")
+    );
+    expect(highCard!.cards().map(toString)).toEqual(["As"]);
+    expect(highCard!.kickers().map(toString)).toEqual(["Kc", "Js", "9d", "7h"]);
+  });
 });

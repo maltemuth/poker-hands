@@ -26,6 +26,18 @@ describe("complete board", () => {
     );
   });
 
+  test("odds: high cards that don't play don't break a tie", () => {
+    // both play A K Q J 9; the 7 and the 6 are the sixth-best cards
+    const results = odds(
+      [cards("7h", "2c"), cards("6d", "3s")],
+      cards("As", "Kd", "Qc", "Jh", "9s")
+    );
+
+    results.forEach((result) =>
+      expect(result).toMatchObject({ wins: 0, ties: 1, tieChance: 1 })
+    );
+  });
+
   test("odds: works in every mode", () => {
     const holes = [cards("As", "Kd"), cards("Ah", "9c")];
     const board = cards("8c", "7d", "5h", "3s", "2c");
