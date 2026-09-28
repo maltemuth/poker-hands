@@ -26,10 +26,6 @@ export default defineConfig(rootConfig, {
     "@typescript-eslint/no-explicit-any": "warn", // Allow any for CLI flexibility
     "@typescript-eslint/no-unused-vars": "warn", // Be more lenient with unused vars
 
-    // CLI-specific import rules
-    "@typescript-eslint/no-var-requires": "off", // Allow require for CLI utilities
-    "import/no-extraneous-dependencies": "off", // Allow CLI-specific dependencies
-
     // CLI-specific function rules
     "max-params": ["warn", { max: 5 }], // CLI commands might have multiple parameters
     "max-lines-per-function": ["warn", { max: 50 }], // CLI commands can be longer
