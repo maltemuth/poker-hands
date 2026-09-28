@@ -15,7 +15,7 @@ const sortedValues = (set: Card[]): Value[] =>
  * The comparison works by:
  * 1. Sorting both sets of values in descending order
  * 2. Comparing values at each position from highest to lowest
- * 3. Returning true as soon as a higher value is found in the first set
+ * 3. The first position where the values differ decides the comparison
  *
  * @param a First set of cards to compare
  * @param b Second set of cards to compare
@@ -26,19 +26,17 @@ const sortedValues = (set: Card[]): Value[] =>
  * const handA = [{ suit: 'hearts', value: 14 }, { suit: 'spades', value: 13 }]; // A, K
  * const handB = [{ suit: 'diamonds', value: 14 }, { suit: 'clubs', value: 12 }]; // A, Q
  *
- * hasBetterValues(handA, handB); // false (both have A, but K > Q)
+ * hasBetterValues(handA, handB); // true (both have A, but K > Q)
  */
 const hasBetterValues = (a: Card[], b: Card[]) => {
   // Get sorted values for both sets (highest to lowest)
   const aValues = sortedValues(a);
   const bValues = sortedValues(b);
 
-  // Compare values position by position from highest to lowest
-  // Return true as soon as we find a higher value in the first set
-  return aValues.reduce(
-    (better, value, index) => better || value > bValues[index],
-    false
-  );
+  // Compare values position by position from highest to lowest;
+  // the first differing value decides, later values are irrelevant
+  const index = aValues.findIndex((value, index) => value !== bValues[index]);
+  return index !== -1 && aValues[index] > bValues[index];
 };
 
 export default hasBetterValues;

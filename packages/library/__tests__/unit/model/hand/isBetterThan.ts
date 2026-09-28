@@ -2,6 +2,8 @@ import isBetterThan from "../../../../src/model/hand/isBetterThan";
 import getBestHand from "../../../../src/model/hand/getBestHand";
 import cards from "../../../../src/model/card/cards";
 import { HandType } from "../../../../src/model/hand/Hand";
+import hasEqualValue from "../../../../src/model/hand/hasEqualValue";
+import create from "../../../../src/model/deck/create";
 
 describe("compare hands", () => {
   test("a pair is better than a high card", () => {
@@ -296,5 +298,45 @@ describe("compare hands", () => {
     const otherHighCard = getBestHand(cards("Js", "9c", "7h", "5d", "4c"));
     expect(otherHighCard!.type).toEqual(HandType.HighCard);
     expect(isBetterThan(otherHighCard!, highCard!)).toBe(true);
+  });
+});
+
+describe("compare hands consistently", () => {
+  // regression: an earlier higher card must decide the comparison, even if a later card is lower
+  const pairs: Array<[string, string[], string[]]> = [
+    ["high card", ["As", "Kd", "4c", "3s", "2h"], ["Ah", "9d", "8c", "7s", "5h"]],
+    ["flush", ["As", "Ks", "4s", "3s", "2s"], ["Ah", "9h", "8h", "7h", "5h"]],
+    ["pair", ["Th", "Td", "Kc", "3d", "2d"], ["Ts", "Tc", "Qc", "9d", "8d"]],
+    ["two pair", ["Th", "Td", "8c", "8d", "Kd"], ["Ts", "Tc", "8h", "8s", "Qd"]],
+    ["three-of-a-kind", ["3h", "3d", "3c", "Kc", "2d"], ["3s", "3d", "3c", "Qc", "Jd"]],
+  ];
+
+  test.each(pairs)("%s: higher leading card wins over higher trailing cards", (_, better, worse) => {
+    const a = getBestHand(cards(...better))!;
+    const b = getBestHand(cards(...worse))!;
+    expect(a.type).toEqual(b.type);
+    expect(isBetterThan(a, b)).toBe(true);
+    expect(isBetterThan(b, a)).toBe(false);
+  });
+
+  test("exactly one of a > b, b > a or a == b holds for random 7-card hands", () => {
+    const deck = create();
+    // deterministic LCG so failures are reproducible
+    let seed = 42;
+    const random = () => {
+      seed = (seed * 1103515245 + 12345) % 2147483648;
+      return seed / 2147483648;
+    };
+    const draw = () => {
+      const pool = [...deck];
+      return Array.from({ length: 7 }, () => pool.splice(Math.floor(random() * pool.length), 1)[0]);
+    };
+
+    for (let i = 0; i < 5000; i++) {
+      const a = getBestHand(draw())!;
+      const b = getBestHand(draw())!;
+      const outcomes = [isBetterThan(a, b), isBetterThan(b, a), hasEqualValue(a, b)];
+      expect(outcomes.filter(Boolean)).toHaveLength(1);
+    }
   });
 });
