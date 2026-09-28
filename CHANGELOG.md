@@ -6,6 +6,32 @@ The library, CLI and service are versioned together.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] - 2026-09-28
+
+### Changed
+
+- Service: request bodies are validated against `openapi.yaml`, which is now
+  the only source of the validation rules. Error messages are unchanged, with
+  one exception below.
+- Service: `threshold` and `sampleSize` must be integers of at least 1, as the
+  spec has always stated. Fractional values used to be accepted, and a
+  fractional sample size produced wrong probabilities. The message now reads
+  "... must be a positive integer".
+- Service: a request without a body is answered with a `400` ("Holes must be
+  provided ...") instead of a `500`.
+- Library: `HandPercentages`, the result of `percentages()`, is a record of
+  exactly the ten hand types instead of arbitrary string keys. The new
+  `HandTypeName` type names them; code that reads results with arbitrary
+  strings needs a `HandTypeName` instead.
+
+### Development
+
+- Service: `openapi.yaml` drives the service. Routes are registered from its
+  operations, the TypeScript types are generated from it with
+  `openapi-typescript` (`npm run generate`), and handlers, responses and error
+  bodies are type-checked against it. `npm test` fails if the generated types
+  are out of date or the spec is invalid (Redocly).
+
 ## [0.6.0] - 2026-09-28
 
 ### Added
@@ -142,6 +168,7 @@ Restructured into a monorepo with three packages. Not published to npm.
 
 Versions up to 0.3.1 (June 2020) predate this changelog.
 
+[0.7.0]: https://github.com/malte-muth/poker-hands/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/malte-muth/poker-hands/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/malte-muth/poker-hands/compare/v0.4.1...v0.5.0
 [0.4.1]: https://github.com/malte-muth/poker-hands/compare/v0.3.1...v0.4.1
