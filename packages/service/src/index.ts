@@ -21,13 +21,9 @@ export class PokerHandsService {
     }
     this.app.use(json({ limit: "1kb" }));
 
-    // Add rate limiting middleware (POST requests only, exclude health check)
-    this.app.use((req, res, next) => {
-      if (req.method !== "POST" || req.path === "/health") {
-        return next();
-      }
-      return createRateLimiter({ maxConcurrentRequests })(req, res, next);
-    });
+    // Add rate limiting middleware (POST requests only, exclude health check).
+    // Created once, so all requests to this service share the concurrency count.
+    this.app.use(createRateLimiter({ maxConcurrentRequests }));
 
     // Setup routes
     setupRoutes(this.app);
