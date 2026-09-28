@@ -15,7 +15,7 @@ describe("odds worker", () => {
 
   it("calculates the odds in a worker thread", async () => {
     await expect(
-      runInWorker({
+      runInWorker("odds", {
         holes: [
           ["As", "Kd"],
           ["Ah", "9c"],
@@ -32,7 +32,7 @@ describe("odds worker", () => {
 
   it("reports cards the library rejects as a CalculationError", async () => {
     await expect(
-      runInWorker({
+      runInWorker("odds", {
         holes: [
           ["Ah", "As"],
           ["Ah", "Kh"],

@@ -59,7 +59,7 @@ describe("Routes", () => {
 
       expect(response.status).toBe(200);
       expect(response.body).toEqual(odds);
-      expect(mockedRunInWorker).toHaveBeenCalledWith(validInput);
+      expect(mockedRunInWorker).toHaveBeenCalledWith("odds", validInput);
     });
 
     it("should return 400 when the library rejects the cards", async () => {

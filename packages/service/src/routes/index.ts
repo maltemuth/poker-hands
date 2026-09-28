@@ -19,7 +19,7 @@ export function setupRoutes(app: express.Application): void {
 
       // Calculate in a worker thread; the calculation keeps its concurrency
       // slot until it finishes, even if the client disconnects
-      const calculation = runInWorker(input);
+      const calculation = runInWorker("odds", input);
       holdSlotUntil(res, calculation);
       calculation
         .then((odds) => {
