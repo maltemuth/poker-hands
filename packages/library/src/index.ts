@@ -1,4 +1,5 @@
 import getBestHand from "./model/hand/getBestHand";
+import handRank from "./model/hand/handRank";
 import hasEqualValue from "./model/hand/hasEqualValue";
 import isBetterThan from "./model/hand/isBetterThan";
 import odds, { ProgressCallback } from "./model/odds/odds";
@@ -10,6 +11,7 @@ import percentages from "./model/odds/percentages";
 
 export {
   getBestHand,
+  handRank,
   hasEqualValue,
   isBetterThan,
   odds,

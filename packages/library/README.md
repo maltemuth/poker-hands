@@ -123,6 +123,28 @@ const fullHouse = getBestHand(cards("As", "Ad", "Ac", "Ks", "Kd"));
 console.log(isBetterThan(royalFlush, fullHouse)); // true
 ```
 
+#### `handRank(hand: HandInterface): number`
+
+Expresses the strength of a hand as a single number: a better hand has a higher rank, equally strong hands have the same rank. Ranks can be compared with `>` and `===` instead of `isBetterThan` and `hasEqualValue`, and sorted numerically.
+
+The rank is the hand type followed by the five card values in order of importance, one hex digit each: the full house K K K 9 9 is `0x7ddd99`.
+
+**Parameters:**
+
+- `hand`: A hand, e.g. from `getBestHand`
+
+**Returns:**
+
+- The hand's rank, a positive integer below 2^24
+
+**Example:**
+
+```typescript
+const kingsFull = getBestHand(cards("Kh", "Kd", "Ks", "9c", "9d"));
+const queensFull = getBestHand(cards("Qh", "Qd", "Qs", "Ac", "Ad"));
+console.log(handRank(kingsFull) > handRank(queensFull)); // true
+```
+
 ### Odds Calculation
 
 #### `odds(holes: Card[][], board: Card[] = [], options?: OddsOptions): HoleOdds[]`
