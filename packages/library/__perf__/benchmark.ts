@@ -3,7 +3,7 @@
  * evaluator implementations on the same machine.
  *
  *   npm run bench              all cases
- *   npm run bench -- --quick   without exhaustive pre-flop (about a minute)
+ *   npm run bench -- --quick   without exhaustive pre-flop
  *
  * Random hands come from a seeded generator, so every run measures the same
  * hands. The results (win chances, hand type counts) are printed as well:
@@ -13,6 +13,7 @@ import { Card } from "../src/model/card/Card";
 import cards from "../src/model/card/cards";
 import combinationCount from "../src/model/combinatorics/combinationCount";
 import create from "../src/model/deck/create";
+import evaluate from "../src/model/hand/evaluate";
 import getBestHand from "../src/model/hand/getBestHand";
 import { HandType } from "../src/model/hand/Hand";
 import exhaustive from "../src/model/odds/exhaustive";
@@ -107,6 +108,26 @@ console.log(
   }
   report(
     "getBestHand, 100k random 7-card hands",
+    ms,
+    `${format((hands.length / ms) * 1000)} hands/s`,
+    `${counts.Pair} pairs, ${counts.Flush} flushes`
+  );
+}
+
+// the same hands with evaluate, which computes a rank without a hand object
+{
+  const hands = randomDeals(100_000, 7, 1);
+  const counts: Record<string, number> = {};
+  const ms = measure(() => {
+    for (const hand of hands) evaluate(hand);
+  }, 3000);
+  for (const hand of hands) {
+    // the hand type is the rank's leading hex digit
+    const type = HandType[evaluate(hand) >> 20];
+    counts[type] = (counts[type] ?? 0) + 1;
+  }
+  report(
+    "evaluate, 100k random 7-card hands",
     ms,
     `${format((hands.length / ms) * 1000)} hands/s`,
     `${counts.Pair} pairs, ${counts.Flush} flushes`
