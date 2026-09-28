@@ -1,9 +1,5 @@
 import { percentages, cards } from "@malte.muth/poker-hands";
-import {
-  PercentagesRequest,
-  PercentagesResponse,
-  PercentagesData,
-} from "../types";
+import { PercentagesRequest, PercentagesResponse } from "../types";
 
 /**
  * Calculates the hand type percentages of every player in a validated
@@ -27,12 +23,7 @@ const calculatePercentages = (
 
       return {
         holeCards: hole,
-        // typed as a record by the library, but always the ten hand types
-        percentages: percentages(
-          cards(...hole),
-          board,
-          dead
-        ) as unknown as PercentagesData,
+        percentages: percentages(cards(...hole), board, dead),
       };
     }),
   };
