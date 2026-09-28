@@ -20,7 +20,7 @@ const hasStraight = (
   );
 
   return (
-    hasContiguousSubSetsOfLength5(values, presortedValues) ||
+    hasContiguousSubSetsOfLength5(values) ||
     hasContiguousSubSetsOfLength5(valuesWithAceAsOne)
   );
 };
