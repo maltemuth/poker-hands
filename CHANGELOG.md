@@ -6,6 +6,34 @@ The library, CLI and service are versioned together.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2026-09-28
+
+### Changed
+
+- All three packages require Node.js 24.21.0 or later (the library required
+  24.6.0; the CLI and service declared no requirement).
+- CLI and service: updated to commander 15. Command-line usage is unchanged.
+- Service: updated to Express 5.2 and the latest `ws`, `ajv` and `cors`
+  releases.
+
+### Security
+
+- Service: the dependency updates fix all known vulnerabilities in its
+  runtime dependencies (Express and its `body-parser`, `qs` and
+  `path-to-regexp`, as well as `ws` and `ajv`). `npm audit` reports no
+  vulnerabilities for the repository.
+
+### Development
+
+- Node.js 24.21.0 (LTS) in `.nvmrc`.
+- TypeScript 6.0, ESLint 10 with typed `eslint.config.mts` files, and typed
+  `jest.config.ts` files.
+- Tests are compiled with `@swc/jest` instead of `ts-jest`; `npm test` runs a
+  separate type check of sources, tests and lint configs first.
+- `tsx` replaces `ts-node` for the start/dev scripts.
+- The profiling scripts in `packages/library/__perf__` use Node's built-in
+  inspector instead of `v8-profiler-next`.
+
 ## [0.4.1] - 2026-09-28
 
 ### Fixed
@@ -74,4 +102,5 @@ Restructured into a monorepo with three packages. Not published to npm.
 
 Versions up to 0.3.1 (June 2020) predate this changelog.
 
+[0.5.0]: https://github.com/malte-muth/poker-hands/compare/v0.4.1...v0.5.0
 [0.4.1]: https://github.com/malte-muth/poker-hands/compare/v0.3.1...v0.4.1
