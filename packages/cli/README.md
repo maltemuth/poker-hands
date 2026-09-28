@@ -12,18 +12,18 @@ npm install -g @malte.muth/poker-hands-cli
 
 ### Odds Calculation
 
-Calculate winning odds for given hole cards and board:
+Calculate winning odds for each player's hole cards, optionally with a board:
 
 ```bash
-poker-hands odds "AhKh" "QdJdTs"
+poker-hands odds AhKh QdJd --board Ts9h8c
 ```
 
 ### Percentages Calculation
 
-Calculate hand type percentages for given hole cards and board:
+Calculate hand type percentages for given hole cards and an optional board:
 
 ```bash
-poker-hands percentages "AhKh" "QdJdTs"
+poker-hands percentages AhKh QdJdTs
 ```
 
 ## JSON Output
@@ -31,8 +31,8 @@ poker-hands percentages "AhKh" "QdJdTs"
 The CLI supports JSON output for interoperability with other tools:
 
 ```bash
-poker-hands odds "AhKh" "QdJdTs" --json
-poker-hands percentages "AhKh" "QdJdTs" --json
+poker-hands odds AhKh QdJd --board Ts9h8c --json
+poker-hands percentages AhKh QdJdTs --json
 ```
 
 ## JSON Schemas
@@ -90,7 +90,8 @@ The percentages command returns a JSON object with the following structure:
 
 ### Odds Command
 
-- `--board <board>`: Community board cards (e.g., "2h5d9c")
+- `<holes...>`: One argument per player with their hole cards (e.g., `AhKh QdJd`)
+- `--board <board>`: Community board cards as one argument (e.g., `2h5d9c` or `"2h 5d 9c"`)
 - `-m, --mode <mode>`: Calculation mode (auto, exhaustive, monteCarlo)
 - `-t, --threshold <threshold>`: Threshold for auto mode (default: 10000)
 - `-s, --sample-size <sampleSize>`: Sample size for monte-carlo mode (default: 10000)
@@ -99,6 +100,8 @@ The percentages command returns a JSON object with the following structure:
 
 ### Percentages Command
 
+- `<hole>`: Hole cards (e.g., `AhKh`)
+- `[board...]`: Community board cards, as one or several arguments (e.g., `QdJdTs` or `Qd Jd Ts`)
 - `--json`: Output results in JSON format
 
 ## Error Handling
@@ -122,6 +125,8 @@ Cards are specified in the format "valueSuit":
 
 Examples: "Ah" (Ace of hearts), "Td" (10 of diamonds), "2c" (2 of clubs)
 
+Several cards can be written together (`AhKh`) or separated by spaces (`"Ah Kh"`).
+
 ## Examples
 
 ### Basic Odds Calculation
@@ -138,7 +143,7 @@ poker-hands odds "AhKh" "QdJd" --board "2s3s4s"
 
 ```bash
 # Get odds in JSON format for processing
-poker-hands odds "AhKh" "QdJdTs" --json | jq '.data.players[0].winChance'
+poker-hands odds AhKh QdJd --board Ts9h8c --json | jq '.data.players[0].winChance'
 ```
 
 ### Percentages Calculation
@@ -152,5 +157,11 @@ poker-hands percentages "AhKh" "2s3s4s"
 ```
 
 ## Development
+
+```bash
+npm run build   # compile to dist/ (build the library first)
+npm test        # run the tests against the library sources
+npm start -- odds AhKh QdJd   # run the CLI from source
+```
 
 See the main [poker-hands](../library) package for library documentation.

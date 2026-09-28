@@ -135,7 +135,7 @@ Calculates winning odds for given hole cards and board using either exhaustive o
 - `board`: Currently revealed board cards (optional)
 - `options`: Calculation options
 
-**Options:**
+**Options** (the `OddsOptions` type is exported):
 
 ```typescript
 type OddsOptions = (
@@ -149,7 +149,7 @@ type OddsOptions = (
 
 **Returns:**
 
-- Array of `HoleOdds` objects for each player
+- Array of `HoleOdds` objects (also exported), one per player and in the same order
 
 **Example:**
 
@@ -171,7 +171,7 @@ const monteCarloResult = odds([hole1, hole2], board, {
 const resultWithProgress = odds([hole1, hole2], board, {
   mode: "monteCarlo",
   sampleSize: 10000,
-  progress: (progress) => console.log(`Progress: ${progress}%`),
+  progress: (progress) => console.log(`Progress: ${Math.round(progress * 100)}%`),
 });
 ```
 
@@ -290,7 +290,9 @@ const shuffledDeck = shuffle(deck);
 
 #### `ProgressCallback`
 
-Callback function for reporting progress during calculations.
+Callback function for reporting progress during calculations. `progress` is a
+fraction between 0 and 1; it is reported every 100 boards or simulations, and
+the last report is always 1.
 
 ```typescript
 type ProgressCallback = (progress: number) => void;
@@ -300,7 +302,7 @@ type ProgressCallback = (progress: number) => void;
 
 ```typescript
 const progressCallback: ProgressCallback = (progress) => {
-  console.log(`Calculation ${progress}% complete`);
+  console.log(`Calculation ${Math.round(progress * 100)}% complete`);
 };
 ```
 
@@ -435,7 +437,7 @@ console.log(
 import { odds, cards, ProgressCallback } from "@malte.muth/poker-hands";
 
 const progressCallback: ProgressCallback = (progress) => {
-  console.log(`Calculation progress: ${progress}%`);
+  console.log(`Calculation progress: ${Math.round(progress * 100)}%`);
 };
 
 const hole1 = cards("Ah", "Kh");
