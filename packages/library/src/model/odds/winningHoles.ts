@@ -1,6 +1,5 @@
 import { Card } from "../card/Card";
-import getBestHand from "../hand/getBestHand";
-import handRank from "../hand/handRank";
+import evaluate from "../hand/evaluate";
 import { Hole } from "./HoleOdds";
 
 /**
@@ -11,16 +10,10 @@ import { Hole } from "./HoleOdds";
  * @returns The indices of all holes sharing the best hand; more than one index means a tie
  */
 const winningHoles = (holes: Hole[], board: Card[]): number[] => {
-  // every hand has a rank above 0, so 0 stands for no hand
-  const ranks = holes.map((hole) => {
-    const hand = getBestHand([...board, ...hole]);
-    return hand ? handRank(hand) : 0;
-  });
+  const ranks = holes.map((hole) => evaluate([...board, ...hole]));
   const best = Math.max(...ranks);
 
-  return best > 0
-    ? ranks.flatMap((rank, index) => (rank === best ? [index] : []))
-    : [];
+  return ranks.flatMap((rank, index) => (rank === best ? [index] : []));
 };
 
 export default winningHoles;
