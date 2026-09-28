@@ -6,6 +6,7 @@ import {
   formatCliOutput,
   createApiResponse,
 } from "../utils";
+import { holdSlotUntil } from "../middleware/rateLimiter";
 
 export function setupRoutes(app: express.Application): void {
   // Odds calculation endpoint
@@ -67,8 +68,11 @@ export function setupRoutes(app: express.Application): void {
           : ""
       } --json`;
 
-      // Execute CLI command asynchronously
-      executeCliCommand(cliCommand)
+      // Execute CLI command asynchronously; the calculation keeps its
+      // concurrency slot until it finishes, even if the client disconnects
+      const calculation = executeCliCommand(cliCommand);
+      holdSlotUntil(res, calculation);
+      calculation
         .then((cliOutput) => {
           const oddsResponse = formatCliOutput(cliOutput);
           const response = createApiResponse(oddsResponse);

@@ -59,7 +59,10 @@ type App = ReturnType<PokerHandsService["getApp"]>;
 
 /** Fires a request without awaiting it, so it stays in flight. */
 const fire = (app: App, send = body) =>
-  request(app).post("/api/odds").send(send).then((response) => response);
+  request(app)
+    .post("/api/odds")
+    .send(send)
+    .then((response) => response);
 
 /** Status of a request expected to be answered without reaching the CLI; "held" if it got through. */
 const statusWhileSaturated = (app: App) =>
@@ -133,6 +136,28 @@ describe("Rate Limiting Integration", () => {
 
     cli.release();
     await inFlight;
+  });
+
+  it("keeps the slot while an abandoned calculation is still running", async () => {
+    const app = new PokerHandsService(3000, true, 1).getApp();
+    const cli = holdCliCalls();
+
+    // the client gives up, but the calculation keeps running
+    const abandoned = request(app)
+      .post("/api/odds")
+      .send(body)
+      .timeout(100)
+      .catch(() => "aborted");
+    await waitFor(() => cli.started() === 1);
+    expect(await abandoned).toBe("aborted");
+
+    expect(await statusWhileSaturated(app)).toBe(429);
+
+    cli.release();
+    const next = fire(app);
+    await waitFor(() => cli.started() === 1);
+    cli.release();
+    expect((await next).status).toBe(200);
   });
 
   it("keeps limits separate per service instance", async () => {

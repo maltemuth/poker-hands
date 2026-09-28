@@ -4,9 +4,20 @@ interface RateLimiterOptions {
   maxConcurrentRequests: number;
 }
 
+type HoldSlot = (work: Promise<unknown>) => void;
+
+/**
+ * Keeps the request's concurrency slot occupied until `work` has settled,
+ * even if the response has already been sent or the client disconnected.
+ * Use it for calculations that keep running on their own.
+ */
+export function holdSlotUntil(res: Response, work: Promise<unknown>): void {
+  (res.locals.holdSlotUntil as HoldSlot | undefined)?.(work);
+}
+
 export function createRateLimiter(options: RateLimiterOptions) {
   const { maxConcurrentRequests } = options;
-  let activeRequests = [] as Request[];
+  let activeRequests = 0;
 
   return (req: Request, res: Response, next: NextFunction) => {
     // Only apply rate limiting to POST requests
@@ -19,16 +30,26 @@ export function createRateLimiter(options: RateLimiterOptions) {
       return next();
     }
 
-    if (activeRequests.length >= maxConcurrentRequests) {
+    if (activeRequests >= maxConcurrentRequests) {
       return res.status(429).json("Too many concurrent requests");
     }
 
     // Track the request
-    activeRequests.push(req);
+    activeRequests += 1;
 
-    // Add cleanup handler
+    const heldWork: Promise<unknown>[] = [];
+    res.locals.holdSlotUntil = ((work) => {
+      heldWork.push(work);
+    }) satisfies HoldSlot;
+
+    // Free the slot once the response has ended and all held work has settled
+    let ended = false;
     const cleanup = () => {
-      activeRequests = activeRequests.filter((_) => _ !== req);
+      if (ended) return;
+      ended = true;
+      Promise.allSettled(heldWork).then(() => {
+        activeRequests -= 1;
+      });
     };
 
     // Add cleanup to response and error handlers
