@@ -13,21 +13,24 @@ export const SUIT_INDEX: Record<Suit, number> = {
 
 /**
  * The cards of a hand in the form rankOf reads them: bit v of a suit mask is
- * set if the hand has that suit's card of value v, and counts[v] is how many
- * cards of value v it has. Cards are added and removed in place, so a loop
- * over many hands can reuse one state and allocate nothing.
+ * set if the hand has that suit's card of value v. Cards are added and
+ * removed in place, so a loop over many hands can reuse one state and
+ * allocate nothing.
  */
 export interface HandState {
   suitMasks: Uint16Array;
-  counts: Uint8Array;
 }
 
 export const createHandState = (): HandState => ({
   suitMasks: new Uint16Array(4),
-  counts: new Uint8Array(15),
 });
 
 const bit = (value: number): number => 1 << value;
+
+/**
+ * The highest value in a mask, or 0 if it is empty
+ */
+const highest = (mask: number): number => (mask ? 31 - Math.clz32(mask) : 0);
 
 const bitCount = (mask: number): number => {
   let count = 0;
@@ -84,7 +87,6 @@ const straightRank = (type: HandType, top: number): number => {
  */
 export const addCard = (state: HandState, suit: number, value: number) => {
   state.suitMasks[suit] |= bit(value);
-  state.counts[value]++;
 };
 
 /**
@@ -92,7 +94,6 @@ export const addCard = (state: HandState, suit: number, value: number) => {
  */
 export const removeCard = (state: HandState, suit: number, value: number) => {
   state.suitMasks[suit] &= ~bit(value);
-  state.counts[value]--;
 };
 
 /**
@@ -100,18 +101,24 @@ export const removeCard = (state: HandState, suit: number, value: number) => {
  */
 export const clearHandState = (state: HandState) => {
   state.suitMasks.fill(0);
-  state.counts.fill(0);
 };
 
 /**
  * The rank of the best hand in a state of 5 to 7 cards, see handRank
  */
-export const rankOf = ({ suitMasks, counts }: HandState): number => {
-  const all = suitMasks[0] | suitMasks[1] | suitMasks[2] | suitMasks[3];
+export const rankOf = ({ suitMasks }: HandState): number => {
+  const h = suitMasks[0];
+  const d = suitMasks[1];
+  const c = suitMasks[2];
+  const s = suitMasks[3];
+  const all = h | d | c | s;
 
   // with at most 7 cards, only one suit can have five
   let flush = 0;
-  for (const mask of suitMasks) if (bitCount(mask) >= 5) flush = mask;
+  if (bitCount(h) >= 5) flush = h;
+  else if (bitCount(d) >= 5) flush = d;
+  else if (bitCount(c) >= 5) flush = c;
+  else if (bitCount(s) >= 5) flush = s;
 
   if (flush) {
     const top = straightTop(flush);
@@ -119,31 +126,22 @@ export const rankOf = ({ suitMasks, counts }: HandState): number => {
     if (top) return straightRank(HandType.StraightFlush, top);
   }
 
-  // the highest (and second highest) value of each count
-  let quads = 0;
-  let trips = 0;
-  let lowerTrips = 0;
-  let pair = 0;
-  let lowerPair = 0;
-  for (let value: number = Value.ace; value >= Value.two; value--) {
-    const count = counts[value];
-    if (count === 4) quads = value;
-    else if (count === 3) {
-      if (trips) lowerTrips ||= value;
-      else trips = value;
-    } else if (count === 2) {
-      if (pair) lowerPair ||= value;
-      else pair = value;
-    }
-  }
+  // A value occurs at most once per suit, so the values held in at least two
+  // suits are the pairs (and better), in at least three the trips, and so on.
+  const atLeastTwo = (h & d) | ((h | d) & (c | s)) | (c & s);
+  const atLeastThree = (h & d & (c | s)) | ((h | d) & c & s);
+  const quads = highest(h & d & c & s);
 
   if (quads) {
     const rank = withValue(HandType.FourOfAKind, quads, 4);
     return withHighest(rank, all & ~bit(quads), 1);
   }
-  if (trips && (lowerTrips || pair)) {
+  const trips = highest(atLeastThree);
+  // the full house's pair: a second three of a kind or the highest pair
+  const fullHousePair = highest(atLeastTwo & ~bit(trips));
+  if (trips && fullHousePair) {
     const rank = withValue(HandType.FullHouse, trips, 3);
-    return withValue(rank, Math.max(lowerTrips, pair), 2);
+    return withValue(rank, fullHousePair, 2);
   }
   if (flush) return withHighest(HandType.Flush, flush, 5);
 
@@ -154,6 +152,8 @@ export const rankOf = ({ suitMasks, counts }: HandState): number => {
     const rank = withValue(HandType.ThreeOfAKind, trips, 3);
     return withHighest(rank, all & ~bit(trips), 2);
   }
+  const pair = highest(atLeastTwo);
+  const lowerPair = highest(atLeastTwo & ~bit(pair));
   if (pair && lowerPair) {
     const rank = withValue(withValue(HandType.TwoPair, pair, 2), lowerPair, 2);
     // a third pair can be the kicker
