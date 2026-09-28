@@ -23,8 +23,8 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "dev": "ts-node src/index.ts",
-    "cli": "ts-node src/cli.ts",
+    "dev": "tsx src/index.ts",
+    "cli": "tsx src/cli.ts",
     "lint": "eslint src --ext .ts",
     "clean": "rm -rf dist",
     "test": "npm run typecheck && jest",
@@ -54,7 +54,7 @@
     "globals": "^17.12.0",
     "jest": "^30.5.2",
     "supertest": "^7.3.0",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.23.15",
     "typescript": "^6.0.3"
   },
   "engines": {

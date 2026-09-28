@@ -234,7 +234,7 @@ The service relies on executing CLI commands rather than directly using the poke
 # Install dependencies
 npm install
 
-# Run in development mode (with ts-node)
+# Run in development mode (with tsx)
 npm run dev
 
 # Build the service
