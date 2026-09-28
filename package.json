@@ -38,6 +38,9 @@
     "typescript-eslint": "^8.70.1"
   },
   "overrides": {
-    "@types/node": "^24.19.0"
+    "@types/node": "^24.19.0",
+    "openapi-typescript": {
+      "typescript": "$typescript"
+    }
   }
 }
