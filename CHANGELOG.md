@@ -6,6 +6,20 @@ The library, CLI and service are versioned together.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.3] - 2026-09-28
+
+### Fixed
+
+- Library: Monte Carlo odds were biased. `shuffle()` never moved the last
+  card of its input, so the last card of the remaining deck, usually the ace
+  of spades, never appeared on a sampled board. `odds()` uses Monte Carlo by
+  default whenever there are more than 10,000 possible boards, i.e. for all
+  pre-flop calculations, and so does the service's `POST /api/odds`. For
+  example, AK against QQ pre-flop came out at 38.3% instead of 42.7%.
+  Exhaustive results were not affected.
+- Library: `shuffle()` returns every order with the same probability, as
+  documented.
+
 ## [0.7.2] - 2026-09-28
 
 ### Fixed
@@ -188,6 +202,7 @@ Restructured into a monorepo with three packages. Not published to npm.
 
 Versions up to 0.3.1 (June 2020) predate this changelog.
 
+[0.7.3]: https://github.com/malte-muth/poker-hands/compare/v0.7.2...v0.7.3
 [0.7.2]: https://github.com/malte-muth/poker-hands/compare/v0.7.1...v0.7.2
 [0.7.1]: https://github.com/malte-muth/poker-hands/compare/v0.7.0...v0.7.1
 [0.7.0]: https://github.com/malte-muth/poker-hands/compare/v0.6.0...v0.7.0
