@@ -5,7 +5,10 @@ const config: Config = {
   roots: ["<rootDir>/__tests__"],
   testMatch: ["**/__tests__/**/*.test.ts"],
   transform: {
-    "^.+\\.ts$": ["ts-jest", { tsconfig: "tsconfig.test.json" }],
+    "^.+\\.ts$": [
+      "@swc/jest",
+      { jsc: { parser: { syntax: "typescript" }, target: "es2022" } },
+    ],
   },
   // test against the library sources, not whatever was last built into its dist
   moduleNameMapper: {

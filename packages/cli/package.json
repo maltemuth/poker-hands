@@ -31,18 +31,20 @@
     "clean": "rm -rf dist",
     "prepublishOnly": "npm run build",
     "start": "ts-node src/cli.ts",
-    "test": "jest"
+    "test": "npm run typecheck && jest",
+    "typecheck": "tsc -p tsconfig.test.json"
   },
   "dependencies": {
     "@malte.muth/poker-hands": "file:../library",
     "commander": "^11.1.0"
   },
   "devDependencies": {
+    "@swc/core": "^1.16.2",
+    "@swc/jest": "^0.2.39",
     "@types/jest": "^30.0.0",
     "@types/node": "^20.10.5",
     "jest": "^30.5.2",
     "jiti": "^2.7.0",
-    "ts-jest": "^29.4.14",
     "typescript": "^5.9.3"
   },
   "engines": {

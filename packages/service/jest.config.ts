@@ -1,12 +1,14 @@
 import type { Config } from "jest";
 
 const config: Config = {
-  preset: "ts-jest",
   testEnvironment: "node",
   roots: ["<rootDir>/src", "<rootDir>/__tests__"],
   testMatch: ["**/__tests__/**/*.test.ts"],
   transform: {
-    "^.+\\.ts$": "ts-jest",
+    "^.+\\.ts$": [
+      "@swc/jest",
+      { jsc: { parser: { syntax: "typescript" }, target: "es2022" } },
+    ],
   },
   moduleNameMapper: {
     "^@service/(.*)$": "<rootDir>/src/$1",

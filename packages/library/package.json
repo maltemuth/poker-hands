@@ -20,12 +20,13 @@
   },
   "scripts": {
     "build": "npm run clean && tsc",
-    "test": "jest",
+    "test": "npm run typecheck && jest",
     "test:watch": "jest --watch",
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix",
     "clean": "rm -rf dist",
-    "prepack": "npm run build"
+    "prepack": "npm run build",
+    "typecheck": "tsc -p tsconfig.test.json"
   },
   "author": "Malte Muth",
   "license": "MIT",
@@ -34,12 +35,13 @@
     "npm": ">=10.8.2"
   },
   "devDependencies": {
+    "@swc/core": "^1.16.2",
+    "@swc/jest": "^0.2.39",
     "@types/jest": "^30.0.0",
     "@typescript-eslint/eslint-plugin": "^8.70.1",
     "@typescript-eslint/parser": "^8.70.1",
     "eslint": "^9.39.5",
     "jest": "^30.5.2",
-    "ts-jest": "^29.4.14",
     "typescript": "^5.9.3"
   }
 }
