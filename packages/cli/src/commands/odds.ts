@@ -1,11 +1,7 @@
 import { Command } from "commander";
-import { odds, Card } from "@malte.muth/poker-hands";
+import { odds, Card, HoleOdds, OddsOptions } from "@malte.muth/poker-hands";
 import { parseCards } from "../utils/cardParser";
 import { outputFormatter } from "../utils/outputFormatter";
-import {
-  HoleOdds,
-  OddsOptions,
-} from "packages/library/dist/src/model/odds/odds";
 
 function parseHoleCardsForPlayers(holes: string[]): Card[][] {
   return holes.map((holeString) => parseCards(holeString));
@@ -159,45 +155,46 @@ function handleOddsError(
   }
 }
 
-export const oddsCommand = new Command()
-  .name("odds")
-  .description("Calculate winning odds for given hole cards and board")
-  .argument("<holes...>", "Player hole cards (e.g., AhAs KdKh QcQd)")
-  .option("--board <board>", "Community board cards (e.g., 2h5d9c)", "")
-  .option(
-    "-m, --mode <mode>",
-    "Calculation mode (auto, exhaustive, monteCarlo)",
-    "auto"
-  )
-  .option(
-    "-t, --threshold <threshold>",
-    "Threshold for auto mode (default: 10000)",
-    parseInt
-  )
-  .option(
-    "-s, --sample-size <sampleSize>",
-    "Sample size for monte-carlo mode (default: 10000)",
-    parseInt
-  )
-  .option("--progress", "Show progress during calculation")
-  .option("--json", "Output results in JSON format")
-  .action(
-    (
-      holes: string[],
-      options: {
-        board?: string;
-        mode?: string;
-        threshold?: number;
-        sampleSize?: number;
-        progress?: boolean;
-        json?: boolean;
+export const createOddsCommand = () =>
+  new Command()
+    .name("odds")
+    .description("Calculate winning odds for given hole cards and board")
+    .argument("<holes...>", "Player hole cards (e.g., AhAs KdKh QcQd)")
+    .option("--board <board>", "Community board cards (e.g., 2h5d9c)", "")
+    .option(
+      "-m, --mode <mode>",
+      "Calculation mode (auto, exhaustive, monteCarlo)",
+      "auto"
+    )
+    .option(
+      "-t, --threshold <threshold>",
+      "Threshold for auto mode (default: 10000)",
+      parseInt
+    )
+    .option(
+      "-s, --sample-size <sampleSize>",
+      "Sample size for monte-carlo mode (default: 10000)",
+      parseInt
+    )
+    .option("--progress", "Show progress during calculation")
+    .option("--json", "Output results in JSON format")
+    .action(
+      (
+        holes: string[],
+        options: {
+          board?: string;
+          mode?: string;
+          threshold?: number;
+          sampleSize?: number;
+          progress?: boolean;
+          json?: boolean;
+        }
+      ) => {
+        try {
+          const oddsResult = calculateOdds(holes, options);
+          displayOddsResult(oddsResult, options);
+        } catch (error) {
+          handleOddsError(error, options);
+        }
       }
-    ) => {
-      try {
-        const oddsResult = calculateOdds(holes, options);
-        displayOddsResult(oddsResult, options);
-      } catch (error) {
-        handleOddsError(error, options);
-      }
-    }
-  );
+    );

@@ -5,7 +5,7 @@
   "description": "A command-line interface for the poker hands library, providing tools for calculating odds and hand percentages",
   "main": "dist/index.js",
   "bin": {
-    "poker-hands": "dist/index.js"
+    "poker-hands": "dist/cli.js"
   },
   "keywords": [
     "poker",
@@ -30,15 +30,19 @@
     "lint": "eslint src --ext .ts",
     "clean": "rm -rf dist",
     "prepublishOnly": "npm run build",
-    "start": "ts-node src/index.ts"
+    "start": "ts-node src/cli.ts",
+    "test": "jest"
   },
   "dependencies": {
     "@malte.muth/poker-hands": "file:../library",
     "commander": "^11.1.0"
   },
   "devDependencies": {
+    "@types/jest": "^30.0.0",
     "@types/node": "^20.10.5",
+    "jest": "^30.0.5",
     "jiti": "^2.5.1",
+    "ts-jest": "^29.4.1",
     "typescript": "^5.4.5"
   }
 }

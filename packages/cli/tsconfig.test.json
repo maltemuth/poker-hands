@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "..",
+    "types": ["node", "jest"],
+    "baseUrl": ".",
+    "paths": {
+      "@malte.muth/poker-hands": ["../library/index.ts"]
+    }
+  },
+  "include": ["src/**/*", "__tests__/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
