@@ -1,6 +1,6 @@
 {
   "name": "@malte.muth/poker-hands-service",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "private": false,
   "description": "A HTTP API service for Texas Hold'em poker odds calculation. Built on Express.js with TypeScript.",
   "main": "dist/index.js",
