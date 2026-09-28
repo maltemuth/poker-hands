@@ -1,78 +1,8 @@
-import {
-  executeCliCommand,
-  validateOddsInput,
-  formatCliOutput,
-  createApiResponse,
-} from "../../../src/utils";
-
-// Mock child_process.exec
-jest.mock("child_process");
-const { exec } = jest.requireMock("child_process");
+import { validateOddsInput, createApiResponse } from "../../../src/utils";
 
 describe("Utils", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-  });
-
-  describe("executeCliCommand", () => {
-    it("should resolve with stdout when command executes successfully", async () => {
-      const mockStdout = "Command output";
-      exec.mockImplementation(
-        (
-          command: string,
-          callback: (
-            error: Error | null,
-            stdout: string,
-            stderr: string
-          ) => void
-        ) => {
-          callback(null, mockStdout, "");
-        }
-      );
-
-      const result = await executeCliCommand("test command");
-      expect(result).toBe(mockStdout);
-      expect(exec).toHaveBeenCalledWith("test command", expect.any(Function));
-    });
-
-    it("should reject with stderr when command fails", async () => {
-      const mockStderr = "Command error";
-      exec.mockImplementation(
-        (
-          command: string,
-          callback: (
-            error: Error | null,
-            stdout: string,
-            stderr: string
-          ) => void
-        ) => {
-          callback(new Error("Command failed"), "", mockStderr);
-        }
-      );
-
-      await expect(executeCliCommand("failing command")).rejects.toThrow(
-        "Command error"
-      );
-    });
-
-    it("should reject with error message when stderr is empty", async () => {
-      exec.mockImplementation(
-        (
-          command: string,
-          callback: (
-            error: Error | null,
-            stdout: string,
-            stderr: string
-          ) => void
-        ) => {
-          callback(new Error("Command failed"), "", "");
-        }
-      );
-
-      await expect(executeCliCommand("failing command")).rejects.toThrow(
-        "Command failed"
-      );
-    });
   });
 
   describe("validateOddsInput", () => {
@@ -408,61 +338,6 @@ describe("Utils", () => {
 
       const result = validateOddsInput(input);
       expect(result).toBeNull();
-    });
-  });
-
-  describe("formatCliOutput", () => {
-    it("should return the data portion of the CLI output", () => {
-      const data = {
-        players: [
-          {
-            holeCards: ["Ah", "Kh"],
-            winChance: 0.65,
-            tieChance: 0.05,
-            winChanceError: 0.02,
-          },
-          {
-            holeCards: ["7c", "2d"],
-            winChance: 0.35,
-            tieChance: 0.05,
-          },
-        ],
-      };
-      const cliOutput = JSON.stringify({
-        success: true,
-        command: "odds",
-        data,
-      });
-
-      expect(formatCliOutput(cliOutput)).toEqual(data);
-    });
-
-    it("should handle an empty player list", () => {
-      const cliOutput = JSON.stringify({
-        success: true,
-        command: "odds",
-        data: { players: [] },
-      });
-
-      expect(formatCliOutput(cliOutput)).toEqual({ players: [] });
-    });
-
-    it("should throw error for invalid CLI output", () => {
-      const cliOutput = JSON.stringify({
-        invalid: "output",
-      });
-
-      expect(() => formatCliOutput(cliOutput)).toThrow(
-        "Invalid CLI output: Schema validation failed: must have required property 'success', must have required property 'success', must match exactly one schema in oneOf"
-      );
-    });
-
-    it("should throw error for invalid JSON", () => {
-      const cliOutput = "invalid json";
-
-      expect(() => formatCliOutput(cliOutput)).toThrow(
-        "Unexpected token 'i', \"invalid json\" is not valid JSON"
-      );
     });
   });
 

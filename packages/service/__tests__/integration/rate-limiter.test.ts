@@ -1,27 +1,21 @@
 import request from "supertest";
 import { PokerHandsService } from "../../src/index";
-import { executeCliCommand } from "../../src/utils";
+import { runInWorker } from "../../src/odds/runInWorker";
 
-// keep validation and formatting real, but control when the CLI "finishes"
-jest.mock("../../src/utils", () => ({
-  ...jest.requireActual("../../src/utils"),
-  executeCliCommand: jest.fn(),
+// keep validation real, but control when a calculation "finishes"
+jest.mock("../../src/odds/runInWorker", () => ({
+  ...jest.requireActual("../../src/odds/runInWorker"),
+  runInWorker: jest.fn(),
 }));
 
-const mockedExecute = executeCliCommand as jest.MockedFunction<
-  typeof executeCliCommand
->;
+const mockedCalculate = runInWorker as jest.MockedFunction<typeof runInWorker>;
 
-const cliOutput = JSON.stringify({
-  success: true,
-  command: "odds",
-  data: {
-    players: [
-      { holeCards: ["As", "Ah"], winChance: 0.8, tieChance: 0.01 },
-      { holeCards: ["Ks", "Kh"], winChance: 0.19, tieChance: 0.01 },
-    ],
-  },
-});
+const odds = {
+  players: [
+    { holeCards: ["As", "Ah"], winChance: 0.8, tieChance: 0.01 },
+    { holeCards: ["Ks", "Kh"], winChance: 0.19, tieChance: 0.01 },
+  ],
+};
 
 const body = {
   holes: [
@@ -30,16 +24,16 @@ const body = {
   ],
 };
 
-// CLI calls still held when a test ends; released so no request outlives its test
+// calculations still held when a test ends; released so no request outlives its test
 let pending: Array<() => void> = [];
 
-/** Every CLI invocation hangs until `release` is called. */
-const holdCliCalls = () => {
+/** Every calculation hangs until `release` is called. */
+const holdCalculations = () => {
   pending = [];
-  mockedExecute.mockImplementation(
+  mockedCalculate.mockImplementation(
     () =>
       new Promise((resolve) => {
-        pending.push(() => resolve(cliOutput));
+        pending.push(() => resolve(odds));
       })
   );
   return {
@@ -64,7 +58,7 @@ const fire = (app: App, send = body) =>
     .send(send)
     .then((response) => response);
 
-/** Status of a request expected to be answered without reaching the CLI; "held" if it got through. */
+/** Status of a request expected to be answered without calculating; "held" if it got through. */
 const statusWhileSaturated = (app: App) =>
   Promise.race([
     fire(app).then((response) => response.status),
@@ -73,7 +67,7 @@ const statusWhileSaturated = (app: App) =>
 
 describe("Rate Limiting Integration", () => {
   beforeEach(() => {
-    mockedExecute.mockReset();
+    mockedCalculate.mockReset();
   });
 
   afterEach(() => {
@@ -82,39 +76,39 @@ describe("Rate Limiting Integration", () => {
 
   it("rejects requests beyond the concurrency limit of the service", async () => {
     const app = new PokerHandsService(3000, true, 5).getApp();
-    const cli = holdCliCalls();
+    const calculations = holdCalculations();
 
     const inFlight = Array.from({ length: 5 }, () => fire(app));
-    await waitFor(() => cli.started() === 5);
+    await waitFor(() => calculations.started() === 5);
 
     expect(await statusWhileSaturated(app)).toBe(429);
-    expect(mockedExecute).toHaveBeenCalledTimes(5);
+    expect(mockedCalculate).toHaveBeenCalledTimes(5);
 
-    cli.release();
+    calculations.release();
     const responses = await Promise.all(inFlight);
     responses.forEach((response) => expect(response.status).toBe(200));
   });
 
   it("frees slots once requests finish", async () => {
     const app = new PokerHandsService(3000, true, 2).getApp();
-    const cli = holdCliCalls();
+    const calculations = holdCalculations();
 
     const first = [fire(app), fire(app)];
-    await waitFor(() => cli.started() === 2);
+    await waitFor(() => calculations.started() === 2);
     expect(await statusWhileSaturated(app)).toBe(429);
 
-    cli.release();
+    calculations.release();
     await Promise.all(first);
 
     const next = fire(app);
-    await waitFor(() => cli.started() === 1);
-    cli.release();
+    await waitFor(() => calculations.started() === 1);
+    calculations.release();
     expect((await next).status).toBe(200);
   });
 
   it("frees slots for requests rejected by validation", async () => {
     const app = new PokerHandsService(3000, true, 1).getApp();
-    holdCliCalls();
+    holdCalculations();
 
     for (let i = 0; i < 3; i++) {
       const invalid = await request(app)
@@ -126,21 +120,21 @@ describe("Rate Limiting Integration", () => {
 
   it("allows health checks while saturated", async () => {
     const app = new PokerHandsService(3000, true, 1).getApp();
-    const cli = holdCliCalls();
+    const calculations = holdCalculations();
 
     const inFlight = fire(app);
-    await waitFor(() => cli.started() === 1);
+    await waitFor(() => calculations.started() === 1);
 
     const health = await request(app).get("/health");
     expect(health.status).toBe(200);
 
-    cli.release();
+    calculations.release();
     await inFlight;
   });
 
   it("keeps the slot while an abandoned calculation is still running", async () => {
     const app = new PokerHandsService(3000, true, 1).getApp();
-    const cli = holdCliCalls();
+    const calculations = holdCalculations();
 
     // the client gives up, but the calculation keeps running
     const abandoned = request(app)
@@ -148,29 +142,29 @@ describe("Rate Limiting Integration", () => {
       .send(body)
       .timeout(100)
       .catch(() => "aborted");
-    await waitFor(() => cli.started() === 1);
+    await waitFor(() => calculations.started() === 1);
     expect(await abandoned).toBe("aborted");
 
     expect(await statusWhileSaturated(app)).toBe(429);
 
-    cli.release();
+    calculations.release();
     const next = fire(app);
-    await waitFor(() => cli.started() === 1);
-    cli.release();
+    await waitFor(() => calculations.started() === 1);
+    calculations.release();
     expect((await next).status).toBe(200);
   });
 
   it("keeps limits separate per service instance", async () => {
     const saturated = new PokerHandsService(3000, true, 1).getApp();
     const other = new PokerHandsService(3000, true, 1).getApp();
-    const cli = holdCliCalls();
+    const calculations = holdCalculations();
 
     const inFlight = fire(saturated);
-    await waitFor(() => cli.started() === 1);
+    await waitFor(() => calculations.started() === 1);
 
     expect(await statusWhileSaturated(other)).toBe("held");
 
-    cli.release();
+    calculations.release();
     expect((await inFlight).status).toBe(200);
   });
 });
