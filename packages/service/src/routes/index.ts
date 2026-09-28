@@ -1,6 +1,6 @@
 import express from "express";
 import { spec } from "../spec";
-import { createApiResponse, sendError } from "../utils";
+import { sendError } from "../utils";
 import { holdSlotUntil } from "../middleware/rateLimiter";
 import { CalculationError } from "../odds/runInWorker";
 import { validateBody } from "../validation/requestValidator";
@@ -17,8 +17,7 @@ function respond(res: express.Response, run: () => unknown): void {
   holdSlotUntil(res, result);
   result
     .then((body) => {
-      const response = createApiResponse(body);
-      res.json(response);
+      res.json(body);
     })
     .catch((error: Error) => {
       // the library rejected the cards (e.g. duplicates): a client error

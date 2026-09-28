@@ -1,27 +1,16 @@
-import { createApiResponse } from "../../../src/utils";
+import { Response } from "express";
+import { sendError } from "../../../src/utils";
 
-describe("Utils", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+describe("sendError", () => {
+  it("should send the message as a JSON string with the status", () => {
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response;
 
-  describe("createApiResponse", () => {
-    it("should return data when provided", () => {
-      const data = { status: "healthy" };
-      const result = createApiResponse(data);
-      expect(result).toBe(data);
-    });
+    sendError(res, 429, "Too many concurrent requests");
 
-    it("should return error string when provided", () => {
-      const error = "Not implemented";
-      const result = createApiResponse(error);
-      expect(result).toBe(error);
-    });
-
-    it("should return string data when type is different", () => {
-      const data = "Some data";
-      const result = createApiResponse<number>(data);
-      expect(result).toBe(data);
-    });
+    expect(res.status).toHaveBeenCalledWith(429);
+    expect(res.json).toHaveBeenCalledWith("Too many concurrent requests");
   });
 });

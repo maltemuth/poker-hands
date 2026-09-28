@@ -19,8 +19,3 @@ export type PercentagesPlayerData = Schemas["PercentagesPlayerData"];
 export type PercentagesResponse = Schemas["PercentagesResponse"];
 
 export type ErrorResponse = Schemas["ErrorResponse"];
-
-/**
- * API response wrapper
- */
-export type ApiResponse<T = unknown> = T | string;
