@@ -41,8 +41,8 @@ const combinations = <T>(items: T[], length: number): T[][] => {
     throw new Error("Cannot pick negative amount of elements");
   }
 
-  // Base case: empty combination
-  if (length === 0) return [];
+  // Base case: there is exactly one way to pick nothing
+  if (length === 0) return [[]];
 
   // Base case: combinations of length 1 are just the individual items
   if (length === 1) return items.map((item) => [item]);

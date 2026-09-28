@@ -1,8 +1,9 @@
 import combinations from "../../../../src/model/combinatorics/combinations";
 
 describe("ordered combinations of a given length", () => {
-  test("empty arrays do not have combinations", () => {
-    expect(combinations([], 0)).toEqual([]);
+  test("picking nothing yields exactly one empty combination", () => {
+    expect(combinations([], 0)).toEqual([[]]);
+    expect(combinations([0, 1, 2], 0)).toEqual([[]]);
   });
 
   test("combinations of length 1 are the items themselves", () => {
