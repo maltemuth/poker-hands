@@ -5,40 +5,9 @@ import assertUnique from "../card/assertUnique";
 import monteCarloOdds from "./monteCarloOdds";
 import combinationCount from "../combinatorics/combinationCount";
 import exhaustive from "./exhaustive";
+import { Hole, HoleOdds, ProgressCallback } from "./HoleOdds";
 
-export type Hole = Card[];
-
-export interface HoleOdds {
-  hole: Hole;
-  wins: number;
-  ties: number;
-  winChance: number;
-  tieChance: number;
-  // Confidence interval for statistical accuracy (only in Monte Carlo results)
-  winChanceError?: number;
-  tieChanceError?: number;
-}
-
-/**
- * Callback function type for reporting calculation progress.
- *
- * This callback is used to report the progress of odds calculations,
- * allowing applications to show progress bars or update UI elements.
- * The progress value ranges from 0 to 1, where 0 represents 0% completion
- * and 1 represents 100% completion. The last report is always 1.
- *
- * @param progress - A number between 0 and 1 representing the completion percentage
- *
- * @example
- * ```typescript
- * const progressCallback = (progress: number) => {
- *   console.log(`Calculation progress: ${Math.round(progress * 100)}%`);
- * };
- *
- * const oddsResult = odds(holeCards, boardCards, { progress: progressCallback });
- * ```
- */
-export type ProgressCallback = (progress: number) => void;
+export { Hole, HoleOdds, ProgressCallback };
 
 /**
  * Calculates the number of possible board combinations for the given holes and board
@@ -77,13 +46,6 @@ export type OddsOptions = (
 ) & {
   progress?: ProgressCallback;
 };
-/**
- * Calculate poker odds using either exhaustive or Monte Carlo approach based on performance
- * @param holes Array of hole cards for each player
- * @param board Currently revealed board cards
- * @param sampleSize Number of random simulations to run for Monte Carlo (default: 10000)
- * @param threshold Maximum number of combinations to use exhaustive algorithm (default: 10000)
- */
 /**
  * Calculates winning odds for poker hands using either exhaustive or Monte Carlo simulation.
  *

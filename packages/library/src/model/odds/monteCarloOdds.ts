@@ -1,32 +1,22 @@
 import { Card } from "../card/Card";
 import create from "../deck/create";
 import without from "../card/without";
-import getBestHand from "../hand/getBestHand";
-import isBetterThan from "../hand/isBetterThan";
-import hasEqualValue from "../hand/hasEqualValue";
 import assertUnique from "../card/assertUnique";
 import shuffle from "../deck/shuffle";
-import { ProgressCallback } from "./odds";
+import { Hole, HoleOdds, ProgressCallback } from "./HoleOdds";
+import winningHoles from "./winningHoles";
 
-export type Hole = Card[];
-
-export interface HoleOdds {
-  hole: Hole;
-  wins: number;
-  ties: number;
-  winChance: number;
-  tieChance: number;
-  // Confidence interval for statistical accuracy (95% confidence)
-  winChanceError?: number;
-  tieChanceError?: number;
-}
+// Z-score for 95% confidence interval
+const zScore = 1.96;
 
 /**
- * Creates a unique identifier for a hole (set of hole cards)
- * Used as keys in the results object to track wins/ties for each hole
+ * Margin of error of a binomial proportion
+ * Formula: z * sqrt(p * (1-p) / n)
  */
-const holeIdentifier = (hole: Hole) =>
-  hole.map((card) => `${card.suit}${card.value}`).join("-");
+const marginOfError = (count: number, sampleSize: number) => {
+  const p = count / sampleSize;
+  return zScore * Math.sqrt((p * (1 - p)) / sampleSize);
+};
 
 /**
  * Calculate poker odds using Monte Carlo simulation for improved performance.
@@ -91,114 +81,42 @@ const monteCarloOdds = (
   );
   const deckWithoutKnownBoard = without(deckWithoutKnownHoleCards, ...board); // Remove board cards
 
-  // Initialize results structure to track wins and ties for each hole
-  const results: Record<string, { wins: number; ties: number }> = {} as Record<
-    string,
-    { wins: number; ties: number }
-  >;
-  holes.forEach((hole) => {
-    results[holeIdentifier(hole)] = { wins: 0, ties: 0 };
-  });
+  // Track wins and ties for each hole, in the same order as the input holes
+  const wins = holes.map(() => 0);
+  const ties = holes.map(() => 0);
+  const cardsNeeded = 5 - board.length;
 
   // Run Monte Carlo simulations
   for (let i = 0; i < sampleSize; i++) {
     // Report progress periodically (every 100 simulations) to avoid callback overhead,
     // and always on the last one so callers see completion
-    if (
-      progressCallback &&
-      ((i + 1) % 100 === 0 || i + 1 === sampleSize)
-    ) {
+    if (progressCallback && ((i + 1) % 100 === 0 || i + 1 === sampleSize)) {
       progressCallback((i + 1) / sampleSize);
     }
 
-    // Create a shuffled copy of the remaining deck for this simulation
-    const shuffledDeck = shuffle([...deckWithoutKnownBoard]);
+    // Take the cards needed to complete the board from a shuffled copy of the remaining deck
+    const restBoard = shuffle([...deckWithoutKnownBoard]).slice(0, cardsNeeded);
 
-    // Take the cards needed to complete the board
-    const cardsNeeded = 5 - board.length;
-    const restBoard = shuffledDeck.slice(0, cardsNeeded);
+    const winners = winningHoles(holes, [...board, ...restBoard]);
 
-    // Create the complete board for this simulation
-    const completeBoard = [...board, ...restBoard];
-
-    // Evaluate each player's best hand with the current board
-    const hands = holes.map((hole) => ({
-      id: holeIdentifier(hole),
-      hand: getBestHand([...completeBoard, ...hole]),
-    }));
-
-    // Sort hands to determine the winner (better hands come first)
-    const sortedHands = hands.sort((a, b) => {
-      // Handle edge cases where hands might be null (shouldn't happen in valid poker)
-      if (!a.hand && !b.hand) return 0;
-      if (!a.hand) return +1; // Null hands are considered worse
-      if (!b.hand) return -1; // Null hands are considered worse
-
-      // Compare valid hands
-      if (isBetterThan(a.hand, b.hand)) return -1; // a is better
-      if (hasEqualValue(a.hand, b.hand)) return 0; // Equal value
-      return +1; // b is better
-    });
-
-    // Find all hands that tie with the best hand
-    const first = sortedHands[0];
-    const ties = sortedHands.filter(({ hand }) => {
-      // Handle null hands
-      if (!first.hand && !hand) return true; // Both null = tie
-      if (!first.hand || !hand) return false; // One null = no tie
-
-      // Both hands are valid - check for tie
-      return hasEqualValue(first.hand, hand);
-    });
-
-    // Update results based on whether there's a single winner or ties
-    if (ties.length === 1) {
-      // Single winner
-      results[first.id].wins += 1;
+    // A single winner gets a win, otherwise each tied hole gets a tie
+    if (winners.length === 1) {
+      wins[winners[0]] += 1;
     } else {
-      // Multiple ties - each tied hand gets a tie point
-      ties.forEach((tie) => {
-        results[tie.id].ties += 1;
-      });
+      winners.forEach((index) => (ties[index] += 1));
     }
   }
 
-  // Calculate final odds with confidence intervals using binomial distribution
-  const zScore = 1.96; // Z-score for 95% confidence interval
-  const resultsWithChances = Object.keys(results).reduce(
-    (partial, id) => ({
-      ...partial,
-      [id]: {
-        hole: holes.find((h) => holeIdentifier(h) === id) || [],
-        ...results[id],
-        winChance: results[id].wins / sampleSize,
-        tieChance: results[id].ties / sampleSize,
-        // Calculate margin of error for binomial distribution
-        // Formula: z * sqrt(p * (1-p) / n)
-        winChanceError:
-          zScore *
-          Math.sqrt(
-            ((results[id].wins / sampleSize) *
-              (1 - results[id].wins / sampleSize)) /
-              sampleSize
-          ),
-        tieChanceError:
-          zScore *
-          Math.sqrt(
-            ((results[id].ties / sampleSize) *
-              (1 - results[id].ties / sampleSize)) /
-              sampleSize
-          ),
-      },
-    }),
-    {} as Record<string, HoleOdds>
-  );
-
-  // Return results in the same order as input holes
-  return holes.map((hole) => {
-    const key = holeIdentifier(hole);
-    return resultsWithChances[key];
-  });
+  // Calculate final odds with 95% confidence intervals
+  return holes.map((hole, index) => ({
+    hole,
+    wins: wins[index],
+    ties: ties[index],
+    winChance: wins[index] / sampleSize,
+    tieChance: ties[index] / sampleSize,
+    winChanceError: marginOfError(wins[index], sampleSize),
+    tieChanceError: marginOfError(ties[index], sampleSize),
+  }));
 };
 
 export default monteCarloOdds;
