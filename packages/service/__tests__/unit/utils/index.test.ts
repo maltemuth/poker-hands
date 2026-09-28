@@ -1,4 +1,8 @@
-import { validateOddsInput, createApiResponse } from "../../../src/utils";
+import {
+  validateOddsInput,
+  validatePercentagesInput,
+  createApiResponse,
+} from "../../../src/utils";
 
 describe("Utils", () => {
   beforeEach(() => {
@@ -338,6 +342,45 @@ describe("Utils", () => {
 
       const result = validateOddsInput(input);
       expect(result).toBeNull();
+    });
+  });
+
+  describe("validatePercentagesInput", () => {
+    it("should accept a single player", () => {
+      expect(validatePercentagesInput({ holes: [["Ah", "Kh"]] })).toBeNull();
+    });
+
+    it("should accept several players and a board", () => {
+      expect(
+        validatePercentagesInput({
+          holes: [
+            ["Ah", "Kh"],
+            ["7c", "2d"],
+          ],
+          board: ["Ts", "9h", "8c"],
+        })
+      ).toBeNull();
+    });
+
+    it("should require at least one player", () => {
+      expect(validatePercentagesInput({ holes: [] })).toEqual({
+        error: "Holes must be provided as an array with at least 1 player",
+      });
+    });
+
+    it("should validate hole cards like odds", () => {
+      expect(validatePercentagesInput({ holes: [["Ah", "Xx"]] })).toEqual({
+        error: "Invalid card format: Xx",
+      });
+    });
+
+    it("should validate the board like odds", () => {
+      expect(
+        validatePercentagesInput({
+          holes: [["Ah", "Kh"]],
+          board: ["2c", "3c", "4c", "5c", "6c", "7c"],
+        })
+      ).toEqual({ error: "Maximum 5 board cards allowed" });
     });
   });
 

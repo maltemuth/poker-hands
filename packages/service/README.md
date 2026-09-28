@@ -136,6 +136,54 @@ margin of error) is only present for Monte Carlo results.
 }
 ```
 
+### Hand Type Percentages
+
+**POST** `/api/percentages`
+
+Calculate how often each player makes each hand type over all possible boards.
+Each player's calculation treats the other players' hole cards as dead cards.
+
+**Request Body:**
+
+```json
+{
+  "holes": [
+    ["Ah", "Kh"],
+    ["Th", "9c"]
+  ],
+  "board": ["Qh", "Jh", "2c"]
+}
+```
+
+- `holes`: at least one player with exactly two cards each
+- `board` (optional): up to five community cards
+
+**Response:**
+
+One entry per player, in the order of `holes`, with `count` (boards on which
+the player makes the hand type) and `percentage` (share of all boards) for each
+of the ten hand types.
+
+```json
+{
+  "players": [
+    {
+      "holeCards": ["Ah", "Kh"],
+      "percentages": {
+        "highCard": { "count": 171, "percentage": 0.1727 },
+        "pair": { "count": 299, "percentage": 0.302 },
+        "flush": { "count": 324, "percentage": 0.3273 },
+        "royalFlush": { "count": 0, "percentage": 0 }
+      }
+    }
+  ]
+}
+```
+
+(Shortened: every player gets all ten hand types, from `highCard` to
+`royalFlush`.) The calculation is exhaustive, so before the flop it can take a
+while.
+
 ### Health Check
 
 **GET** `/health`
@@ -184,7 +232,6 @@ Errors are returned as a JSON string with the message:
 - `429 Too Many Requests`: all calculation slots are busy
   (`"Too many concurrent requests"`)
 - `500 Internal Server Error`: unexpected error during the calculation
-- `501 Not Implemented`: `/api/percentages`
 
 ## Middleware
 
@@ -203,8 +250,8 @@ The service includes built-in middleware:
 
 ## How Calculations Run
 
-Each odds request is calculated with the poker library in its own worker
-thread, so long calculations don't block the service: other requests and the
+Each odds and percentages request is calculated with the poker library in its
+own worker thread, so long calculations don't block the service: other requests and the
 health check are answered in the meantime.
 
 At most `maxConcurrentRequests` calculations (default 5) run at once; further

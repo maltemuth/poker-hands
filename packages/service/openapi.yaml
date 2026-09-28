@@ -135,11 +135,12 @@ paths:
         - Hand Analysis
       summary: Calculate hand type probabilities
       description: |
-        Calculate the probability distribution for different poker hand types.
-        This endpoint is currently not implemented and will return a 501 status code.
-        
-        When implemented, this endpoint will analyze the given hole cards and board
-        to determine the likelihood of making each type of poker hand.
+        Calculate how often each player makes each hand type, over all possible boards.
+        Each player's calculation treats the other players' hole cards as dead cards,
+        since they can't appear on the board.
+
+        The calculation is exhaustive: before the flop, it enumerates up to about
+        2.1 million boards per player and can take a while.
       operationId: calculatePercentages
       requestBody:
         required: true
@@ -147,7 +148,37 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PercentagesRequest'
+            examples:
+              singlePlayer:
+                summary: One player on the flop
+                value:
+                  holes: [["Ah", "Kh"]]
+                  board: ["Qh", "Jh", "2c"]
+              deadCards:
+                summary: Two players; each one's cards are dead for the other
+                value:
+                  holes: [["Ah", "Kh"], ["Th", "9c"]]
+                  board: ["Qh", "Jh", "2c"]
       responses:
+        '200':
+          description: Successful calculation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PercentagesResponse'
+        '400':
+          description: Invalid input, or cards the library rejects (e.g. a card used twice)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                missingCard:
+                  summary: A player without two hole cards
+                  value: "Player 1 must have exactly 2 hole cards"
+                duplicateCards:
+                  summary: A card is used twice
+                  value: "Duplicates found in card list 'Ah,Kh,Ah,9c'"
         '429':
           description: All calculation slots are busy
           content:
@@ -158,16 +189,16 @@ paths:
                 tooManyRequests:
                   summary: Too many concurrent calculations
                   value: "Too many concurrent requests"
-        '501':
-          description: Not implemented
+        '500':
+          description: Internal server error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
-                notImplemented:
-                  summary: Endpoint not implemented
-                  value: "Not implemented"
+                internalError:
+                  summary: Unexpected error
+                  value: "Internal server error"
 
   /health:
     get:
@@ -298,7 +329,7 @@ components:
       properties:
         holes:
           type: array
-          description: Array of player hole cards (each player must have exactly 2 cards)
+          description: "Array of player hole cards (each player must have exactly 2 cards); each player's cards are dead cards for the others"
           items:
             type: array
             items:
@@ -328,14 +359,14 @@ components:
         count:
           type: integer
           minimum: 0
-          description: Number of times this hand type was observed
+          description: Number of possible boards on which the player makes this hand type
           example: 123456
         percentage:
           type: number
           format: float
           minimum: 0
           maximum: 1
-          description: Probability of this hand type (0-1)
+          description: Share of all possible boards (0-1)
           example: 0.123456
     
     PercentagesData:
@@ -373,6 +404,32 @@ components:
         royalFlush:
           $ref: '#/components/schemas/HandTypeData'
     
+    PercentagesPlayerData:
+      type: object
+      required:
+        - holeCards
+        - percentages
+      properties:
+        holeCards:
+          type: array
+          items:
+            type: string
+            description: The player's hole cards
+          example: ["Ah", "Kh"]
+        percentages:
+          $ref: '#/components/schemas/PercentagesData'
+
+    PercentagesResponse:
+      type: object
+      required:
+        - players
+      properties:
+        players:
+          type: array
+          description: One entry per player, in the order of holes
+          items:
+            $ref: '#/components/schemas/PercentagesPlayerData'
+
     # Error response schema
     ErrorResponse:
       type: string

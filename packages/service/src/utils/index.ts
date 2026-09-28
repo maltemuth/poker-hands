@@ -1,4 +1,4 @@
-import { OddsRequest } from "../types";
+import { OddsRequest, PercentagesRequest } from "../types";
 
 type ValidationError = { error: string } | null;
 
@@ -97,6 +97,15 @@ export function validateOddsInput(input: OddsRequest): ValidationError {
   }
 
   return null;
+}
+
+/**
+ * Validate hand type percentages input
+ */
+export function validatePercentagesInput(
+  input: PercentagesRequest
+): ValidationError {
+  return validateHoles(input.holes, 1) ?? validateBoard(input.board);
 }
 
 /**

@@ -41,6 +41,20 @@ describe("odds worker", () => {
     ).rejects.toBeInstanceOf(CalculationError);
   }, 30000);
 
+  it("calculates percentages in a worker thread", async () => {
+    const result = await runInWorker("percentages", {
+      holes: [
+        ["Ah", "Kh"],
+        ["Th", "9c"],
+      ],
+      board: ["Qh", "Jh", "2c", "3d"],
+    });
+
+    expect(result.players[0].holeCards).toEqual(["Ah", "Kh"]);
+    // the royal flush card is dead: it is in the second player's hand
+    expect(result.players[0].percentages.royalFlush.count).toBe(0);
+  }, 30000);
+
   it("keeps the service responsive during a long calculation", async () => {
     const app = new PokerHandsService(3000, true, 5).getApp();
 

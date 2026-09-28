@@ -1,11 +1,13 @@
 import { parentPort, workerData } from "node:worker_threads";
 import calculateOdds from "./calculateOdds";
+import calculatePercentages from "./calculatePercentages";
 
 /**
  * The calculations a worker can run, by kind
  */
 const jobs = {
   odds: calculateOdds,
+  percentages: calculatePercentages,
 };
 
 export type JobKind = keyof typeof jobs;
