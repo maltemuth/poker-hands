@@ -89,7 +89,9 @@ service.start();
 
 ## API Endpoints
 
-The service provides REST API endpoints for poker calculations.
+The API is defined in [`openapi.yaml`](./openapi.yaml). The spec is the source
+of the service's routes, request validation and TypeScript types (see
+[Changing the API](#changing-the-api)).
 
 ### Odds Calculation
 
@@ -115,7 +117,7 @@ Calculate winning odds for given hole cards and board.
 - `options` (optional): `mode` is `auto` (default), `exhaustive` or
   `monteCarlo`; `threshold` applies to `auto` mode (the maximum number of
   boards to calculate exactly, default 10000), `sampleSize` to `monteCarlo`
-  mode (default 10000)
+  mode (default 10000); both are integers of at least 1
 
 **Response:**
 
@@ -235,13 +237,12 @@ Errors are returned as a JSON string with the message:
 
 ## Middleware
 
-The service includes built-in middleware:
+### Request Validation
 
-### Validation Middleware
-
-- Validates card format and values
-- Validates request structure
-- Provides detailed error messages
+Request bodies are validated against the schemas in `openapi.yaml` before a
+calculation starts. The first violation is answered with a `400` and a message
+such as `"Invalid card format: Xx"`. Cards used twice are detected by the poker
+library and also answered with a `400`.
 
 ### CORS Middleware
 
@@ -311,10 +312,27 @@ poker-hands-service --help
 poker-hands-service start --help
 ```
 
+### Changing the API
+
+`openapi.yaml` is the source of truth:
+
+- the routes are registered from its paths and `operationId`s
+  (`src/routes/index.ts`), with one handler per operation in
+  `src/routes/handlers.ts`
+- request bodies are validated against its schemas at runtime
+- `src/types/api.ts` is generated from it with `npm run generate`; the
+  service's request and response types are aliases of the generated ones
+
+To add or change an endpoint, edit `openapi.yaml`, run `npm run generate`, and
+implement or adjust the handler for its `operationId`. The compiler reports a
+missing handler and any handler whose result doesn't match the spec's `200`
+response.
+
 ### Testing
 
 ```bash
-# Run tests
+# Type-check (including that src/types/api.ts matches openapi.yaml),
+# lint the spec, and run the tests
 npm test
 
 # Run tests in watch mode
