@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "@malte.muth/poker-hands": "file:../library",
-    "commander": "^11.1.0"
+    "commander": "^15.0.0"
   },
   "devDependencies": {
     "@swc/core": "^1.16.2",

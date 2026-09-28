@@ -9,7 +9,13 @@ const config: Config = {
       "@swc/jest",
       { jsc: { parser: { syntax: "typescript" }, target: "es2022" } },
     ],
+    // commander is ESM-only; compile it to CommonJS for Jest's module loader
+    "/node_modules/commander/.+\\.js$": [
+      "@swc/jest",
+      { jsc: { target: "es2022" }, module: { type: "commonjs" } },
+    ],
   },
+  transformIgnorePatterns: ["/node_modules/(?!commander/)"],
   // test against the library sources, not whatever was last built into its dist
   moduleNameMapper: {
     "^@malte\\.muth/poker-hands$": "<rootDir>/../library/index.ts",
