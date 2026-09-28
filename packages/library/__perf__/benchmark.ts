@@ -5,10 +5,15 @@
  *   npm run bench              all cases
  *   npm run bench -- --quick   without exhaustive pre-flop
  *
+ * Besides the time, each case reports its memory use: how much it allocates
+ * per run, how many garbage collections run per run and how long they take,
+ * and how far the heap grew at most. These come from V8's GC profiler.
+ *
  * Random hands come from a seeded generator, so every run measures the same
  * hands. The results (win chances, hand type counts) are printed as well:
  * a faster evaluator has to reproduce them exactly.
  */
+import { GCProfiler } from "node:v8";
 import { Card } from "../src/model/card/Card";
 import cards from "../src/model/card/cards";
 import combinationCount from "../src/model/combinatorics/combinationCount";
@@ -50,13 +55,36 @@ const randomDeals = (count: number, size: number, seed: number): Card[][] => {
   });
 };
 
+interface Measurement {
+  /** mean duration of one run */
+  ms: number;
+  /** bytes allocated per run */
+  allocated: number;
+  /** garbage collections per run */
+  gcs: number;
+  /** time spent in garbage collection per run */
+  gcMs: number;
+  /** how far the heap grew above its size at the start, at most */
+  peakGrowth: number;
+}
+
 /**
  * Runs `run` once to warm up (unless it runs long anyway), then repeatedly
- * for at least `minTime` ms, but at least once, and returns the mean
- * duration of one run in ms
+ * for at least `minTime` ms, but at least once, and measures the mean
+ * duration and memory use of one run
  */
-const measure = (run: () => void, minTime: number, warmUp = true): number => {
+const measure = (
+  run: () => void,
+  minTime: number,
+  warmUp = true
+): Measurement => {
   if (warmUp) run();
+
+  const heapUsed = () => process.memoryUsage().heapUsed;
+  const profiler = new GCProfiler();
+  const startHeap = heapUsed();
+  profiler.start();
+
   let runs = 0;
   const start = performance.now();
   let elapsed;
@@ -65,17 +93,57 @@ const measure = (run: () => void, minTime: number, warmUp = true): number => {
     runs++;
     elapsed = performance.now() - start;
   } while (elapsed < minTime);
-  return elapsed / runs;
+
+  const endHeap = heapUsed();
+  const statistics = profiler.stop()?.statistics ?? [];
+
+  // what the heap grew by between collections is what was allocated
+  let allocated = 0;
+  let heap = startHeap;
+  let peakHeap = Math.max(startHeap, endHeap);
+  let gcMicroseconds = 0;
+  for (const { cost, beforeGC, afterGC } of statistics) {
+    allocated += beforeGC.heapStatistics.usedHeapSize - heap;
+    peakHeap = Math.max(peakHeap, beforeGC.heapStatistics.usedHeapSize);
+    heap = afterGC.heapStatistics.usedHeapSize;
+    gcMicroseconds += cost;
+  }
+  allocated += endHeap - heap;
+
+  return {
+    ms: elapsed / runs,
+    allocated: allocated / runs,
+    gcs: statistics.length / runs,
+    gcMs: gcMicroseconds / 1000 / runs,
+    peakGrowth: peakHeap - startHeap,
+  };
 };
 
 const format = (value: number) =>
   value.toLocaleString("en-US", { maximumFractionDigits: 1 });
 
-const report = (name: string, ms: number, rate: string, result: string) =>
+const size = (bytes: number) =>
+  bytes < 1024 * 1024
+    ? `${format(bytes / 1024)} KB`
+    : `${format(bytes / 1024 / 1024)} MB`;
+
+const report = (
+  name: string,
+  { ms, allocated, gcs, gcMs, peakGrowth }: Measurement,
+  rate: string,
+  result: string
+) =>
   console.log(
-    `${name.padEnd(50)} ${format(ms).padStart(11)} ms  ${rate.padStart(
-      22
-    )}  ${result}`
+    [
+      name.padEnd(50),
+      `${format(ms)} ms`.padStart(14),
+      rate.padStart(22),
+      size(allocated).padStart(12),
+      gcs.toFixed(2).padStart(9),
+      `${format(gcMs)} ms`.padStart(11),
+      size(peakGrowth).padStart(11),
+      result,
+    ].join("  ")
   );
 
 const chances = (odds: HoleOdds[]) =>
@@ -86,18 +154,25 @@ const chances = (odds: HoleOdds[]) =>
     )
     .join(" vs ");
 
+console.log(`Node ${process.version}${quick ? ", --quick" : ""}`);
 console.log(
-  `Node ${process.version}${quick ? ", --quick" : ""}\n` +
-    `${"case".padEnd(50)} ${"per run".padStart(14)}  ${"rate".padStart(
-      22
-    )}  result`
+  [
+    "case".padEnd(50),
+    "per run".padStart(14),
+    "rate".padStart(22),
+    "alloc/run".padStart(12),
+    "GCs/run".padStart(9),
+    "GC/run".padStart(11),
+    "peak heap+".padStart(11),
+    "result",
+  ].join("  ")
 );
 
 // hand evaluation: the best hand of random 7-card hands
 {
   const hands = randomDeals(100_000, 7, 1);
   const counts: Record<string, number> = {};
-  const ms = measure(() => {
+  const measured = measure(() => {
     for (const hand of hands) getBestHand(hand);
   }, 3000);
   for (const hand of hands) {
@@ -108,8 +183,8 @@ console.log(
   }
   report(
     "getBestHand, 100k random 7-card hands",
-    ms,
-    `${format((hands.length / ms) * 1000)} hands/s`,
+    measured,
+    `${format((hands.length / measured.ms) * 1000)} hands/s`,
     `${counts.Pair} pairs, ${counts.Flush} flushes`
   );
 }
@@ -118,7 +193,7 @@ console.log(
 {
   const hands = randomDeals(100_000, 7, 1);
   const counts: Record<string, number> = {};
-  const ms = measure(() => {
+  const measured = measure(() => {
     for (const hand of hands) evaluate(hand);
   }, 3000);
   for (const hand of hands) {
@@ -128,8 +203,8 @@ console.log(
   }
   report(
     "evaluate, 100k random 7-card hands",
-    ms,
-    `${format((hands.length / ms) * 1000)} hands/s`,
+    measured,
+    `${format((hands.length / measured.ms) * 1000)} hands/s`,
     `${counts.Pair} pairs, ${counts.Flush} flushes`
   );
 }
@@ -141,7 +216,7 @@ console.log(
     [deal.slice(0, 2), deal.slice(2, 4)],
     deal.slice(4),
   ]);
-  const ms = measure(() => {
+  const measured = measure(() => {
     for (const [holes, board] of showdowns) winningHoles(holes, board);
   }, 3000);
   const wins = showdowns.filter(
@@ -149,8 +224,8 @@ console.log(
   ).length;
   report(
     "winningHoles, 100k heads-up showdowns",
-    ms,
-    `${format((showdowns.length / ms) * 1000)} showdowns/s`,
+    measured,
+    `${format((showdowns.length / measured.ms) * 1000)} showdowns/s`,
     `player 1 wins ${wins}`
   );
 }
@@ -191,7 +266,7 @@ for (const [name, holes, board, enabled] of oddsCases) {
   );
   let odds: HoleOdds[] = [];
   const long = boards > 100_000;
-  const ms = measure(
+  const measured = measure(
     () => {
       odds = exhaustive(holes, board);
     },
@@ -200,22 +275,22 @@ for (const [name, holes, board, enabled] of oddsCases) {
   );
   report(
     `${name} (${format(boards)} boards)`,
-    ms,
-    `${format((boards / ms) * 1000)} boards/s`,
+    measured,
+    `${format((boards / measured.ms) * 1000)} boards/s`,
     chances(odds)
   );
 }
 
 {
   // Monte Carlo draws with Math.random, so its result varies between runs
-  const ms = measure(
+  const measured = measure(
     () => monteCarloOdds([cards("Ah", "As"), cards("Td", "Tc")], [], 10_000),
     3000
   );
   report(
     "monte carlo, heads-up, pre-flop, 10k",
-    ms,
-    `${format((10_000 / ms) * 1000)} boards/s`,
+    measured,
+    `${format((10_000 / measured.ms) * 1000)} boards/s`,
     ""
   );
 }
