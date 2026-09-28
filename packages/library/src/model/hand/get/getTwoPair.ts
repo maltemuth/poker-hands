@@ -1,6 +1,5 @@
 import { Card } from "../../card/Card";
 import { Hand, HandType } from "../Hand";
-import hasTwoPair from "../detect/hasTwoPair";
 import getPair from "./getPair";
 import without from "../../card/without";
 import getKickers from "../getKickers";

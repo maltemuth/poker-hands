@@ -1,6 +1,5 @@
 import { Card } from "../../card/Card";
 import { HandType, Hand } from "../Hand";
-import hasPair from "../detect/hasPair";
 import ofValue from "../../card/ofValue";
 import getKickers from "../getKickers";
 import highestRepeatedValue from "../../card/highestRepeatedValue";

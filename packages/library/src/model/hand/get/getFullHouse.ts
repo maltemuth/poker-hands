@@ -1,13 +1,11 @@
 import { Card } from "../../card/Card";
 import { Hand, HandType } from "../Hand";
-import hasFullHouse from "../detect/hasFullHouse";
 import getThreeOfAKind from "./getThreeOfAKind";
 import without from "../../card/without";
 import getPair from "./getPair";
 import purify from "../../../lib/purify";
 import valueCounts from "../../card/valueCounts";
 import sortedValues from "../../card/sortedValues";
-import sortedSuits from "../../card/sortedSuits";
 
 const getFullHouse = (
   cards: Card[],

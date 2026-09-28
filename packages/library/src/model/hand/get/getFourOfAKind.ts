@@ -3,7 +3,6 @@ import { HandType, Hand } from "../Hand";
 import ofValue from "../../card/ofValue";
 import getKickers from "../getKickers";
 import highestRepeatedValue from "../../card/highestRepeatedValue";
-import hasFourOfAkind from "../detect/hasFourOfAKind";
 import purify from "../../../lib/purify";
 import valueCounts from "../../card/valueCounts";
 import sortedValues from "../../card/sortedValues";
