@@ -1,48 +1,71 @@
 import { OddsRequest } from "../types";
 
+type ValidationError = { error: string } | null;
+
+const cardRegex = /^[2-9TJQKA][hdsc]$/;
+
 /**
- * Validate odds calculation input
+ * Validate the players' hole cards: at least `minPlayers` players with
+ * exactly two cards each
  */
-export function validateOddsInput(
-  input: OddsRequest
-): { error: string } | null {
-  if (!input.holes || !Array.isArray(input.holes) || input.holes.length < 2) {
+function validateHoles(holes: unknown, minPlayers: number): ValidationError {
+  if (!holes || !Array.isArray(holes) || holes.length < minPlayers) {
+    const players = minPlayers === 1 ? "player" : "players";
     return {
-      error: "Holes must be provided as an array with at least 2 players",
+      error: `Holes must be provided as an array with at least ${minPlayers} ${players}`,
     };
   }
 
   // Validate each player's hole cards
-  for (let i = 0; i < input.holes.length; i++) {
-    if (!Array.isArray(input.holes[i]) || input.holes[i].length !== 2) {
+  for (let i = 0; i < holes.length; i++) {
+    if (!Array.isArray(holes[i]) || holes[i].length !== 2) {
       return { error: `Player ${i + 1} must have exactly 2 hole cards` };
     }
 
     // Validate card format
-    const cardRegex = /^[2-9TJQKA][hdsc]$/;
-    for (const card of input.holes[i]) {
+    for (const card of holes[i]) {
       if (typeof card !== "string" || !cardRegex.test(card)) {
         return { error: `Invalid card format: ${card}` };
       }
     }
   }
 
-  // Validate board cards if provided
-  if (input.board) {
-    if (!Array.isArray(input.board)) {
-      return { error: "Board must be provided as an array" };
-    }
+  return null;
+}
 
-    if (input.board.length > 5) {
-      return { error: "Maximum 5 board cards allowed" };
-    }
+/**
+ * Validate the board cards, if provided: at most five valid cards
+ */
+function validateBoard(board: unknown): ValidationError {
+  if (!board) {
+    return null;
+  }
 
-    const cardRegex = /^[2-9TJQKA][hdsc]$/;
-    for (const card of input.board) {
-      if (typeof card !== "string" || !cardRegex.test(card)) {
-        return { error: `Invalid board card format: ${card}` };
-      }
+  if (!Array.isArray(board)) {
+    return { error: "Board must be provided as an array" };
+  }
+
+  if (board.length > 5) {
+    return { error: "Maximum 5 board cards allowed" };
+  }
+
+  for (const card of board) {
+    if (typeof card !== "string" || !cardRegex.test(card)) {
+      return { error: `Invalid board card format: ${card}` };
     }
+  }
+
+  return null;
+}
+
+/**
+ * Validate odds calculation input
+ */
+export function validateOddsInput(input: OddsRequest): ValidationError {
+  const cardsError =
+    validateHoles(input.holes, 2) ?? validateBoard(input.board);
+  if (cardsError) {
+    return cardsError;
   }
 
   // Validate options if provided
