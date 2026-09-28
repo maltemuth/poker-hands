@@ -1,25 +1,27 @@
-import { basename } from "path";
+import { join } from "path";
 import { writeFileSync } from "fs";
-import { startProfiling, stopProfiling } from "v8-profiler-next";
+import { Session } from "node:inspector/promises";
 
-const withProfiling = (F: () => void, profileName: string) => {
+const withProfiling = async (F: () => void, profileName: string) => {
   const id = profileName + Date.now();
-  startProfiling(id);
+  const session = new Session();
+  session.connect();
+  await session.post("Profiler.enable");
+  await session.post("Profiler.start");
 
   F();
 
-  const profile = stopProfiling(id);
-  profile.export(function (error, result) {
-    // if it doesn't have the extension .cpuprofile then
-    // chrome's profiler tool won't like it.
-    // examine the profile:
-    //   Navigate to chrome://inspect
-    //   Click Open dedicated DevTools for Node
-    //   Select the profiler tab
-    //   Load your file
-    writeFileSync(__dirname + `/${id}.cpuprofile`, result!);
-    profile.delete();
-  });
+  const { profile } = await session.post("Profiler.stop");
+  session.disconnect();
+
+  // if it doesn't have the extension .cpuprofile then
+  // chrome's profiler tool won't like it.
+  // examine the profile:
+  //   Navigate to chrome://inspect
+  //   Click Open dedicated DevTools for Node
+  //   Select the profiler tab
+  //   Load your file
+  writeFileSync(join(__dirname, `${id}.cpuprofile`), JSON.stringify(profile));
 };
 
 export default withProfiling;
