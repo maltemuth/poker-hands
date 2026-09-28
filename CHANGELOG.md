@@ -6,6 +6,28 @@ The library, CLI and service are versioned together.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.0] - 2026-09-28
+
+### Added
+
+- Library: `handRank(hand)` expresses a hand's strength as one number, so
+  hands can be compared with `>` and `===` and sorted numerically.
+
+### Changed
+
+- Library: odds and percentages are much faster and use almost no memory.
+  Hands are ranked from bit masks instead of hand objects, and boards are
+  enumerated or drawn without building card arrays. Heads-up pre-flop, exact
+  odds take about 1 second instead of over a minute, percentages about 1
+  second instead of about 65, and 10,000 Monte Carlo samples about 10 ms
+  instead of 50. Results are unchanged. The service's endpoints benefit
+  directly.
+
+### Development
+
+- Library: `npm run bench` measures hand evaluation, odds and percentages,
+  including allocation and garbage collection per case.
+
 ## [0.7.3] - 2026-09-28
 
 ### Fixed
@@ -202,6 +224,7 @@ Restructured into a monorepo with three packages. Not published to npm.
 
 Versions up to 0.3.1 (June 2020) predate this changelog.
 
+[0.8.0]: https://github.com/malte-muth/poker-hands/compare/v0.7.3...v0.8.0
 [0.7.3]: https://github.com/malte-muth/poker-hands/compare/v0.7.2...v0.7.3
 [0.7.2]: https://github.com/malte-muth/poker-hands/compare/v0.7.1...v0.7.2
 [0.7.1]: https://github.com/malte-muth/poker-hands/compare/v0.7.0...v0.7.1
