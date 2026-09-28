@@ -171,7 +171,8 @@ const monteCarloResult = odds([hole1, hole2], board, {
 const resultWithProgress = odds([hole1, hole2], board, {
   mode: "monteCarlo",
   sampleSize: 10000,
-  progress: (progress) => console.log(`Progress: ${Math.round(progress * 100)}%`),
+  progress: (progress) =>
+    console.log(`Progress: ${Math.round(progress * 100)}%`),
 });
 ```
 
