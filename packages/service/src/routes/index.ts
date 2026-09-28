@@ -25,7 +25,8 @@ export function setupRoutes(app: express.Application): void {
       // CLI Command Format Analysis:
       // - The poker-hands CLI expects hole cards as separate arguments for each player
       // - Each player's hole cards should be a single space-separated string
-      // - Board cards are provided via the --board option as a single space-separated string
+      // - Board cards are provided via the --board option as a single concatenated argument
+      //   (separate arguments would be read as additional players)
       // - JSON output is enabled with --json flag
       //
       // Example: npx poker-hands odds "AhAs" "KdKh" "QcQd" --board "2h5d9c" --json
@@ -36,7 +37,7 @@ export function setupRoutes(app: express.Application): void {
       //                                        |    |    |    |    |    |    +-- JSON output
       //                                        |    |    |    |    |    +-------- Board cards
       //                                        |    |    |    |    +------------- Option separator
-      //                                        |    |    |    +------------------ Board cards (space-separated)
+      //                                        |    |    |    +------------------ Board cards (concatenated)
       //                                        |    |    +----------------------- Player 3 hole cards (concatenated)
       //                                        |    +--------------------------- Player 2 hole cards (concatenated)
       //                                        +------------------------------ Player 1 hole cards (concatenated)
@@ -55,7 +56,7 @@ export function setupRoutes(app: express.Application): void {
 
       // Construct command with proper formatting:
       const cliCommand = `npx poker-hands odds ${playerHoleArgs.join(" ")}${
-        boardArgs.length > 0 ? ` --board ${boardArgs.join(" ")}` : ""
+        boardArgs.length > 0 ? ` --board ${boardArgs.join("")}` : ""
       }${input.options?.mode ? ` --mode ${input.options.mode}` : ""}${
         input.options?.threshold !== undefined
           ? ` --threshold ${input.options.threshold}`

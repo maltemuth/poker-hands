@@ -65,7 +65,7 @@ describe("Routes", () => {
 
       expect(response.status).toBe(200);
       expect(executeCliCommand).toHaveBeenCalledWith(
-        "npx poker-hands odds AhKh 7c2d --board Ts 9h 8c --json"
+        "npx poker-hands odds AhKh 7c2d --board Ts9h8c --json"
       );
       expect(formatCliOutput).toHaveBeenCalledWith(
         '{"success": true, "command": "odds", "data": {"players": [{"holeCards": ["Ah", "Kh"], "winChance": 0.65, "tieChance": 0.05}, {"holeCards": ["7c", "2d"], "winChance": 0.35, "tieChance": 0.05}]}}'
@@ -212,7 +212,7 @@ describe("Routes", () => {
 
       expect(response.status).toBe(200);
       expect(executeCliCommand).toHaveBeenCalledWith(
-        "npx poker-hands odds AhKh 7c2d --board Ts 9h 8c --mode exhaustive --threshold 5000 --json"
+        "npx poker-hands odds AhKh 7c2d --board Ts9h8c --mode exhaustive --threshold 5000 --json"
       );
     });
 
