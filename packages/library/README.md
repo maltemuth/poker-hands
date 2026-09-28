@@ -579,20 +579,21 @@ const approximateOdds = odds([hole1, hole2], board, {
 });
 ```
 
-### Performance Optimization Tips
+### How It Is Fast
 
-1. **Pre-sort cards**: Cards are automatically sorted when possible to avoid repeated sorting
-2. **Memoization**: Results are cached to avoid redundant calculations
-3. **Early termination**: Functions return early when results are determined
-4. **Efficient data structures**: Optimized for poker-specific operations
+Odds and percentages don't build a hand object for each board. Each player's cards are kept as a bit mask per suit and a count per value, the hand's rank is computed from those with a few integer operations, and the board cards are added to and removed from that state one by one while all boards are enumerated. The calculations allocate almost nothing, however many boards they cover.
 
 ### Benchmarks
 
-Typical performance on modern hardware:
+Measured with `npm run bench` on a laptop with Node 24; timings vary with the machine and its load:
 
-- **Hand Evaluation**: < 1ms for 7 cards
-- **Exhaustive Odds**: ~100ms for pre-flop (2 players)
-- **Monte Carlo Odds**: ~50ms for 10,000 samples
+- **Hand evaluation** (7 cards, ranked without building a hand): about 2 million hands per second
+- **Exhaustive odds**, heads-up pre-flop (1,712,304 boards): about 1 second
+- **Exhaustive odds**, heads-up on the flop (990 boards): about 1 ms
+- **Monte Carlo odds**, 10,000 samples: about 10 ms
+- **Percentages**, pre-flop (2,118,760 boards): about 1 second
+
+`npm run bench -- --quick` skips the pre-flop cases. Besides the time, the benchmark reports how much each case allocates and how much time goes into garbage collection.
 
 ## Contributing
 
