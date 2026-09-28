@@ -1,5 +1,6 @@
 import { exec } from "child_process";
-import { OddsRequest, CLIOddsResponse, OddsData } from "../types";
+import { OddsRequest, OddsData } from "../types";
+import { CLIOddsResponse } from "@malte.muth/poker-hands-cli";
 import Ajv from "ajv";
 import oddsSchema from "../../../cli/schemas/odds.json";
 
@@ -128,7 +129,7 @@ export function validateCliOutput(cliOutput: string): {
 }
 
 /**
- * Format CLI output to ServiceOddsResponse
+ * Extract the odds data from the CLI output
  */
 export function formatCliOutput(cliOutput: string): OddsData {
   // Parse the CLI output and extract the data portion
