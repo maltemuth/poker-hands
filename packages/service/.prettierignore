@@ -1,0 +1,2 @@
+# generated from openapi.yaml by `npm run generate`
+src/types/api.ts

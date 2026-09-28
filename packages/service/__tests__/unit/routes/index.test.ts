@@ -82,11 +82,13 @@ describe("Routes", () => {
       expect(response.body).toBe("Worker crashed");
     });
 
-    it("should return 500 for a request without a body", async () => {
+    it("should return 400 for a request without a body", async () => {
       const response = await request(app).post("/api/odds");
 
-      expect(response.status).toBe(500);
-      expect(response.body).toBe("Internal server error");
+      expect(response.status).toBe(400);
+      expect(response.body).toBe(
+        "Holes must be provided as an array with at least 2 players"
+      );
       expect(mockedRunInWorker).not.toHaveBeenCalled();
     });
   });
@@ -154,11 +156,13 @@ describe("Routes", () => {
       expect(response.body).toBe("Duplicates found in card list 'Ah,Kh,Ah'");
     });
 
-    it("should return 500 for a request without a body", async () => {
+    it("should return 400 for a request without a body", async () => {
       const response = await request(app).post("/api/percentages");
 
-      expect(response.status).toBe(500);
-      expect(response.body).toBe("Internal server error");
+      expect(response.status).toBe(400);
+      expect(response.body).toBe(
+        "Holes must be provided as an array with at least 1 player"
+      );
     });
   });
 

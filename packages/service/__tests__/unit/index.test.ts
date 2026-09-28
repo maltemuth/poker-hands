@@ -88,12 +88,16 @@ describe("PokerHandsService", () => {
       (express as unknown as jest.Mock).mockReturnValue(mockApp);
 
       new PokerHandsService();
+      // validation middleware, then the handler
       expect(mockApp.post).toHaveBeenCalledWith(
         "/api/odds",
+        expect.any(Function),
         expect.any(Function)
       );
+      // validation middleware, then the handler
       expect(mockApp.post).toHaveBeenCalledWith(
         "/api/percentages",
+        expect.any(Function),
         expect.any(Function)
       );
       expect(mockApp.get).toHaveBeenCalledWith("/health", expect.any(Function));

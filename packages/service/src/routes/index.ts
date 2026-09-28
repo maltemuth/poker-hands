@@ -1,10 +1,7 @@
 import express from "express";
 import { OddsRequest, PercentagesRequest } from "../types";
-import {
-  validateOddsInput,
-  validatePercentagesInput,
-  createApiResponse,
-} from "../utils";
+import { createApiResponse } from "../utils";
+import { validateBody } from "../validation/requestValidator";
 import { holdSlotUntil } from "../middleware/rateLimiter";
 import { runInWorker, CalculationError } from "../odds/runInWorker";
 
@@ -32,45 +29,18 @@ function respondWithCalculation(
 
 export function setupRoutes(app: express.Application): void {
   // Odds calculation endpoint
-  app.post("/api/odds", (req, res) => {
-    try {
-      const input = req.body as OddsRequest;
-
-      // Validate input
-      const validationError = validateOddsInput(input);
-      if (validationError) {
-        const response = createApiResponse(validationError.error);
-        return res.status(400).json(response);
-      }
-
-      // Calculate in a worker thread
-      respondWithCalculation(res, runInWorker("odds", input));
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
-      const response = createApiResponse("Internal server error");
-      res.status(500).json(response);
-    }
+  app.post("/api/odds", validateBody("/api/odds"), (req, res) => {
+    // Calculate in a worker thread
+    respondWithCalculation(res, runInWorker("odds", req.body as OddsRequest));
   });
 
   // Hand type percentages endpoint
-  app.post("/api/percentages", (req, res) => {
-    try {
-      const input = req.body as PercentagesRequest;
-
-      // Validate input
-      const validationError = validatePercentagesInput(input);
-      if (validationError) {
-        const response = createApiResponse(validationError.error);
-        return res.status(400).json(response);
-      }
-
-      // Calculate in a worker thread
-      respondWithCalculation(res, runInWorker("percentages", input));
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
-      const response = createApiResponse("Internal server error");
-      res.status(500).json(response);
-    }
+  app.post("/api/percentages", validateBody("/api/percentages"), (req, res) => {
+    // Calculate in a worker thread
+    respondWithCalculation(
+      res,
+      runInWorker("percentages", req.body as PercentagesRequest)
+    );
   });
 
   // Health check endpoint
