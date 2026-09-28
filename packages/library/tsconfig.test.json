@@ -5,6 +5,12 @@
     "rootDir": "../..",
     "allowImportingTsExtensions": true
   },
-  "include": ["index.ts", "src/**/*", "__tests__/**/*", "eslint.config.mts"],
+  "include": [
+    "index.ts",
+    "src/**/*",
+    "__tests__/**/*",
+    "__perf__/*.ts",
+    "eslint.config.mts"
+  ],
   "exclude": ["node_modules", "dist"]
 }
