@@ -1,10 +1,9 @@
 import { Card } from "../card/Card";
 import create from "../deck/create";
 import without from "../card/without";
-import combinations from "../combinatorics/combinations";
 import assertUnique from "../card/assertUnique";
 import { Hole, HoleOdds, ProgressCallback } from "./HoleOdds";
-import winningHoles from "./winningHoles";
+import tallyBoards from "./tallyBoards";
 
 /**
  * Calculates exact poker odds by exhaustively simulating all possible board combinations.
@@ -13,13 +12,9 @@ import winningHoles from "./winningHoles";
  *
  * The algorithm works by:
  * 1. Creating a full deck and removing known cards (hole cards and board)
- * 2. Generating all possible remaining board combinations
- * 3. For each possible board:
- *    a. Complete the board with the random cards
- *    b. Evaluate each player's best hand
- *    c. Determine winners and ties
- *    d. Update statistics for each hole
- * 4. Calculate final win/tie probabilities
+ * 2. Completing the board with the remaining cards in every possible way,
+ *    and counting each hole's wins and ties on it (see tallyBoards)
+ * 3. Calculating the final win/tie probabilities
  *
  * Time complexity: O(C * H * E) where:
  *   C = number of possible board combinations
@@ -67,46 +62,20 @@ const exhaustive = (
   );
   const deckWithoutKnownBoard = without(deckWithoutKnownHoleCards, ...board); // Remove board cards
 
-  // Generate all possible remaining board combinations
-  const possibleRestBoards = combinations(
+  const { wins, ties, boards } = tallyBoards(
+    holes,
+    board,
     deckWithoutKnownBoard,
-    5 - board.length // Need 5 cards total for the board
+    progressCallback
   );
-
-  const totalAmountOfBoards = possibleRestBoards.length;
-
-  // Track wins and ties for each hole, in the same order as the input holes
-  const wins = holes.map(() => 0);
-  const ties = holes.map(() => 0);
-
-  // Simulate each possible board
-  possibleRestBoards.forEach((restBoard, boardIndex) => {
-    // Report progress periodically (every 100 boards) to avoid callback overhead,
-    // and always on the last one so callers see completion
-    if (
-      progressCallback &&
-      ((boardIndex + 1) % 100 === 0 || boardIndex + 1 === totalAmountOfBoards)
-    ) {
-      progressCallback((boardIndex + 1) / totalAmountOfBoards);
-    }
-
-    const winners = winningHoles(holes, [...board, ...restBoard]);
-
-    // A single winner gets a win, otherwise each tied hole gets a tie
-    if (winners.length === 1) {
-      wins[winners[0]] += 1;
-    } else {
-      winners.forEach((index) => (ties[index] += 1));
-    }
-  });
 
   // Convert raw counts to probabilities
   return holes.map((hole, index) => ({
     hole,
     wins: wins[index],
     ties: ties[index],
-    winChance: wins[index] / totalAmountOfBoards,
-    tieChance: ties[index] / totalAmountOfBoards,
+    winChance: wins[index] / boards,
+    tieChance: ties[index] / boards,
   }));
 };
 
