@@ -2,9 +2,8 @@ import { Card } from "../card/Card";
 import create from "../deck/create";
 import without from "../card/without";
 import assertUnique from "../card/assertUnique";
-import shuffle from "../deck/shuffle";
 import { Hole, HoleOdds, ProgressCallback } from "./HoleOdds";
-import winningHoles from "./winningHoles";
+import tallyRandomBoards from "./tallyRandomBoards";
 
 // Z-score for 95% confidence interval
 const zScore = 1.96;
@@ -26,13 +25,9 @@ const marginOfError = (count: number, sampleSize: number) => {
  * The algorithm works by:
  * 1. Creating a full deck and removing known cards (hole cards and board)
  * 2. Running a specified number of random simulations (sampleSize)
- * 3. For each simulation:
- *    a. Shuffle the remaining deck
- *    b. Draw random cards to complete the board
- *    c. Evaluate each player's best hand
- *    d. Determine winners and ties
- *    e. Update statistics for each hole
- * 4. Calculate final win/tie probabilities with confidence intervals
+ *    For each one, draw random cards to complete the board and count each
+ *    hole's wins and ties on it (see tallyRandomBoards)
+ * 3. Calculate final win/tie probabilities with confidence intervals
  *
  * Time complexity: O(S * H * E) where:
  *   S = sampleSize (number of simulations)
@@ -81,31 +76,13 @@ const monteCarloOdds = (
   );
   const deckWithoutKnownBoard = without(deckWithoutKnownHoleCards, ...board); // Remove board cards
 
-  // Track wins and ties for each hole, in the same order as the input holes
-  const wins = holes.map(() => 0);
-  const ties = holes.map(() => 0);
-  const cardsNeeded = 5 - board.length;
-
-  // Run Monte Carlo simulations
-  for (let i = 0; i < sampleSize; i++) {
-    // Report progress periodically (every 100 simulations) to avoid callback overhead,
-    // and always on the last one so callers see completion
-    if (progressCallback && ((i + 1) % 100 === 0 || i + 1 === sampleSize)) {
-      progressCallback((i + 1) / sampleSize);
-    }
-
-    // Take the cards needed to complete the board from a shuffled copy of the remaining deck
-    const restBoard = shuffle([...deckWithoutKnownBoard]).slice(0, cardsNeeded);
-
-    const winners = winningHoles(holes, [...board, ...restBoard]);
-
-    // A single winner gets a win, otherwise each tied hole gets a tie
-    if (winners.length === 1) {
-      wins[winners[0]] += 1;
-    } else {
-      winners.forEach((index) => (ties[index] += 1));
-    }
-  }
+  const { wins, ties } = tallyRandomBoards(
+    holes,
+    board,
+    deckWithoutKnownBoard,
+    sampleSize,
+    progressCallback
+  );
 
   // Calculate final odds with 95% confidence intervals
   return holes.map((hole, index) => ({
