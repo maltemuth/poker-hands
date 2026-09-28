@@ -1,16 +1,15 @@
 import express from "express";
 import request from "supertest";
 import { setupRoutes } from "../../../src/routes";
-import { runInWorker, CalculationError } from "../../../src/odds/runInWorker";
+import { handlers, Handlers } from "../../../src/routes/handlers";
+import { CalculationError } from "../../../src/odds/runInWorker";
 
-// calculate without starting worker threads; CalculationError stays real
-jest.mock("../../../src/odds/runInWorker", () => ({
-  ...jest.requireActual("../../../src/odds/runInWorker"),
-  runInWorker: jest.fn(),
-}));
-
-const mockedRunInWorker = runInWorker as jest.MockedFunction<
-  typeof runInWorker
+// the calculations are replaced; routing, validation and responses are real
+const calculateOdds = jest.fn() as jest.MockedFunction<
+  Handlers["calculateOdds"]
+>;
+const calculatePercentages = jest.fn() as jest.MockedFunction<
+  Handlers["calculatePercentages"]
 >;
 
 const odds = {
@@ -27,7 +26,7 @@ describe("Routes", () => {
     jest.clearAllMocks();
     app = express();
     app.use(express.json());
-    setupRoutes(app);
+    setupRoutes(app, { ...handlers, calculateOdds, calculatePercentages });
   });
 
   describe("POST /api/odds", () => {
@@ -49,21 +48,21 @@ describe("Routes", () => {
       expect(response.body).toBe(
         "Holes must be provided as an array with at least 2 players"
       );
-      expect(mockedRunInWorker).not.toHaveBeenCalled();
+      expect(calculateOdds).not.toHaveBeenCalled();
     });
 
     it("should calculate the request and return the odds", async () => {
-      mockedRunInWorker.mockResolvedValue(odds);
+      calculateOdds.mockResolvedValue(odds);
 
       const response = await request(app).post("/api/odds").send(validInput);
 
       expect(response.status).toBe(200);
       expect(response.body).toEqual(odds);
-      expect(mockedRunInWorker).toHaveBeenCalledWith("odds", validInput);
+      expect(calculateOdds).toHaveBeenCalledWith(validInput);
     });
 
     it("should return 400 when the library rejects the cards", async () => {
-      mockedRunInWorker.mockRejectedValue(
+      calculateOdds.mockRejectedValue(
         new CalculationError("Duplicate card: Ah")
       );
 
@@ -74,7 +73,7 @@ describe("Routes", () => {
     });
 
     it("should return 500 when the calculation fails otherwise", async () => {
-      mockedRunInWorker.mockRejectedValue(new Error("Worker crashed"));
+      calculateOdds.mockRejectedValue(new Error("Worker crashed"));
 
       const response = await request(app).post("/api/odds").send(validInput);
 
@@ -89,7 +88,7 @@ describe("Routes", () => {
       expect(response.body).toBe(
         "Holes must be provided as an array with at least 2 players"
       );
-      expect(mockedRunInWorker).not.toHaveBeenCalled();
+      expect(calculateOdds).not.toHaveBeenCalled();
     });
   });
 
@@ -128,11 +127,11 @@ describe("Routes", () => {
 
       expect(response.status).toBe(400);
       expect(response.body).toBe("Player 1 must have exactly 2 hole cards");
-      expect(mockedRunInWorker).not.toHaveBeenCalled();
+      expect(calculatePercentages).not.toHaveBeenCalled();
     });
 
     it("should calculate the request and return the percentages", async () => {
-      mockedRunInWorker.mockResolvedValue(percentages);
+      calculatePercentages.mockResolvedValue(percentages);
 
       const response = await request(app)
         .post("/api/percentages")
@@ -140,11 +139,11 @@ describe("Routes", () => {
 
       expect(response.status).toBe(200);
       expect(response.body).toEqual(percentages);
-      expect(mockedRunInWorker).toHaveBeenCalledWith("percentages", validInput);
+      expect(calculatePercentages).toHaveBeenCalledWith(validInput);
     });
 
     it("should return 400 when the library rejects the cards", async () => {
-      mockedRunInWorker.mockRejectedValue(
+      calculatePercentages.mockRejectedValue(
         new CalculationError("Duplicates found in card list 'Ah,Kh,Ah'")
       );
 
@@ -172,6 +171,25 @@ describe("Routes", () => {
 
       expect(response.status).toBe(200);
       expect(response.body).toEqual({ status: "healthy" });
+    });
+  });
+
+  describe("registration from openapi.yaml", () => {
+    it("should refuse to start without a handler for an operation", () => {
+      const incomplete = {
+        ...handlers,
+        healthCheck: undefined,
+      } as unknown as Handlers;
+
+      expect(() => setupRoutes(express(), incomplete)).toThrow(
+        "No handler for healthCheck (GET /health)"
+      );
+    });
+
+    it("should answer 404 for paths the spec doesn't define", async () => {
+      const response = await request(app).post("/api/unknown");
+
+      expect(response.status).toBe(404);
     });
   });
 });

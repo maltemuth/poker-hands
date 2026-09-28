@@ -1,28 +1,9 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import Ajv, { ErrorObject, ValidateFunction } from "ajv";
-import { parse } from "yaml";
 import express from "express";
+import { spec } from "../spec";
 import { createApiResponse } from "../utils";
 
 type ValidationError = { error: string } | null;
-
-// openapi.yaml sits in the package root, two levels above src/ or dist/
-const spec = parse(
-  readFileSync(join(__dirname, "../../openapi.yaml"), "utf8")
-) as {
-  paths: Record<
-    string,
-    Record<
-      string,
-      {
-        requestBody?: {
-          content: { "application/json": { schema: { $ref: string } } };
-        };
-      }
-    >
-  >;
-};
 
 // the whole spec is one schema document, so the spec's own $refs resolve
 const ajv = new Ajv({ strict: false });
@@ -34,15 +15,16 @@ const validators = new Map<string, ValidateFunction>();
  * The validator for the JSON request body of an operation, as the spec
  * defines it
  */
-const validatorFor = (path: string): ValidateFunction => {
-  const cached = validators.get(path);
+const validatorFor = (path: string, method: string): ValidateFunction => {
+  const key = `${method} ${path}`;
+  const cached = validators.get(key);
   if (cached) return cached;
 
   const reference =
-    spec.paths[path]?.post?.requestBody?.content["application/json"].schema
+    spec.paths[path]?.[method]?.requestBody?.content["application/json"].schema
       .$ref;
   if (!reference) {
-    throw new Error(`openapi.yaml defines no JSON request body for ${path}`);
+    throw new Error(`openapi.yaml defines no JSON request body for ${key}`);
   }
 
   const validate = ajv.getSchema(`openapi${reference}`);
@@ -50,7 +32,7 @@ const validatorFor = (path: string): ValidateFunction => {
     throw new Error(`openapi.yaml does not resolve ${reference}`);
   }
 
-  validators.set(path, validate);
+  validators.set(key, validate);
   return validate;
 };
 
@@ -115,13 +97,15 @@ const toMessage = (
  *
  * @param path - The operation's path in openapi.yaml, e.g. "/api/odds"
  * @param body - The parsed request body
+ * @param method - The operation's HTTP method in openapi.yaml
  * @returns The first violation as the service's error message, or null
  */
 export const validateRequestBody = (
   path: string,
-  body: unknown
+  body: unknown,
+  method = "post"
 ): ValidationError => {
-  const validate = validatorFor(path);
+  const validate = validatorFor(path, method);
   // a request without a JSON body is validated as an empty object
   const input = body ?? {};
   if (validate(input)) return null;
@@ -136,9 +120,9 @@ export const validateRequestBody = (
  * Middleware answering 400 when the request body doesn't match the spec
  */
 export const validateBody =
-  (path: string): express.RequestHandler =>
+  (path: string, method = "post"): express.RequestHandler =>
   (req, res, next) => {
-    const validationError = validateRequestBody(path, req.body);
+    const validationError = validateRequestBody(path, req.body, method);
     if (validationError) {
       res.status(400).json(createApiResponse(validationError.error));
       return;

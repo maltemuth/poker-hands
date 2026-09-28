@@ -1,22 +1,23 @@
 import express from "express";
-import { OddsRequest, PercentagesRequest } from "../types";
+import { spec } from "../spec";
 import { createApiResponse } from "../utils";
-import { validateBody } from "../validation/requestValidator";
 import { holdSlotUntil } from "../middleware/rateLimiter";
-import { runInWorker, CalculationError } from "../odds/runInWorker";
+import { CalculationError } from "../odds/runInWorker";
+import { validateBody } from "../validation/requestValidator";
+import { handlers, Handlers } from "./handlers";
+
+const methods = ["get", "post", "put", "patch", "delete"] as const;
 
 /**
- * Responds with the result of a calculation. The calculation keeps its
- * concurrency slot until it finishes, even if the client disconnects.
+ * Responds with the result of a handler. A calculation keeps its concurrency
+ * slot until it finishes, even if the client disconnects.
  */
-function respondWithCalculation(
-  res: express.Response,
-  calculation: Promise<unknown>
-): void {
-  holdSlotUntil(res, calculation);
-  calculation
-    .then((result) => {
-      const response = createApiResponse(result);
+function respond(res: express.Response, run: () => unknown): void {
+  const result = new Promise((resolve) => resolve(run()));
+  holdSlotUntil(res, result);
+  result
+    .then((body) => {
+      const response = createApiResponse(body);
       res.json(response);
     })
     .catch((error: Error) => {
@@ -27,25 +28,44 @@ function respondWithCalculation(
     });
 }
 
-export function setupRoutes(app: express.Application): void {
-  // Odds calculation endpoint
-  app.post("/api/odds", validateBody("/api/odds"), (req, res) => {
-    // Calculate in a worker thread
-    respondWithCalculation(res, runInWorker("odds", req.body as OddsRequest));
-  });
+/**
+ * Registers every operation in openapi.yaml: its path and method, request
+ * validation for operations with a body, and the handler for its operationId.
+ *
+ * @param routeHandlers - The handler per operationId; tests pass their own
+ * @throws {Error} If an operation in the spec has no handler
+ */
+export function setupRoutes(
+  app: express.Application,
+  routeHandlers: Handlers = handlers
+): void {
+  for (const [path, operations] of Object.entries(spec.paths)) {
+    // OpenAPI writes path parameters as {name}, Express as :name
+    const route = path.replace(/{([^}]+)}/g, ":$1");
 
-  // Hand type percentages endpoint
-  app.post("/api/percentages", validateBody("/api/percentages"), (req, res) => {
-    // Calculate in a worker thread
-    respondWithCalculation(
-      res,
-      runInWorker("percentages", req.body as PercentagesRequest)
-    );
-  });
+    for (const method of methods) {
+      const operation = operations[method];
+      if (!operation) continue;
 
-  // Health check endpoint
-  app.get("/health", (req, res) => {
-    const response = createApiResponse({ status: "healthy" });
-    res.json(response);
-  });
+      const handler = routeHandlers[operation.operationId as keyof Handlers] as
+        | ((body: unknown) => unknown)
+        | undefined;
+      if (!handler) {
+        throw new Error(
+          `No handler for ${
+            operation.operationId
+          } (${method.toUpperCase()} ${path})`
+        );
+      }
+
+      const run: express.RequestHandler = (req, res) =>
+        respond(res, () => handler(req.body));
+
+      if (operation.requestBody) {
+        app[method](route, validateBody(path, method), run);
+      } else {
+        app[method](route, run);
+      }
+    }
+  }
 }
