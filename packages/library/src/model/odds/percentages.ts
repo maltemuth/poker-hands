@@ -6,8 +6,6 @@ import combinations from "../combinatorics/combinations";
 import getBestHand from "../hand/getBestHand";
 import assertUnique from "../card/assertUnique";
 
-const mapHandTypeToKey = (type: HandType) => handTypes[type - 1];
-
 const handTypes = [
   "highCard",
   "pair",
@@ -19,14 +17,25 @@ const handTypes = [
   "fourOfAKind",
   "straightFlush",
   "royalFlush",
-];
+] as const;
 
-export interface HandPercentages {
-  [key: string]: {
+/**
+ * The name of a hand type, from "highCard" to "royalFlush"
+ */
+export type HandTypeName = (typeof handTypes)[number];
+
+const mapHandTypeToKey = (type: HandType): HandTypeName => handTypes[type - 1];
+
+/**
+ * How often each hand type occurs, for all ten hand types
+ */
+export type HandPercentages = Record<
+  HandTypeName,
+  {
     count: number;
     percentage: number;
-  };
-}
+  }
+>;
 
 /**
  * Calculates the probability distribution of all possible poker hand types
@@ -89,7 +98,7 @@ const percentages = (
 
   const totalNumberOfSimulations = restBoards.length;
 
-  const results: HandPercentages = handTypes.reduce(
+  const results = handTypes.reduce(
     (partial, type) => ({
       ...partial,
       [type]: {
@@ -97,7 +106,7 @@ const percentages = (
         percentage: 0,
       },
     }),
-    {}
+    {} as HandPercentages
   );
 
   restBoards.forEach((rest) => {
