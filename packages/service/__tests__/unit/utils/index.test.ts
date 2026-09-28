@@ -412,124 +412,39 @@ describe("Utils", () => {
   });
 
   describe("formatCliOutput", () => {
-    it("should format CLI output correctly", () => {
-      const cliOutput = JSON.stringify({
-        success: true,
-        command: "odds",
-        data: {
-          players: [
-            {
-              holeCards: ["Ah", "Kh"],
-              winChance: 0.65,
-              tieChance: 0.05,
-              winChanceError: 0.02,
-            },
-            {
-              holeCards: ["7c", "2d"],
-              winChance: 0.35,
-              tieChance: 0.05,
-            },
-          ],
-        },
-      });
-
-      const result = formatCliOutput(cliOutput);
-      expect(result).toEqual({
-        winProbabilities: [0.65, 0.35],
-        handTypeProbabilities: [
+    it("should return the data portion of the CLI output", () => {
+      const data = {
+        players: [
           {
-            highCard: 0,
-            pair: 0,
-            twoPair: 0,
-            threeOfAKind: 0,
-            straight: 0,
-            flush: 0,
-            fullHouse: 0,
-            fourOfAKind: 0,
-            straightFlush: 0,
-            royalFlush: 0,
+            holeCards: ["Ah", "Kh"],
+            winChance: 0.65,
+            tieChance: 0.05,
+            winChanceError: 0.02,
           },
           {
-            highCard: 0,
-            pair: 0,
-            twoPair: 0,
-            threeOfAKind: 0,
-            straight: 0,
-            flush: 0,
-            fullHouse: 0,
-            fourOfAKind: 0,
-            straightFlush: 0,
-            royalFlush: 0,
+            holeCards: ["7c", "2d"],
+            winChance: 0.35,
+            tieChance: 0.05,
           },
         ],
-      });
-    });
-
-    it("should handle empty winProbabilities", () => {
+      };
       const cliOutput = JSON.stringify({
         success: true,
         command: "odds",
-        data: {
-          players: [],
-        },
+        data,
       });
 
-      const result = formatCliOutput(cliOutput);
-      expect(result).toEqual({
-        winProbabilities: [],
-        handTypeProbabilities: [],
-      });
+      expect(formatCliOutput(cliOutput)).toEqual(data);
     });
 
-    it("should handle missing winProbabilities", () => {
+    it("should handle an empty player list", () => {
       const cliOutput = JSON.stringify({
         success: true,
         command: "odds",
-        data: {
-          players: [],
-        },
+        data: { players: [] },
       });
 
-      const result = formatCliOutput(cliOutput);
-      expect(result).toEqual({
-        winProbabilities: [],
-        handTypeProbabilities: [],
-      });
-    });
-
-    it("should handle missing handTypeProbabilities", () => {
-      const cliOutput = JSON.stringify({
-        success: true,
-        command: "odds",
-        data: {
-          players: [
-            {
-              holeCards: ["Ah", "Kh"],
-              winChance: 0.65,
-              tieChance: 0.05,
-            },
-          ],
-        },
-      });
-
-      const result = formatCliOutput(cliOutput);
-      expect(result).toEqual({
-        winProbabilities: [0.65],
-        handTypeProbabilities: [
-          {
-            highCard: 0,
-            pair: 0,
-            twoPair: 0,
-            threeOfAKind: 0,
-            straight: 0,
-            flush: 0,
-            fullHouse: 0,
-            fourOfAKind: 0,
-            straightFlush: 0,
-            royalFlush: 0,
-          },
-        ],
-      });
+      expect(formatCliOutput(cliOutput)).toEqual({ players: [] });
     });
 
     it("should throw error for invalid CLI output", () => {
