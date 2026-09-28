@@ -4,6 +4,7 @@ import without from "../card/without";
 import create from "../deck/create";
 import combinations from "../combinatorics/combinations";
 import getBestHand from "../hand/getBestHand";
+import assertUnique from "../card/assertUnique";
 
 const mapHandTypeToKey = (type: HandType) => handTypes[type - 1];
 
@@ -43,6 +44,8 @@ export interface HandPercentages {
  *          - count: Number of times this hand type appears
  *          - percentage: Probability of this hand type (0-1)
  *
+ * @throws {Error} If a card appears more than once in the hole and board.
+ *
  * @example
  * ```typescript
  * import cards from '../card/cards';
@@ -68,6 +71,8 @@ export interface HandPercentages {
  * ```
  */
 const percentages = (hole: Card[], board: Card[] = []): HandPercentages => {
+  assertUnique([...hole, ...board]);
+
   const deckWithoutHoleCards = without(create(), ...hole);
   const deckWithoutKnownBoard = without(deckWithoutHoleCards, ...board);
   const restBoards = combinations(deckWithoutKnownBoard, 5 - board.length);
