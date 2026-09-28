@@ -1,8 +1,10 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "noEmit": true
+    "noEmit": true,
+    "rootDir": "../..",
+    "allowImportingTsExtensions": true
   },
-  "include": ["index.ts", "src/**/*", "__tests__/**/*"],
+  "include": ["index.ts", "src/**/*", "__tests__/**/*", "eslint.config.mts"],
   "exclude": ["node_modules", "dist"]
 }

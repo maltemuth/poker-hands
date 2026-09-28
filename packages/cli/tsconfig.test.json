@@ -1,13 +1,14 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "rootDir": "..",
+    "rootDir": "../..",
     "types": ["node", "jest"],
     "paths": {
       "@malte.muth/poker-hands": ["../library/index.ts"]
     },
-    "noEmit": true
+    "noEmit": true,
+    "allowImportingTsExtensions": true
   },
-  "include": ["src/**/*", "__tests__/**/*"],
+  "include": ["src/**/*", "__tests__/**/*", "eslint.config.mts"],
   "exclude": ["node_modules", "dist"]
 }
