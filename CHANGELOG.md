@@ -6,6 +6,46 @@ The library, CLI and service are versioned together.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2026-09-28
+
+### Added
+
+- Service: `POST /api/percentages` calculates, for each player, how often
+  they make each hand type over all possible boards. The other players' hole
+  cards count as dead cards. The endpoint previously answered `501`.
+- Library: `percentages(hole, board, dead)` takes an optional list of dead
+  cards, e.g. other players' hole cards, that can no longer appear on the
+  board.
+
+### Changed
+
+- Service: calculations use the library directly in worker threads instead of
+  running the `poker-hands` CLI for every request. Long calculations still
+  don't block the service, requests no longer start `npx` and a second Node
+  process, and the CLI is not needed at runtime. Response formats are
+  unchanged.
+- Service: cards the library rejects, e.g. a card used twice, are answered
+  with `400` and the library's message. Before, such requests got a `200` with
+  an empty body.
+- Service: a concurrency slot stays occupied until its calculation has
+  finished, even if the client disconnects, so no more calculations run at
+  once than `--max-requests` allows.
+
+### Fixed
+
+- Library: `percentages()` rejects duplicate cards instead of returning a
+  wrong distribution.
+- Service: the package no longer depends on files of the CLI package that only
+  exist inside this repository, the build no longer keeps stale output, and
+  only the build output and docs are published.
+- Service: the README and `openapi.yaml` describe the actual requests and
+  responses; `openapi.yaml` is valid again.
+
+### Removed
+
+- Service: the unused `ws` dependency and `ajv`, which only validated the
+  CLI's output.
+
 ## [0.5.0] - 2026-09-28
 
 ### Changed
@@ -102,5 +142,6 @@ Restructured into a monorepo with three packages. Not published to npm.
 
 Versions up to 0.3.1 (June 2020) predate this changelog.
 
+[0.6.0]: https://github.com/malte-muth/poker-hands/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/malte-muth/poker-hands/compare/v0.4.1...v0.5.0
 [0.4.1]: https://github.com/malte-muth/poker-hands/compare/v0.3.1...v0.4.1
