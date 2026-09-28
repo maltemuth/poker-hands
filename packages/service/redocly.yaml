@@ -1,0 +1,6 @@
+extends:
+  - recommended
+
+rules:
+  # the spec drives request validation, so required fields must exist
+  no-required-schema-properties-undefined: error

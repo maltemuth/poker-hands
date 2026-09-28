@@ -32,11 +32,12 @@
     "cli": "tsx src/cli.ts",
     "lint": "eslint src --ext .ts",
     "clean": "rm -rf dist",
-    "test": "npm run typecheck && jest",
+    "test": "npm run typecheck && npm run lint:spec && jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "typecheck": "openapi-typescript openapi.yaml -o src/types/api.ts --check && tsc -p tsconfig.test.json",
-    "generate": "openapi-typescript openapi.yaml -o src/types/api.ts"
+    "generate": "openapi-typescript openapi.yaml -o src/types/api.ts",
+    "lint:spec": "redocly lint openapi.yaml"
   },
   "dependencies": {
     "@malte.muth/poker-hands": "file:../library",
@@ -46,6 +47,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@redocly/cli": "^2.55.0",
     "@swc/core": "^1.16.2",
     "@swc/jest": "^0.2.39",
     "@types/express": "^5.0.6",
