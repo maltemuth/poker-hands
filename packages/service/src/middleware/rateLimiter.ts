@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import { sendError } from "../utils";
 
 interface RateLimiterOptions {
   maxConcurrentRequests: number;
@@ -31,7 +32,7 @@ export function createRateLimiter(options: RateLimiterOptions) {
     }
 
     if (activeRequests >= maxConcurrentRequests) {
-      return res.status(429).json("Too many concurrent requests");
+      return sendError(res, 429, "Too many concurrent requests");
     }
 
     // Track the request

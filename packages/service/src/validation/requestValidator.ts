@@ -1,7 +1,7 @@
 import Ajv, { ErrorObject, ValidateFunction } from "ajv";
 import express from "express";
 import { spec } from "../spec";
-import { createApiResponse } from "../utils";
+import { sendError } from "../utils";
 
 type ValidationError = { error: string } | null;
 
@@ -124,7 +124,7 @@ export const validateBody =
   (req, res, next) => {
     const validationError = validateRequestBody(path, req.body, method);
     if (validationError) {
-      res.status(400).json(createApiResponse(validationError.error));
+      sendError(res, 400, validationError.error);
       return;
     }
     next();
