@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "node20",
     "target": "ES2022",
     "lib": ["ES2022"],
     "esModuleInterop": true,
@@ -14,13 +14,6 @@
     "resolveJsonModule": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "moduleResolution": "node",
-    "baseUrl": ".",
-    "paths": {
-      "@library/*": ["packages/library/src/*"],
-      "@service/*": ["packages/service/src/*"],
-      "@cli/*": ["packages/cli/src/*"]
-    },
     "outDir": "./dist",
     "rootDir": "."
   },

@@ -3,12 +3,8 @@
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": "src",
-    "baseUrl": ".",
-    "paths": {
-      "@src/*": ["src/*"]
-    },
     "types": ["node", "express", "ws", "jest"],
-    "module": "commonjs",
+    "module": "node20",
     "target": "ES2022",
     "lib": ["ES2022"],
     "esModuleInterop": true,
@@ -21,8 +17,7 @@
     "sourceMap": true,
     "resolveJsonModule": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "moduleResolution": "node"
+    "emitDecoratorMetadata": true
   },
   "include": ["src/**/*", "**/*.test.ts", "**/*.spec.ts"],
   "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"],

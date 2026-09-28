@@ -45,7 +45,7 @@
     "@types/node": "^24.19.0",
     "jest": "^30.5.2",
     "jiti": "^2.7.0",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.3"
   },
   "engines": {
     "node": ">=24.21.0",
