@@ -29,11 +29,12 @@
     "cli": "cd packages/cli && npm run start"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/cors": "^2.8.19",
     "@types/jest": "^30.0.0",
     "@typescript-eslint/eslint-plugin": "^8.70.1",
     "@typescript-eslint/parser": "^8.70.1",
-    "eslint": "^9.39.5",
+    "eslint": "^10.11.0",
     "jest": "^30.5.2",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.3",
