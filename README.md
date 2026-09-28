@@ -1,6 +1,6 @@
 # Poker Hands
 
-A project for Texas Hold'em poker hand evaluation, odds calculation, and more. This project provides three packages: a core library, an HTTP/WebSocket service, and a command-line interface.
+A project for Texas Hold'em poker hand evaluation, odds calculation, and more. This project provides three packages: a core library, an HTTP service, and a command-line interface.
 
 What started as a code-workout has become an exercise in vibe coding – substantial parts of this code has been AI-generated.
 
@@ -12,7 +12,7 @@ This project is organized as a monorepo with three main packages:
 poker-hands/
 ├── packages/
 │   ├── library/          # Core poker logic library
-│   ├── service/          # HTTP/WebSocket service
+│   ├── service/          # HTTP service
 │   └── cli/             # Command-line interface
 ├── package.json         # Workspace configuration
 └── README.md            # This file
@@ -72,7 +72,7 @@ npm test
 ## 📖 Documentation
 
 - [Library Documentation](packages/library/README.md) - API reference and usage examples
-- [Service Documentation](packages/service/README.md) - API endpoints and WebSocket usage
+- [Service Documentation](packages/service/README.md) - API endpoints and usage
 - [CLI Documentation](packages/cli/README.md) - Command-line interface usage
 - [Changelog](CHANGELOG.md) - Changes per version
 

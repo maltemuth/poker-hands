@@ -105,45 +105,34 @@ Calculate winning odds for given hole cards and board.
     ["Ah", "Kh"],
     ["7c", "2d"]
   ],
-  "board": ["Ts", "9h", "8c"]
+  "board": ["Ts", "9h", "8c"],
+  "options": { "mode": "monteCarlo", "sampleSize": 50000 }
 }
 ```
 
+- `holes`: at least two players with exactly two cards each
+- `board` (optional): up to five community cards
+- `options` (optional): `mode` is `auto` (default), `exhaustive` or
+  `monteCarlo`; `threshold` applies to `auto` mode (the maximum number of
+  boards to calculate exactly, default 10000), `sampleSize` to `monteCarlo`
+  mode (default 10000)
+
 **Response:**
+
+One entry per player, in the order of `holes`. `winChanceError` (the 95%
+margin of error) is only present for Monte Carlo results.
 
 ```json
 {
-  "success": true,
-  "data": {
-    "winProbabilities": [0.65, 0.35],
-    "handTypeProbabilities": [
-      {
-        "highCard": 0.15,
-        "pair": 0.25,
-        "twoPair": 0.1,
-        "threeOfAKind": 0.05,
-        "straight": 0.2,
-        "flush": 0.15,
-        "fullHouse": 0.05,
-        "fourOfAKind": 0.02,
-        "straightFlush": 0.02,
-        "royalFlush": 0.01
-      },
-      {
-        "highCard": 0.25,
-        "pair": 0.3,
-        "twoPair": 0.15,
-        "threeOfAKind": 0.08,
-        "straight": 0.1,
-        "flush": 0.08,
-        "fullHouse": 0.03,
-        "fourOfAKind": 0.01,
-        "straightFlush": 0.0,
-        "royalFlush": 0.0
-      }
-    ]
-  },
-  "timestamp": "2023-12-07T10:00:00.000Z"
+  "players": [
+    {
+      "holeCards": ["Ah", "Kh"],
+      "winChance": 0.65,
+      "tieChance": 0.05,
+      "winChanceError": 0.02
+    },
+    { "holeCards": ["7c", "2d"], "winChance": 0.3, "tieChance": 0.05 }
+  ]
 }
 ```
 
@@ -156,26 +145,19 @@ Health check endpoint.
 **Response:**
 
 ```json
-{
-  "success": true,
-  "data": {
-    "status": "healthy",
-    "timestamp": "2023-12-07T10:00:00.000Z"
-  },
-  "timestamp": "2023-12-07T10:00:00.000Z"
-}
+{ "status": "healthy" }
 ```
 
 ## Configuration
 
-### PokerHandsService Options
+### PokerHandsService
 
 ```typescript
-interface ServiceConfig {
-  port?: number; // Server port (default: 3000)
-  cors?: boolean; // Enable CORS (default: true)
-  maxConcurrentRequests?: number; // Maximum concurrent requests (default: 5, range: 1-100)
-}
+new PokerHandsService(
+  port?: number, // Server port (default: 3000)
+  corsEnabled?: boolean, // Enable CORS (default: true)
+  maxConcurrentRequests?: number // Maximum concurrent calculations (default: 5)
+);
 ```
 
 ### Example Configuration
@@ -183,29 +165,26 @@ interface ServiceConfig {
 ```typescript
 import { PokerHandsService } from "@malte.muth/poker-hands-service";
 
-const service = new PokerHandsService({
-  port: 8080,
-  cors: true,
-  maxConcurrentRequests: 10,
-});
+const service = new PokerHandsService(8080, true, 10);
+service.start();
 ```
 
 ## Error Handling
 
-The service provides consistent error responses:
+Errors are returned as a JSON string with the message:
 
 ```json
-{
-  "success": false,
-  "error": "Error message",
-  "timestamp": "2023-12-07T10:00:00.000Z"
-}
+"Holes must be provided as an array with at least 2 players"
 ```
 
 ### Common Error Codes
 
-- `400 Bad Request`: Invalid input data
-- `500 Internal Server Error`: Server error during processing
+- `400 Bad Request`: invalid input, or cards the library rejects (e.g. a card
+  used twice)
+- `429 Too Many Requests`: all calculation slots are busy
+  (`"Too many concurrent requests"`)
+- `500 Internal Server Error`: unexpected error during the calculation
+- `501 Not Implemented`: `/api/percentages`
 
 ## Middleware
 
@@ -222,9 +201,16 @@ The service includes built-in middleware:
 - Configurable cross-origin resource sharing
 - Supports enabling/disabling CORS
 
-## CLI Dependency
+## How Calculations Run
 
-The service relies on executing CLI commands rather than directly using the poker library. When you make requests to the API endpoints, the service internally executes CLI commands like `npx poker-hands odds` to perform the calculations. This means you need to ensure the CLI package is properly installed and available in the system PATH.
+Each odds request is calculated with the poker library in its own worker
+thread, so long calculations don't block the service: other requests and the
+health check are answered in the meantime.
+
+At most `maxConcurrentRequests` calculations (default 5) run at once; further
+requests get a `429` until a slot is free. A slot stays occupied until its
+calculation has finished, even if the client disconnects earlier, so an
+exhaustive pre-flop calculation holds its slot for as long as it runs.
 
 ## Development
 
@@ -302,8 +288,6 @@ curl -X POST http://localhost:3000/api/odds \
 ### Using with JavaScript/Node.js
 
 ```javascript
-const fetch = require("node-fetch");
-
 // Odds calculation
 async function getOdds() {
   const response = await fetch("http://localhost:3000/api/odds", {
@@ -319,7 +303,7 @@ async function getOdds() {
   });
 
   const result = await response.json();
-  console.log(result.data.winProbabilities); // [0.65, 0.35]
+  console.log(result.players.map((player) => player.winChance)); // [0.65, 0.3]
 }
 
 getOdds();
@@ -327,8 +311,10 @@ getOdds();
 
 ## Runtime Considerations
 
-- The service executes CLI commands to perform poker calculations
-- Odds calculations can be computationally intensive
+- Each calculation runs in a worker thread; up to `maxConcurrentRequests` of
+  them run at once
+- Odds calculations can be computationally intensive: exhaustive pre-flop
+  calculations can take a minute or more
 
 ## License
 
