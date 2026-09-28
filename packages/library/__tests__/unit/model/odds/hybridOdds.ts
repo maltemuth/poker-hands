@@ -9,8 +9,12 @@ describe("odds", () => {
     const holes = [cards("As", "Ks"), cards("2d", "3d")];
     const board = cards("4d", "5d", "6d");
 
-    // This should use the exhaustive algorithm since there are only C(47, 2) = 1081 combinations
+    // This should use the exhaustive algorithm since there are only C(45, 2) = 990 combinations
     const result = odds(holes, board);
+
+    // exhaustive results carry no error estimates and exact counts
+    expect(result[0].winChanceError).toBeUndefined();
+    expect(result[0].wins + result[0].ties + result[1].wins).toBe(990);
 
     expect(result).toHaveLength(2);
     expect(result[0].hole).toEqual(holes[0]);
@@ -29,7 +33,7 @@ describe("odds", () => {
     const holes = [cards("As", "Ah"), cards("Ks", "Kh")];
 
     // This should use the Monte Carlo algorithm since combinations exceed threshold
-    const result = odds(holes, [], 5000); // Use smaller sample size for faster test
+    const result = odds(holes, [], { mode: "auto", threshold: 5000 }); // threshold doubles as sample size
 
     expect(result).toHaveLength(2);
     expect(result[0].hole).toEqual(holes[0]);
