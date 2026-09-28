@@ -102,8 +102,12 @@ const monteCarloOdds = (
 
   // Run Monte Carlo simulations
   for (let i = 0; i < sampleSize; i++) {
-    // Report progress periodically (every 100 simulations) to avoid callback overhead
-    if (progressCallback && (i + 1) % 100 === 0) {
+    // Report progress periodically (every 100 simulations) to avoid callback overhead,
+    // and always on the last one so callers see completion
+    if (
+      progressCallback &&
+      ((i + 1) % 100 === 0 || i + 1 === sampleSize)
+    ) {
       progressCallback((i + 1) / sampleSize);
     }
 

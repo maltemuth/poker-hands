@@ -112,8 +112,12 @@ const exhaustive = (
 
   // Simulate each possible board
   possibleRestBoards.forEach((restBoard, boardIndex) => {
-    // Report progress periodically (every 100 boards) to avoid callback overhead
-    if (progressCallback && (boardIndex + 1) % 100 === 0) {
+    // Report progress periodically (every 100 boards) to avoid callback overhead,
+    // and always on the last one so callers see completion
+    if (
+      progressCallback &&
+      ((boardIndex + 1) % 100 === 0 || boardIndex + 1 === totalAmountOfBoards)
+    ) {
       progressCallback((boardIndex + 1) / totalAmountOfBoards);
     }
 

@@ -25,7 +25,7 @@ export interface HoleOdds {
  * This callback is used to report the progress of odds calculations,
  * allowing applications to show progress bars or update UI elements.
  * The progress value ranges from 0 to 1, where 0 represents 0% completion
- * and 1 represents 100% completion.
+ * and 1 represents 100% completion. The last report is always 1.
  *
  * @param progress - A number between 0 and 1 representing the completion percentage
  *
