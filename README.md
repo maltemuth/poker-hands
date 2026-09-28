@@ -74,6 +74,7 @@ npm test
 - [Library Documentation](packages/library/README.md) - API reference and usage examples
 - [Service Documentation](packages/service/README.md) - API endpoints and WebSocket usage
 - [CLI Documentation](packages/cli/README.md) - Command-line interface usage
+- [Changelog](CHANGELOG.md) - Changes per version
 
 ## 🔧 Development
 
