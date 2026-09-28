@@ -1,10 +1,14 @@
 import { Card } from "../card/Card";
-import { HandType } from "../hand/Hand";
 import without from "../card/without";
 import create from "../deck/create";
-import combinations from "../combinatorics/combinations";
-import getBestHand from "../hand/getBestHand";
+import {
+  SUIT_INDEX,
+  addCard,
+  createHandState,
+  rankOf,
+} from "../hand/handState";
 import assertUnique from "../card/assertUnique";
+import forEachBoard from "./forEachBoard";
 
 const handTypes = [
   "highCard",
@@ -23,8 +27,6 @@ const handTypes = [
  * The name of a hand type, from "highCard" to "royalFlush"
  */
 export type HandTypeName = (typeof handTypes)[number];
-
-const mapHandTypeToKey = (type: HandType): HandTypeName => handTypes[type - 1];
 
 /**
  * How often each hand type occurs, for all ten hand types
@@ -94,34 +96,28 @@ const percentages = (
     ...board,
     ...dead
   );
-  const restBoards = combinations(deckWithoutKnownBoard, 5 - board.length);
 
-  const totalNumberOfSimulations = restBoards.length;
+  const state = createHandState();
+  for (const card of [...hole, ...board]) {
+    addCard(state, SUIT_INDEX[card.suit], card.value);
+  }
 
-  const results = handTypes.reduce(
-    (partial, type) => ({
-      ...partial,
-      [type]: {
-        count: 0,
-        percentage: 0,
-      },
+  // how often each hand type (1-10) occurs
+  const counts = handTypes.map(() => 0);
+  let boards = 0;
+  forEachBoard(state, deckWithoutKnownBoard, 5 - board.length, () => {
+    // the hand type is the rank's leading hex digit
+    counts[(rankOf(state) >> 20) - 1]++;
+    boards++;
+  });
+
+  return handTypes.reduce(
+    (results, type, index) => ({
+      ...results,
+      [type]: { count: counts[index], percentage: counts[index] / boards },
     }),
     {} as HandPercentages
   );
-
-  restBoards.forEach((rest) => {
-    const hand = getBestHand([...hole, ...board, ...rest]);
-    if (hand) {
-      const key = mapHandTypeToKey(hand.type);
-      results[key].count += 1;
-    }
-  });
-
-  handTypes.forEach((type) => {
-    results[type].percentage = results[type].count / totalNumberOfSimulations;
-  });
-
-  return results;
 };
 
 export default percentages;

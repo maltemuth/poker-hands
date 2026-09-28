@@ -1,5 +1,25 @@
 import cards from "../../../../src/model/card/cards";
 import percentages from "../../../../src/model/odds/percentages";
+import combinations from "../../../../src/model/combinatorics/combinations";
+import getBestHand from "../../../../src/model/hand/getBestHand";
+import create from "../../../../src/model/deck/create";
+import without from "../../../../src/model/card/without";
+import { HandType } from "../../../../src/model/hand/Hand";
+import { Card } from "../../../../src/model/card/Card";
+
+// the straightforward way: build every board and count its best hand's type
+const reference = (hole: Card[], board: Card[], dead: Card[]) => {
+  const counts: Record<string, number> = {};
+  const rest = without(create(), ...hole, ...board, ...dead);
+  for (const restBoard of combinations(rest, 5 - board.length)) {
+    const hand = getBestHand([...hole, ...board, ...restBoard]);
+    if (!hand) throw new Error("no hand");
+    const name = HandType[hand.type];
+    const key = name[0].toLowerCase() + name.slice(1);
+    counts[key] = (counts[key] ?? 0) + 1;
+  }
+  return counts;
+};
 
 describe("percentages", () => {
   test("counts every possible board once", () => {
@@ -16,6 +36,31 @@ describe("percentages", () => {
     expect(total).toBe(46);
     expect(result.royalFlush.count).toBe(1);
   });
+
+  test.each([
+    ["river", ["Ah", "Kh"], ["Qh", "Jh", "2c", "3d"], []],
+    ["turn", ["7s", "7d"], ["7c", "2h", "Kd"], []],
+    ["flop, suited connectors", ["9h", "8h"], ["Th", "Jc", "2h"], []],
+    ["flop, dead cards", ["Ah", "Kh"], ["Qh", "7c", "2d"], ["Th", "Jh", "9c"]],
+  ])(
+    "%s: counts the same hand types as building every board",
+    (_, hole, board, dead) => {
+      const result = percentages(
+        cards(...hole),
+        cards(...board),
+        cards(...dead)
+      );
+      const expected = reference(
+        cards(...hole),
+        cards(...board),
+        cards(...dead)
+      );
+
+      for (const [type, { count }] of Object.entries(result)) {
+        expect([type, count]).toEqual([type, expected[type] ?? 0]);
+      }
+    }
+  );
 
   test("rejects a card that is both in the hole and on the board", () => {
     expect(() =>
