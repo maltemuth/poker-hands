@@ -81,19 +81,6 @@ const toMessage = (
   if (segments[0] === "board") {
     return `Invalid board card format: ${value}`;
   }
-  if (path === "/options/mode") {
-    return `Invalid mode: ${value}. Must be one of: ${error.params.allowedValues.join(
-      ", "
-    )}`;
-  }
-  if (path === "/options/threshold") {
-    return "Threshold must be a positive integer";
-  }
-  if (path === "/options/sampleSize") {
-    return error.keyword === "maximum"
-      ? `Sample size must be at most ${error.params.limit}`
-      : "Sample size must be a positive integer";
-  }
   return `${path.slice(1) || "body"} ${error.message}`;
 };
 

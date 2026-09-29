@@ -178,205 +178,17 @@ describe("validateRequestBody", () => {
     });
   });
 
-  describe("odds requests with options", () => {
-    it("should return null for valid input with mode option", () => {
-      const input = {
-        holes: [
-          ["Ah", "Kh"],
-          ["7c", "2d"],
-        ],
-        options: {
-          mode: "exhaustive" as const,
-        },
-      };
-
-      const result = validateRequestBody("/api/odds", input);
-      expect(result).toBeNull();
-    });
-
-    it("should return null for valid input with threshold option", () => {
-      const input = {
-        holes: [
-          ["Ah", "Kh"],
-          ["7c", "2d"],
-        ],
-        options: {
-          threshold: 5000,
-        },
-      };
-
-      const result = validateRequestBody("/api/odds", input);
-      expect(result).toBeNull();
-    });
-
-    it("should return null for valid input with sampleSize option", () => {
-      const input = {
-        holes: [
-          ["Ah", "Kh"],
-          ["7c", "2d"],
-        ],
-        options: {
-          sampleSize: 1000,
-        },
-      };
-
-      const result = validateRequestBody("/api/odds", input);
-      expect(result).toBeNull();
-    });
-
-    it("should return null for valid input with all options", () => {
-      const input = {
-        holes: [
-          ["Ah", "Kh"],
-          ["7c", "2d"],
-        ],
-        options: {
-          mode: "monteCarlo" as const,
-          threshold: 5000,
-          sampleSize: 1000,
-        },
-      };
-
-      const result = validateRequestBody("/api/odds", input);
-      expect(result).toBeNull();
-    });
-
-    it("should return error for invalid mode", () => {
-      const input = {
-        holes: [
-          ["Ah", "Kh"],
-          ["7c", "2d"],
-        ],
-        options: {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          mode: "invalidMode" as any,
-        },
-      };
-
-      const result = validateRequestBody("/api/odds", input);
-      expect(result).toEqual({
-        error:
-          "Invalid mode: invalidMode. Must be one of: auto, exhaustive, monteCarlo",
-      });
-    });
-
-    it("should return error for negative threshold", () => {
-      const input = {
-        holes: [
-          ["Ah", "Kh"],
-          ["7c", "2d"],
-        ],
-        options: {
-          threshold: -100,
-        },
-      };
-
-      const result = validateRequestBody("/api/odds", input);
-      expect(result).toEqual({
-        error: "Threshold must be a positive integer",
-      });
-    });
-
-    it("should return error for zero threshold", () => {
-      const input = {
-        holes: [
-          ["Ah", "Kh"],
-          ["7c", "2d"],
-        ],
-        options: {
-          threshold: 0,
-        },
-      };
-
-      const result = validateRequestBody("/api/odds", input);
-      expect(result).toEqual({
-        error: "Threshold must be a positive integer",
-      });
-    });
-
-    it("should return error for negative sampleSize", () => {
-      const input = {
-        holes: [
-          ["Ah", "Kh"],
-          ["7c", "2d"],
-        ],
-        options: {
-          sampleSize: -100,
-        },
-      };
-
-      const result = validateRequestBody("/api/odds", input);
-      expect(result).toEqual({
-        error: "Sample size must be a positive integer",
-      });
-    });
-
-    it("should return error for zero sampleSize", () => {
-      const input = {
-        holes: [
-          ["Ah", "Kh"],
-          ["7c", "2d"],
-        ],
-        options: {
-          sampleSize: 0,
-        },
-      };
-
-      const result = validateRequestBody("/api/odds", input);
-      expect(result).toEqual({
-        error: "Sample size must be a positive integer",
-      });
-    });
-
-    it("should accept a sampleSize of 1,000,000", () => {
-      const input = {
-        holes: [
-          ["Ah", "Kh"],
-          ["7c", "2d"],
-        ],
-        options: { sampleSize: 1_000_000 },
-      };
-
-      expect(validateRequestBody("/api/odds", input)).toBeNull();
-    });
-
-    it("should return error for a sampleSize above 1,000,000", () => {
-      const input = {
-        holes: [
-          ["Ah", "Kh"],
-          ["7c", "2d"],
-        ],
-        options: { sampleSize: 1_000_001 },
-      };
-
-      expect(validateRequestBody("/api/odds", input)).toEqual({
-        error: "Sample size must be at most 1000000",
-      });
-    });
-
-    it("should return null when options is undefined", () => {
-      const input = {
-        holes: [
-          ["Ah", "Kh"],
-          ["7c", "2d"],
-        ],
-      };
-
-      const result = validateRequestBody("/api/odds", input);
-      expect(result).toBeNull();
-    });
-
-    it("should return null when options is empty object", () => {
-      const input = {
-        holes: [
-          ["Ah", "Kh"],
-          ["7c", "2d"],
-        ],
-        options: {},
-      };
-
-      const result = validateRequestBody("/api/odds", input);
-      expect(result).toBeNull();
+  describe("odds requests from older clients", () => {
+    it("should ignore the options of Monte Carlo and auto mode", () => {
+      expect(
+        validateRequestBody("/api/odds", {
+          holes: [
+            ["Ah", "Kh"],
+            ["7c", "2d"],
+          ],
+          options: { mode: "monteCarlo", sampleSize: 50000 },
+        })
+      ).toBeNull();
     });
   });
 
@@ -441,20 +253,6 @@ describe("validateRequestBody", () => {
       expect(validateRequestBody("/api/odds", undefined)).toEqual({
         error: "Holes must be provided as an array with at least 2 players",
       });
-    });
-  });
-
-  describe("rules only the spec defines", () => {
-    it("should reject a fractional sample size", () => {
-      expect(
-        validateRequestBody("/api/odds", {
-          holes: [
-            ["Ah", "Kh"],
-            ["7c", "2d"],
-          ],
-          options: { sampleSize: 2.5 },
-        })
-      ).toEqual({ error: "Sample size must be a positive integer" });
     });
   });
 });

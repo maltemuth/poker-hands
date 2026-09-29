@@ -107,32 +107,22 @@ Calculate winning odds for given hole cards and board.
     ["Ah", "Kh"],
     ["7c", "2d"]
   ],
-  "board": ["Ts", "9h", "8c"],
-  "options": { "mode": "monteCarlo", "sampleSize": 50000 }
+  "board": ["Ts", "9h", "8c"]
 }
 ```
 
 - `holes`: two to ten players with exactly two cards each
 - `board` (optional): up to five community cards
-- `options` (optional): `mode` is `auto` (default), `exhaustive` or
-  `monteCarlo`; `threshold` applies to `auto` mode (the maximum number of
-  boards to calculate exactly, default 2200000), `sampleSize` to `monteCarlo`
-  mode (default 10000, at most 1,000,000); both are integers of at least 1
 
 **Response:**
 
-One entry per player, in the order of `holes`. `winChanceError` (the 95%
-margin of error) is only present for Monte Carlo results.
+One entry per player, in the order of `holes`. The results are exact: every
+way to complete the board is evaluated.
 
 ```json
 {
   "players": [
-    {
-      "holeCards": ["Ah", "Kh"],
-      "winChance": 0.65,
-      "tieChance": 0.05,
-      "winChanceError": 0.02
-    },
+    { "holeCards": ["Ah", "Kh"], "winChance": 0.65, "tieChance": 0.05 },
     { "holeCards": ["7c", "2d"], "winChance": 0.3, "tieChance": 0.05 }
   ]
 }
@@ -253,8 +243,8 @@ library and also answered with a `400`.
 
 Each odds and percentages request is calculated with the poker library right
 in the request handler. Most calculations take a few milliseconds; the largest
-the request limits allow (exact odds or percentages pre-flop, or 1,000,000
-Monte Carlo samples) take a fraction of a second. Meanwhile, other requests and
+the request limits allow (odds or percentages pre-flop) take a fraction of a
+second. Meanwhile, other requests and
 the health check wait, since the service calculates one request at a time.
 
 At most `maxConcurrentRequests` requests (default 5) are handled at once;
@@ -380,8 +370,8 @@ getOdds();
 
 - Calculations run one at a time in the service's thread, so a long one delays
   the requests behind it
-- The request limits (at most 10 players and 1,000,000 Monte Carlo samples)
-  keep every calculation to a fraction of a second
+- The request limit of at most 10 players keeps every calculation to a
+  fraction of a second
 
 ## License
 

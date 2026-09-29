@@ -16,8 +16,8 @@ export interface paths {
         /**
          * Calculate poker hand winning odds
          * @description Calculate winning probabilities for multiple players' hole cards with an optional community board.
-         *     Supports different calculation modes: exhaustive (exact calculation), Monte Carlo (statistical simulation),
-         *     and auto (automatically selects the best method based on input size).
+         *     The calculation is exact: it evaluates every way to complete the board, which takes
+         *     at most about 0.2 seconds (pre-flop).
          *
          *     The service validates all input card formats and ensures at least 2 players are provided.
          *     Each player must have exactly 2 hole cards, and the board can contain 0-5 community cards.
@@ -103,31 +103,6 @@ export interface components {
              *     ]
              */
             board?: string[];
-            /**
-             * @description Calculation options
-             * @example {
-             *       "mode": "monteCarlo",
-             *       "sampleSize": 50000
-             *     }
-             */
-            options?: {
-                /**
-                 * @description Calculation mode (default: auto)
-                 * @example monteCarlo
-                 * @enum {string}
-                 */
-                mode?: "auto" | "exhaustive" | "monteCarlo";
-                /**
-                 * @description Threshold for auto mode (default: 2200000)
-                 * @example 50000
-                 */
-                threshold?: number;
-                /**
-                 * @description Sample size for Monte Carlo mode (default: 10000, at most 1,000,000)
-                 * @example 100000
-                 */
-                sampleSize?: number;
-            };
         };
         OddsPlayerData: {
             /**
@@ -149,12 +124,6 @@ export interface components {
              * @example 0.05
              */
             tieChance: number;
-            /**
-             * Format: float
-             * @description 95% margin of error of winChance (Monte Carlo results only)
-             * @example 0.02
-             */
-            winChanceError?: number;
         };
         OddsData: {
             /** @description Array of players with their hole cards and odds */

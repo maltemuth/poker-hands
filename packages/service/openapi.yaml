@@ -10,7 +10,7 @@ info:
 
     - **Odds Calculation**: Calculate winning probabilities for given hole cards and community board
     - **Hand Type Analysis**: Analyze probability distributions for different poker hand types
-    - **Multiple Calculation Modes**: Support for exhaustive, Monte Carlo, and auto calculation modes
+    - **Exact Results**: Every possible board is evaluated, so results carry no sampling error
     - **Health Monitoring**: Service health check endpoint
 
     ## Getting Started
@@ -44,8 +44,8 @@ paths:
       summary: Calculate poker hand winning odds
       description: |
         Calculate winning probabilities for multiple players' hole cards with an optional community board.
-        Supports different calculation modes: exhaustive (exact calculation), Monte Carlo (statistical simulation),
-        and auto (automatically selects the best method based on input size).
+        The calculation is exact: it evaluates every way to complete the board, which takes
+        at most about 0.2 seconds (pre-flop).
 
         The service validates all input card formats and ensures at least 2 players are provided.
         Each player must have exactly 2 hole cards, and the board can contain 0-5 community cards.
@@ -66,13 +66,6 @@ paths:
                 value:
                   holes: [["Ah", "As"], ["Kd", "Kh"], ["Qc", "Qd"]]
                   board: ["2h", "5d", "9c"]
-              example3:
-                summary: Monte Carlo mode with custom settings
-                value:
-                  holes: [["Ah", "Kh"], ["Qd", "Jd"]]
-                  options:
-                    mode: "monteCarlo"
-                    sampleSize: 50000
       responses:
         "200":
           description: Successful odds calculation
@@ -88,7 +81,6 @@ paths:
                       - holeCards: ["Ah", "Kh"]
                         winChance: 0.65
                         tieChance: 0.05
-                        winChanceError: 0.02
                       - holeCards: ["Qd", "Jd"]
                         winChance: 0.3
                         tieChance: 0.05
@@ -253,29 +245,6 @@ components:
             description: A poker card in valueSuit format
           maxItems: 5
           example: ["2h", "5d", "9c"]
-        options:
-          type: object
-          description: Calculation options
-          properties:
-            mode:
-              type: string
-              enum: [auto, exhaustive, monteCarlo]
-              description: "Calculation mode (default: auto)"
-              example: "monteCarlo"
-            threshold:
-              type: integer
-              minimum: 1
-              description: "Threshold for auto mode (default: 2200000)"
-              example: 50000
-            sampleSize:
-              type: integer
-              minimum: 1
-              maximum: 1000000
-              description: "Sample size for Monte Carlo mode (default: 10000, at most 1,000,000)"
-              example: 100000
-          example:
-            mode: "monteCarlo"
-            sampleSize: 50000
 
     OddsPlayerData:
       type: object
@@ -304,13 +273,6 @@ components:
           maximum: 1
           description: Probability of tying (0-1)
           example: 0.05
-        winChanceError:
-          type: number
-          format: float
-          minimum: 0
-          maximum: 1
-          description: 95% margin of error of winChance (Monte Carlo results only)
-          example: 0.02
 
     OddsData:
       type: object

@@ -36,7 +36,6 @@ describe("Routes", () => {
         ["7c", "2d"],
       ],
       board: ["Ts", "9h", "8c"],
-      options: { mode: "monteCarlo", sampleSize: 1000 },
     };
 
     it("should return 400 for invalid input without calculating", async () => {

@@ -35,56 +35,22 @@ describe("calculateOdds", () => {
     ]);
   });
 
-  it("uses Monte Carlo with the requested sample size", () => {
-    const result = calculateOdds({
-      holes: [
-        ["Ah", "As"],
-        ["Kd", "Kh"],
-      ],
-      options: { mode: "monteCarlo", sampleSize: 200 },
-    });
-
-    expect(result.players[0].winChanceError).toBeGreaterThan(0);
-    // with 200 samples, chances are multiples of 1/200
-    expect(Number.isInteger(result.players[0].winChance * 200)).toBe(true);
-  });
-
-  it("switches to Monte Carlo in auto mode above the threshold", () => {
-    const request = {
-      holes: [
-        ["Ah", "As"],
-        ["Kd", "Kh"],
-      ],
-      board: ["2c", "7d", "9h"],
-    };
-
-    // 990 possible boards remain
-    const exact = calculateOdds({
-      ...request,
-      options: { mode: "auto", threshold: 1000 },
-    });
-    const sampled = calculateOdds({
-      ...request,
-      options: { mode: "auto", threshold: 100 },
-    });
-
-    expect(exact.players[0].winChanceError).toBeUndefined();
-    expect(sampled.players[0].winChanceError).toBeDefined();
-  });
-
-  it("calculates exhaustively when requested", () => {
+  it("calculates exactly", () => {
     const result = calculateOdds({
       holes: [
         ["Ah", "As"],
         ["Kd", "Kh"],
       ],
       board: ["2c", "7d", "9h", "Jc"],
-      options: { mode: "exhaustive" },
     });
 
     // 44 possible rivers
     expect(Number.isInteger(result.players[0].winChance * 44)).toBe(true);
-    expect(result.players[0].winChanceError).toBeUndefined();
+    expect(Object.keys(result.players[0])).toEqual([
+      "holeCards",
+      "winChance",
+      "tieChance",
+    ]);
   });
 
   it("rejects duplicate cards", () => {
