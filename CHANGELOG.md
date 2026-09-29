@@ -6,6 +6,34 @@ The library, CLI and service are versioned together.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.0] - 2026-09-29
+
+### Changed
+
+- Service: requests are limited to 10 players and 1,000,000 Monte Carlo
+  samples (`options.sampleSize`); larger requests are answered with a `400`
+  ("At most 10 players allowed", "Sample size must be at most 1000000").
+  Before, a single request with a huge sample size could keep the service
+  busy for minutes. **Breaking** for clients that sent more.
+- Service: calculations run directly in the request handler instead of in a
+  new worker thread per request. Starting a worker took about 70 ms, longer
+  than most calculations: a turn is answered in a few milliseconds instead of
+  about 70, and exact pre-flop odds in about half the time. Within the
+  limits, the largest calculation takes a fraction of a second; other
+  requests wait meanwhile. The concurrency limit (`maxConcurrentRequests`)
+  stays.
+- Library: odds and percentages are about 3–5 times faster than in 0.8.0.
+  Hands are ranked from four suit masks with lookup tables, and boards are
+  enumerated without changing a shared state. Exact pre-flop odds take under
+  0.2 seconds of CPU time for any number of players, pre-flop percentages
+  about 0.1 seconds. Results are unchanged.
+
+### Development
+
+- Library: `npm run bench` reports wall-clock and CPU time, measures each
+  case three times and averages the two fastest, and includes 4 players
+  pre-flop.
+
 ## [0.8.0] - 2026-09-28
 
 ### Added
@@ -224,6 +252,7 @@ Restructured into a monorepo with three packages. Not published to npm.
 
 Versions up to 0.3.1 (June 2020) predate this changelog.
 
+[0.9.0]: https://github.com/malte-muth/poker-hands/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/malte-muth/poker-hands/compare/v0.7.3...v0.8.0
 [0.7.3]: https://github.com/malte-muth/poker-hands/compare/v0.7.2...v0.7.3
 [0.7.2]: https://github.com/malte-muth/poker-hands/compare/v0.7.1...v0.7.2
