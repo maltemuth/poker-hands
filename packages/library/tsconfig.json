@@ -3,8 +3,7 @@
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": ".",
-    "types": ["jest", "node"],
-    "sourceMap": false
+    "types": ["jest", "node"]
   },
   "include": ["./src/**/*"],
   "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"],
