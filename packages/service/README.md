@@ -112,12 +112,12 @@ Calculate winning odds for given hole cards and board.
 }
 ```
 
-- `holes`: at least two players with exactly two cards each
+- `holes`: two to ten players with exactly two cards each
 - `board` (optional): up to five community cards
 - `options` (optional): `mode` is `auto` (default), `exhaustive` or
   `monteCarlo`; `threshold` applies to `auto` mode (the maximum number of
   boards to calculate exactly, default 10000), `sampleSize` to `monteCarlo`
-  mode (default 10000); both are integers of at least 1
+  mode (default 10000, at most 1,000,000); both are integers of at least 1
 
 **Response:**
 
@@ -157,7 +157,7 @@ Each player's calculation treats the other players' hole cards as dead cards.
 }
 ```
 
-- `holes`: at least one player with exactly two cards each
+- `holes`: one to ten players with exactly two cards each
 - `board` (optional): up to five community cards
 
 **Response:**
@@ -206,7 +206,7 @@ Health check endpoint.
 new PokerHandsService(
   port?: number, // Server port (default: 3000)
   corsEnabled?: boolean, // Enable CORS (default: true)
-  maxConcurrentRequests?: number // Maximum concurrent calculations (default: 5)
+  maxConcurrentRequests?: number // Maximum concurrent requests (default: 5)
 );
 ```
 
@@ -251,14 +251,16 @@ library and also answered with a `400`.
 
 ## How Calculations Run
 
-Each odds and percentages request is calculated with the poker library in its
-own worker thread, so long calculations don't block the service: other requests and the
-health check are answered in the meantime.
+Each odds and percentages request is calculated with the poker library right
+in the request handler. Most calculations take a few milliseconds; the largest
+the request limits allow (exact odds or percentages pre-flop, or 1,000,000
+Monte Carlo samples) take a fraction of a second. Meanwhile, other requests and
+the health check wait, since the service calculates one request at a time.
 
-At most `maxConcurrentRequests` calculations (default 5) run at once; further
-requests get a `429` until a slot is free. A slot stays occupied until its
-calculation has finished, even if the client disconnects earlier, so an
-exhaustive pre-flop calculation holds its slot for as long as it runs.
+At most `maxConcurrentRequests` requests (default 5) are handled at once;
+further requests get a `429` until a slot is free. As calculations run one
+after another, this limit only takes effect while responses are still being
+sent.
 
 ## Development
 
@@ -376,10 +378,10 @@ getOdds();
 
 ## Runtime Considerations
 
-- Each calculation runs in a worker thread; up to `maxConcurrentRequests` of
-  them run at once
-- Odds calculations can be computationally intensive: exhaustive pre-flop
-  calculations can take a minute or more
+- Calculations run one at a time in the service's thread, so a long one delays
+  the requests behind it
+- The request limits (at most 10 players and 1,000,000 Monte Carlo samples)
+  keep every calculation to a fraction of a second
 
 ## License
 
