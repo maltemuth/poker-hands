@@ -1,6 +1,6 @@
-import { Card } from "../card/Card";
-import evaluate from "../hand/evaluate";
-import { Hole } from "./HoleOdds";
+import { Card } from "../../src/model/card/Card";
+import evaluate from "../../src/model/hand/evaluate";
+import { Hole } from "../../src/model/odds/HoleOdds";
 
 /**
  * Determines which holes win on a complete board.

@@ -1,5 +1,5 @@
 import tallyBoards from "../../../../src/model/odds/tallyBoards";
-import winningHoles from "../../../../src/model/odds/winningHoles";
+import winningHoles from "../../../helpers/winningHoles";
 import combinations from "../../../../src/model/combinatorics/combinations";
 import create from "../../../../src/model/deck/create";
 import without from "../../../../src/model/card/without";

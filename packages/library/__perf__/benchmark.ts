@@ -26,9 +26,9 @@ import { HandType } from "../src/model/hand/Hand";
 import exhaustive from "../src/model/odds/exhaustive";
 import monteCarloOdds from "../src/model/odds/monteCarloOdds";
 import percentages, { HandPercentages } from "../src/model/odds/percentages";
-import winningHoles from "../src/model/odds/winningHoles";
 import { Hole, HoleOdds } from "../src/model/odds/HoleOdds";
 import { randomCards, seededRandom } from "../__tests__/helpers/randomCards";
+import winningHoles from "../__tests__/helpers/winningHoles";
 
 const quick = process.argv.includes("--quick");
 
