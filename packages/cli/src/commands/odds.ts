@@ -1,7 +1,7 @@
 import { Command } from "commander";
 import { odds, Card, HoleOdds, OddsOptions } from "@malte.muth/poker-hands";
-import { parseCards } from "../utils/cardParser";
-import { outputFormatter } from "../utils/outputFormatter";
+import { parseCards } from "../utils/cardParser.js";
+import { outputFormatter } from "../utils/outputFormatter.js";
 
 function parseHoleCardsForPlayers(holes: string[]): Card[][] {
   return holes.map((holeString) => parseCards(holeString));

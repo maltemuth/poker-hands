@@ -1,7 +1,7 @@
-import evaluate from "../../../../src/model/hand/evaluate";
-import handRank from "../../../../src/model/hand/handRank";
-import getBestHand from "../../../../src/model/hand/getBestHand";
-import cards from "../../../../src/model/card/cards";
+import evaluate from "../../../../src/model/hand/evaluate.js";
+import handRank from "../../../../src/model/hand/handRank.js";
+import getBestHand from "../../../../src/model/hand/getBestHand.js";
+import cards from "../../../../src/model/card/cards.js";
 
 describe("evaluate", () => {
   test.each([

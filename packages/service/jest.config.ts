@@ -11,6 +11,8 @@ const config: Config = {
     ],
   },
   moduleNameMapper: {
+    // sources import each other as .js (ESM style); Jest resolves the .ts file
+    "^(\\.{1,2}/.*)\\.js$": "$1",
     "^@service/(.*)$": "<rootDir>/src/$1",
     // test against the library sources, not whatever was last built into its dist
     "^@malte\\.muth/poker-hands$": "<rootDir>/../library/index.ts",

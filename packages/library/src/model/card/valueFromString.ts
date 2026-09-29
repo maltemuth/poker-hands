@@ -1,4 +1,4 @@
-import { ValueAsString, Value } from "./Card";
+import { ValueAsString, Value } from "./Card.js";
 
 const validStrings = Object.values(ValueAsString);
 

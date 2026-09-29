@@ -1,8 +1,8 @@
-import getPair from "../../../../../src/model/hand/get/getPair";
-import cards from "../../../../../src/model/card/cards";
-import { HandType } from "../../../../../src/model/hand/Hand";
-import { Value } from "../../../../../src/model/card/Card";
-import toString from "../../../../../src/model/card/toString";
+import getPair from "../../../../../src/model/hand/get/getPair.js";
+import cards from "../../../../../src/model/card/cards.js";
+import { HandType } from "../../../../../src/model/hand/Hand.js";
+import { Value } from "../../../../../src/model/card/Card.js";
+import toString from "../../../../../src/model/card/toString.js";
 
 describe("retrieve pairs", () => {
   test("retrieve a pair", () => {

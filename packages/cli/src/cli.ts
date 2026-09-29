@@ -3,8 +3,8 @@
 import { readFileSync } from "fs";
 import { join } from "path";
 import { Command } from "commander";
-import { createOddsCommand } from "./commands/odds";
-import { createPercentagesCommand } from "./commands/percentages";
+import { createOddsCommand } from "./commands/odds.js";
+import { createPercentagesCommand } from "./commands/percentages.js";
 
 const { version } = JSON.parse(
   readFileSync(join(__dirname, "../package.json"), "utf8")

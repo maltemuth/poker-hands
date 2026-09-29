@@ -1,5 +1,5 @@
-import numericalSort from "../../lib/numericalSort";
-import { Value } from "./Card";
+import numericalSort from "../../lib/numericalSort.js";
+import { Value } from "./Card.js";
 
 /**
  * Detects if there's a straight (5 contiguous values) in the given set of values.

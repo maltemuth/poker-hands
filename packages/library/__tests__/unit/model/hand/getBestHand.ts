@@ -1,7 +1,7 @@
-import getBestHand from "../../../../src/model/hand/getBestHand";
-import cards from "../../../../src/model/card/cards";
-import toString from "../../../../src/model/card/toString";
-import { HandType } from "../../../../src/model/hand/Hand";
+import getBestHand from "../../../../src/model/hand/getBestHand.js";
+import cards from "../../../../src/model/card/cards.js";
+import toString from "../../../../src/model/card/toString.js";
+import { HandType } from "../../../../src/model/hand/Hand.js";
 
 // the full test suite only covers five-card hands, so extra cards are tested here
 describe("best hand from seven cards", () => {

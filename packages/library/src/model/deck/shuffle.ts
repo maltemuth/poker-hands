@@ -11,7 +11,7 @@
  *
  * @example
  * ```typescript
- * import shuffle from './shuffle';
+ * import shuffle from './shuffle.js';
  *
  * const numbers = [1, 2, 3, 4, 5];
  * const shuffled = shuffle(numbers);
@@ -23,8 +23,8 @@
  *
  * @example
  * ```typescript
- * import create from './create';
- * import shuffle from './shuffle';
+ * import create from './create.js';
+ * import shuffle from './shuffle.js';
  *
  * // Create and shuffle a deck of cards
  * const deck = create();

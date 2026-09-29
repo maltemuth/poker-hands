@@ -1,5 +1,5 @@
-import { Card } from "./Card";
-import valueToString from "./valueToString";
+import { Card } from "./Card.js";
+import valueToString from "./valueToString.js";
 
 /**
  * Converts a Card object to its string representation.
@@ -13,8 +13,8 @@ import valueToString from "./valueToString";
  *
  * @example
  * ```typescript
- * import { Card } from './Card';
- * import toString from './toString';
+ * import { Card } from './Card.js';
+ * import toString from './toString.js';
  *
  * const aceOfSpades: Card = { suit: 'spades', value: 14 };
  * console.log(toString(aceOfSpades)); // "As"

@@ -1,7 +1,7 @@
-import type { operations } from "../types/api";
-import calculateOdds from "../odds/calculateOdds";
-import calculatePercentages from "../odds/calculatePercentages";
-import { CalculationError } from "../odds/CalculationError";
+import type { operations } from "../types/api.js";
+import calculateOdds from "../odds/calculateOdds.js";
+import calculatePercentages from "../odds/calculatePercentages.js";
+import { CalculationError } from "../odds/CalculationError.js";
 
 type JsonBody<Operation> = Operation extends {
   requestBody: { content: { "application/json": infer Body } };

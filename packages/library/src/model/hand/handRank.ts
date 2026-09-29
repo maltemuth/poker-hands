@@ -1,4 +1,4 @@
-import { HandInterface, HandType } from "./Hand";
+import { HandInterface, HandType } from "./Hand.js";
 
 /**
  * Bits per digit of a rank: enough for a hand type (1-10) or a card value

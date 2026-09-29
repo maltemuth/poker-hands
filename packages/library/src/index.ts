@@ -1,13 +1,13 @@
-import getBestHand from "./model/hand/getBestHand";
-import handRank from "./model/hand/handRank";
-import hasEqualValue from "./model/hand/hasEqualValue";
-import isBetterThan from "./model/hand/isBetterThan";
-import odds, { ProgressCallback } from "./model/odds/odds";
-import cards from "./model/card/cards";
-import toString from "./model/card/toString";
-import create from "./model/deck/create";
-import shuffle from "./model/deck/shuffle";
-import percentages from "./model/odds/percentages";
+import getBestHand from "./model/hand/getBestHand.js";
+import handRank from "./model/hand/handRank.js";
+import hasEqualValue from "./model/hand/hasEqualValue.js";
+import isBetterThan from "./model/hand/isBetterThan.js";
+import odds, { ProgressCallback } from "./model/odds/odds.js";
+import cards from "./model/card/cards.js";
+import toString from "./model/card/toString.js";
+import create from "./model/deck/create.js";
+import shuffle from "./model/deck/shuffle.js";
+import percentages from "./model/odds/percentages.js";
 
 export {
   getBestHand,

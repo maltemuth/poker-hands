@@ -1,11 +1,11 @@
-import handRank from "../../src/model/hand/handRank";
-import getBestHand from "../../src/model/hand/getBestHand";
-import isBetterThan from "../../src/model/hand/isBetterThan";
-import hasEqualValue from "../../src/model/hand/hasEqualValue";
-import toString from "../../src/model/card/toString";
-import { Card } from "../../src/model/card/Card";
-import { HandInterface } from "../../src/model/hand/Hand";
-import { randomCards, seededRandom } from "../helpers/randomCards";
+import handRank from "../../src/model/hand/handRank.js";
+import getBestHand from "../../src/model/hand/getBestHand.js";
+import isBetterThan from "../../src/model/hand/isBetterThan.js";
+import hasEqualValue from "../../src/model/hand/hasEqualValue.js";
+import toString from "../../src/model/card/toString.js";
+import { Card } from "../../src/model/card/Card.js";
+import { HandInterface } from "../../src/model/hand/Hand.js";
+import { randomCards, seededRandom } from "../helpers/randomCards.js";
 
 const random = seededRandom(42);
 

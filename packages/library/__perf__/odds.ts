@@ -1,6 +1,6 @@
-import exhaustive from "../src/model/odds/exhaustive";
-import cards from "../src/model/card/cards";
-import withProfiling from "./withProfiling";
+import exhaustive from "../src/model/odds/exhaustive.js";
+import cards from "../src/model/card/cards.js";
+import withProfiling from "./withProfiling.js";
 
 withProfiling(
   () =>

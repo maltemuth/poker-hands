@@ -1,5 +1,5 @@
-import hasHighCard from "../../../../../src/model/hand/detect/hasHighCard";
-import cards from "../../../../../src/model/card/cards";
+import hasHighCard from "../../../../../src/model/hand/detect/hasHighCard.js";
+import cards from "../../../../../src/model/card/cards.js";
 
 describe("detect high cards", () => {
   test("every card is a high card", () => {

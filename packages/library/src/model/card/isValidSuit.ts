@@ -1,4 +1,4 @@
-import { Suit } from "./Card";
+import { Suit } from "./Card.js";
 
 const allowedSuits = Object.values(Suit);
 

@@ -1,5 +1,5 @@
-import valueToString from "../../../../src/model/card/valueToString";
-import { Value } from "../../../../src/model/card/Card";
+import valueToString from "../../../../src/model/card/valueToString.js";
+import { Value } from "../../../../src/model/card/Card.js";
 
 describe("convert card values to strings", () => {
   test("valid value", () => {

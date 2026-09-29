@@ -1,7 +1,7 @@
 import { readFileSync } from "fs";
 import { join } from "path";
-import { createProgram } from "../src/cli";
-import { OddsData, PercentagesData } from "../src/types";
+import { createProgram } from "../src/cli.js";
+import { OddsData, PercentagesData } from "../src/types/index.js";
 
 /** Runs the CLI in-process and returns everything written to stdout. */
 const run = (...args: string[]): string => {

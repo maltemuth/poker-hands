@@ -1,5 +1,5 @@
 import express from "express";
-import { ErrorResponse } from "../types";
+import { ErrorResponse } from "../types/index.js";
 
 /**
  * Sends an error response; its body is the spec's ErrorResponse

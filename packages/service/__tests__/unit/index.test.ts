@@ -1,4 +1,4 @@
-import { PokerHandsService } from "../../src";
+import { PokerHandsService } from "../../src/index.js";
 import express from "express";
 import cors from "cors";
 

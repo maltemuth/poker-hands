@@ -1,10 +1,10 @@
-import tallyBoards from "../../../../src/model/odds/tallyBoards";
-import winningHoles from "../../../helpers/winningHoles";
-import combinations from "../../../../src/model/combinatorics/combinations";
-import create from "../../../../src/model/deck/create";
-import without from "../../../../src/model/card/without";
-import cards from "../../../../src/model/card/cards";
-import { Card } from "../../../../src/model/card/Card";
+import tallyBoards from "../../../../src/model/odds/tallyBoards.js";
+import winningHoles from "../../../helpers/winningHoles.js";
+import combinations from "../../../../src/model/combinatorics/combinations.js";
+import create from "../../../../src/model/deck/create.js";
+import without from "../../../../src/model/card/without.js";
+import cards from "../../../../src/model/card/cards.js";
+import { Card } from "../../../../src/model/card/Card.js";
 
 const restOf = (holes: Card[][], board: Card[]) =>
   without(create(), ...holes.flat(), ...board);

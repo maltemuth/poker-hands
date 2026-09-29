@@ -1,6 +1,6 @@
-import { Card } from "./Card";
-import isValidSuit from "./isValidSuit";
-import valueFromString from "./valueFromString";
+import { Card } from "./Card.js";
+import isValidSuit from "./isValidSuit.js";
+import valueFromString from "./valueFromString.js";
 
 /**
  * returns a card represented by the given input string or throws an error if unable to

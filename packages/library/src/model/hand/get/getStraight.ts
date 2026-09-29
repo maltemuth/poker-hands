@@ -1,7 +1,7 @@
-import { Card, Value } from "../../card/Card";
-import { HandType, Hand } from "../Hand";
-import sortByValue from "../../card/sortByValue";
-import purify from "../../../lib/purify";
+import { Card, Value } from "../../card/Card.js";
+import { HandType, Hand } from "../Hand.js";
+import sortByValue from "../../card/sortByValue.js";
+import purify from "../../../lib/purify.js";
 
 const getStraight = (cards: Card[]): Hand<HandType.Straight> | null => {
   const straight = purify(() => {

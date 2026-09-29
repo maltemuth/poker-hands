@@ -1,5 +1,5 @@
 // CLI-specific type definitions
-export * from "./schemas";
+export * from "./schemas.js";
 
 // Legacy types for backward compatibility
 export interface CommandResult {
@@ -23,4 +23,4 @@ export {
   CardInput as CLICardInput,
   OddsResponse as CLIOddsResponse,
   PercentagesResponse as CLIPercentagesResponse,
-} from "./schemas";
+} from "./schemas.js";

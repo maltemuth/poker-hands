@@ -1,7 +1,7 @@
-import { Hand } from "./Hand";
-import valueToString from "../card/valueToString";
-import { Card } from "../card/Card";
-import numericalSort from "../../lib/numericalSort";
+import { Hand } from "./Hand.js";
+import valueToString from "../card/valueToString.js";
+import { Card } from "../card/Card.js";
+import numericalSort from "../../lib/numericalSort.js";
 
 const serializeValues = (cards: Card[]): string =>
   cards
@@ -23,9 +23,9 @@ const serializeValues = (cards: Card[]): string =>
  *
  * @example
  * ```typescript
- * import cards from '../card/cards';
- * import getBestHand from './getBestHand';
- * import hasEqualValue from './hasEqualValue';
+ * import cards from '../card/cards.js';
+ * import getBestHand from './getBestHand.js';
+ * import hasEqualValue from './hasEqualValue.js';
  *
  * const hand1 = getBestHand(cards('Ah', 'Kh', 'Qh', 'Jh', 'Th'));
  * const hand2 = getBestHand(cards('As', 'Ks', 'Qs', 'Js', 'Ts'));

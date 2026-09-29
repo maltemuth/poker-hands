@@ -1,4 +1,4 @@
-import isValidSuit from "../../../../src/model/card/isValidSuit";
+import isValidSuit from "../../../../src/model/card/isValidSuit.js";
 
 describe("detecting valid suits", () => {
   test("valid suit", () => {

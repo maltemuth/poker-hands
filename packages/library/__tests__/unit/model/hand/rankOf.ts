@@ -1,5 +1,5 @@
-import { rankOf, suitMasksOf } from "../../../../src/model/hand/rankOf";
-import cards from "../../../../src/model/card/cards";
+import { rankOf, suitMasksOf } from "../../../../src/model/hand/rankOf.js";
+import cards from "../../../../src/model/card/cards.js";
 
 describe("suitMasksOf", () => {
   test("sets each card's value bit in its suit's mask", () => {

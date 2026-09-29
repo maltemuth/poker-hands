@@ -1,5 +1,5 @@
-export * from "./src/index";
-export { Card } from "./src/model/card/Card";
-export { Hand, HandType, HandInterface } from "./src/model/hand/Hand";
-export { HandPercentages, HandTypeName } from "./src/model/odds/percentages";
-export { Hole, HoleOdds, OddsOptions } from "./src/model/odds/odds";
+export * from "./src/index.js";
+export { Card } from "./src/model/card/Card.js";
+export { Hand, HandType, HandInterface } from "./src/model/hand/Hand.js";
+export { HandPercentages, HandTypeName } from "./src/model/odds/percentages.js";
+export { Hole, HoleOdds, OddsOptions } from "./src/model/odds/odds.js";

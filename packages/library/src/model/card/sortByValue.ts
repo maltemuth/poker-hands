@@ -1,4 +1,4 @@
-import { Card } from "./Card";
+import { Card } from "./Card.js";
 
 /**
  * Sorts cards from the lowest to the highest value, without changing the

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { sendError } from "../utils";
+import { sendError } from "../utils/index.js";
 
 interface RateLimiterOptions {
   maxConcurrentRequests: number;

@@ -1,5 +1,5 @@
-import fromString from "./fromString";
-import { Card } from "./Card";
+import fromString from "./fromString.js";
+import { Card } from "./Card.js";
 
 /**
  * Creates an array of Card objects from string representations.
@@ -15,7 +15,7 @@ import { Card } from "./Card";
  *
  * @example
  * ```typescript
- * import cards from './cards';
+ * import cards from './cards.js';
  *
  * // Create individual cards
  * const aceOfSpades = cards('As'); // Returns [Card { suit: 'spades', value: 14 }]

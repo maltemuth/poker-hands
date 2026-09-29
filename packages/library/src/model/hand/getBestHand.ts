@@ -1,27 +1,27 @@
-import { Card } from "../card/Card";
-import { HandInterface } from "./Hand";
-import getRoyalFlush from "./get/getRoyalFlush";
-import getStraightFlush from "./get/getStraightFlush";
-import getFourOfAKind from "./get/getFourOfAKind";
-import getFullHouse from "./get/getFullHouse";
-import getFlush from "./get/getFlush";
-import getStraight from "./get/getStraight";
-import getThreeOfAKind from "./get/getThreeOfAKind";
-import getTwoPair from "./get/getTwoPair";
-import getPair from "./get/getPair";
-import getHighCard from "./get/getHighCard";
-import sortedValues from "../card/sortedValues";
-import sortedSuits from "../card/sortedSuits";
-import hasRoyalFlush from "./detect/hasRoyalFlush";
-import hasFlush from "./detect/hasFlush";
-import hasStraight from "./detect/hasStraight";
-import hasStraightFlush from "./detect/hasStraightFlush";
-import hasPair from "./detect/hasPair";
-import hasFourOfAkind from "./detect/hasFourOfAKind";
-import hasFullHouse from "./detect/hasFullHouse";
-import hasThreeOfAKind from "./detect/hasThreeOfAKind";
-import hasTwoPair from "./detect/hasTwoPair";
-import sortValueCounts from "../card/sortValueCounts";
+import { Card } from "../card/Card.js";
+import { HandInterface } from "./Hand.js";
+import getRoyalFlush from "./get/getRoyalFlush.js";
+import getStraightFlush from "./get/getStraightFlush.js";
+import getFourOfAKind from "./get/getFourOfAKind.js";
+import getFullHouse from "./get/getFullHouse.js";
+import getFlush from "./get/getFlush.js";
+import getStraight from "./get/getStraight.js";
+import getThreeOfAKind from "./get/getThreeOfAKind.js";
+import getTwoPair from "./get/getTwoPair.js";
+import getPair from "./get/getPair.js";
+import getHighCard from "./get/getHighCard.js";
+import sortedValues from "../card/sortedValues.js";
+import sortedSuits from "../card/sortedSuits.js";
+import hasRoyalFlush from "./detect/hasRoyalFlush.js";
+import hasFlush from "./detect/hasFlush.js";
+import hasStraight from "./detect/hasStraight.js";
+import hasStraightFlush from "./detect/hasStraightFlush.js";
+import hasPair from "./detect/hasPair.js";
+import hasFourOfAkind from "./detect/hasFourOfAKind.js";
+import hasFullHouse from "./detect/hasFullHouse.js";
+import hasThreeOfAKind from "./detect/hasThreeOfAKind.js";
+import hasTwoPair from "./detect/hasTwoPair.js";
+import sortValueCounts from "../card/sortValueCounts.js";
 
 /**
  * Determines the best possible poker hand from a given set of cards.
@@ -39,7 +39,7 @@ import sortValueCounts from "../card/sortValueCounts";
  * @example
  * ```typescript
  * import cards from './cards';
- * import getBestHand from './getBestHand';
+ * import getBestHand from './getBestHand.js';
  *
  * const myCards = cards('Ah', 'Kh', 'Qh', 'Jh', 'Th');
  * const bestHand = getBestHand(myCards);

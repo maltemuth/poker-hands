@@ -1,11 +1,11 @@
-import { Card } from "../../card/Card";
-import { Hand, HandType } from "../Hand";
-import getPair from "./getPair";
-import without from "../../card/without";
-import getKickers from "../getKickers";
-import purify from "../../../lib/purify";
-import valueCounts from "../../card/valueCounts";
-import sortedValues from "../../card/sortedValues";
+import { Card } from "../../card/Card.js";
+import { Hand, HandType } from "../Hand.js";
+import getPair from "./getPair.js";
+import without from "../../card/without.js";
+import getKickers from "../getKickers.js";
+import purify from "../../../lib/purify.js";
+import valueCounts from "../../card/valueCounts.js";
+import sortedValues from "../../card/sortedValues.js";
 
 const getTwoPair = (
   cards: Card[],

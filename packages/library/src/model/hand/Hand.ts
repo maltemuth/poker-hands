@@ -1,4 +1,4 @@
-import { Value, Card } from "../card/Card";
+import { Value, Card } from "../card/Card.js";
 
 /**
  * all possible hand types, in order from lowest to highest

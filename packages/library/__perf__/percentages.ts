@@ -1,6 +1,6 @@
-import cards from "../src/model/card/cards";
-import percentages from "../src/model/odds/percentages";
-import withProfiling from "./withProfiling";
+import cards from "../src/model/card/cards.js";
+import percentages from "../src/model/odds/percentages.js";
+import withProfiling from "./withProfiling.js";
 
 withProfiling(
   () =>

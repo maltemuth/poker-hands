@@ -1,7 +1,7 @@
-import { Card } from "../../card/Card";
-import { HandType, Hand } from "../Hand";
-import getStraightFlush from "./getStraightFlush";
-import purify from "../../../lib/purify";
+import { Card } from "../../card/Card.js";
+import { HandType, Hand } from "../Hand.js";
+import getStraightFlush from "./getStraightFlush.js";
+import purify from "../../../lib/purify.js";
 
 const getRoyalFlush = (cards: Card[]): Hand<HandType.RoyalFlush> | null => {
   const straightFlush = purify(() => getStraightFlush(cards));

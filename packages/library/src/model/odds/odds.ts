@@ -1,6 +1,6 @@
-import { Card } from "../card/Card";
-import exhaustive from "./exhaustive";
-import { Hole, HoleOdds, ProgressCallback } from "./HoleOdds";
+import { Card } from "../card/Card.js";
+import exhaustive from "./exhaustive.js";
+import { Hole, HoleOdds, ProgressCallback } from "./HoleOdds.js";
 
 export { Hole, HoleOdds, ProgressCallback };
 
@@ -27,8 +27,8 @@ export type OddsOptions = {
  *
  * @example
  * ```typescript
- * import cards from '../card/cards';
- * import odds from './odds';
+ * import cards from '../card/cards.js';
+ * import odds from './odds.js';
  *
  * // Calculate odds for two players with given hole cards and no board
  * const hole1 = cards('As', 'Ks');

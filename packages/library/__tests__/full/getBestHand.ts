@@ -1,7 +1,7 @@
 import { readFileSync } from "fs";
-import getBestHand from "../../src/model/hand/getBestHand";
-import { Suit, Value } from "../../src/model/card/Card";
-import { HandType } from "../../src/model/hand/Hand";
+import getBestHand from "../../src/model/hand/getBestHand.js";
+import { Suit, Value } from "../../src/model/card/Card.js";
+import { HandType } from "../../src/model/hand/Hand.js";
 
 describe("retrieve best hands", () => {
   test("success on training data", () => {

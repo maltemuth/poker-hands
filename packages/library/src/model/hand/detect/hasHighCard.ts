@@ -1,4 +1,4 @@
-import { Card } from "../../card/Card";
+import { Card } from "../../card/Card.js";
 
 /**
  * returns true if a high card is contained within the given cards,

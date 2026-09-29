@@ -1,5 +1,5 @@
-import cards from "../../../../../src/model/card/cards";
-import hasTwoPair from "../../../../../src/model/hand/detect/hasTwoPair";
+import cards from "../../../../../src/model/card/cards.js";
+import hasTwoPair from "../../../../../src/model/hand/detect/hasTwoPair.js";
 
 describe("detect pairs", () => {
   test("single card is no two pair", () => {

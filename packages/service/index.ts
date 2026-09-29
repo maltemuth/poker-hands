@@ -1,1 +1,1 @@
-export { PokerHandsService } from "./src/index";
+export { PokerHandsService } from "./src/index.js";

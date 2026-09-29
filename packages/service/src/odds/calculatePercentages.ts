@@ -1,5 +1,5 @@
 import { percentages, cards } from "@malte.muth/poker-hands";
-import { PercentagesRequest, PercentagesResponse } from "../types";
+import { PercentagesRequest, PercentagesResponse } from "../types/index.js";
 
 /**
  * Calculates the hand type percentages of every player in a validated

@@ -1,7 +1,7 @@
 import { Command } from "commander";
 import { percentages } from "@malte.muth/poker-hands";
-import { outputFormatter } from "../utils/outputFormatter";
-import { parseCards } from "../utils";
+import { outputFormatter } from "../utils/outputFormatter.js";
+import { parseCards } from "../utils/index.js";
 
 function calculatePercentages(
   hole: string,

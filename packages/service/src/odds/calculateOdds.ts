@@ -1,5 +1,5 @@
 import { odds, cards, toString } from "@malte.muth/poker-hands";
-import { OddsRequest, OddsData } from "../types";
+import { OddsRequest, OddsData } from "../types/index.js";
 
 /**
  * Calculates the odds for a validated odds request with the poker library.

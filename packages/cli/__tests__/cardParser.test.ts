@@ -1,4 +1,4 @@
-import { parseCards } from "../src/utils/cardParser";
+import { parseCards } from "../src/utils/cardParser.js";
 import { cards } from "@malte.muth/poker-hands";
 
 describe("parseCards", () => {

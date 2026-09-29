@@ -1,9 +1,9 @@
-import { Card } from "../card/Card";
-import without from "../card/without";
-import create from "../deck/create";
-import { rankOf, suitMasksOf } from "../hand/rankOf";
-import assertUnique from "../card/assertUnique";
-import forEachBoard from "./forEachBoard";
+import { Card } from "../card/Card.js";
+import without from "../card/without.js";
+import create from "../deck/create.js";
+import { rankOf, suitMasksOf } from "../hand/rankOf.js";
+import assertUnique from "../card/assertUnique.js";
+import forEachBoard from "./forEachBoard.js";
 
 const handTypes = [
   "highCard",
@@ -56,8 +56,8 @@ export type HandPercentages = Record<
  *
  * @example
  * ```typescript
- * import cards from '../card/cards';
- * import percentages from './percentages';
+ * import cards from '../card/cards.js';
+ * import percentages from './percentages.js';
  *
  * const hole = cards('As', 'Ks');
  * const board = cards('Ts', 'Js', 'Qs');

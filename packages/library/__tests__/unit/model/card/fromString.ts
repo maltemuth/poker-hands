@@ -1,5 +1,5 @@
-import fromString from "../../../../src/model/card/fromString";
-import { Suit, Value } from "../../../../src/model/card/Card";
+import fromString from "../../../../src/model/card/fromString.js";
+import { Suit, Value } from "../../../../src/model/card/Card.js";
 
 describe("convert strings to cards", () => {
   test("ace of spades", () => {

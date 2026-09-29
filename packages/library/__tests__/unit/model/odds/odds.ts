@@ -1,6 +1,6 @@
-import odds from "../../../../src/model/odds/odds";
-import exhaustive from "../../../../src/model/odds/exhaustive";
-import cards from "../../../../src/model/card/cards";
+import odds from "../../../../src/model/odds/odds.js";
+import exhaustive from "../../../../src/model/odds/exhaustive.js";
+import cards from "../../../../src/model/card/cards.js";
 
 describe("odds", () => {
   it("counts every remaining board", () => {

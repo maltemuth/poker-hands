@@ -1,5 +1,5 @@
-import hasStraight from "../../../../../src/model/hand/detect/hasStraight";
-import cards from "../../../../../src/model/card/cards";
+import hasStraight from "../../../../../src/model/hand/detect/hasStraight.js";
+import cards from "../../../../../src/model/card/cards.js";
 
 describe("detect straights", () => {
   test("four cards are not a straight", () => {

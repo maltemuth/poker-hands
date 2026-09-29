@@ -1,5 +1,5 @@
-import { Hand } from "./Hand";
-import hasBetterValues from "../card/hasBetterValues";
+import { Hand } from "./Hand.js";
+import hasBetterValues from "../card/hasBetterValues.js";
 
 /**
  * Determines if one poker hand is better than another.
@@ -16,9 +16,9 @@ import hasBetterValues from "../card/hasBetterValues";
  *
  * @example
  * ```typescript
- * import cards from '../card/cards';
- * import getBestHand from './getBestHand';
- * import isBetterThan from './isBetterThan';
+ * import cards from '../card/cards.js';
+ * import getBestHand from './getBestHand.js';
+ * import isBetterThan from './isBetterThan.js';
  *
  * const hand1 = getBestHand(cards('Ah', 'Kh', 'Qh', 'Jh', 'Th')); // Royal flush
  * const hand2 = getBestHand(cards('Kd', 'Kd', 'Qd', 'Jd', 'Td')); // King-high straight

@@ -1,6 +1,6 @@
-import cards from "../../../../src/model/card/cards";
-import odds from "../../../../src/model/odds/odds";
-import percentages from "../../../../src/model/odds/percentages";
+import cards from "../../../../src/model/card/cards.js";
+import odds from "../../../../src/model/odds/odds.js";
+import percentages from "../../../../src/model/odds/percentages.js";
 
 // with all five board cards known, exactly one board remains to be evaluated
 describe("complete board", () => {

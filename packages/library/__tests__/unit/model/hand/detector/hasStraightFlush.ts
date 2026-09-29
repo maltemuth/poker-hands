@@ -1,5 +1,5 @@
-import hasStraightFlush from "../../../../../src/model/hand/detect/hasStraightFlush";
-import cards from "../../../../../src/model/card/cards";
+import hasStraightFlush from "../../../../../src/model/hand/detect/hasStraightFlush.js";
+import cards from "../../../../../src/model/card/cards.js";
 
 describe("detect straight flushes", () => {
   test("four cards are not a straight flush", () => {

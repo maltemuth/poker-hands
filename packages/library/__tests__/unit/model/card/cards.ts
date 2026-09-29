@@ -1,5 +1,5 @@
-import cards from "../../../../src/model/card/cards";
-import { Suit, Value } from "../../../../src/model/card/Card";
+import cards from "../../../../src/model/card/cards.js";
+import { Suit, Value } from "../../../../src/model/card/Card.js";
 
 describe("convert a list of strings to cards", () => {
   test("convert 3 cards", () => {

@@ -1,7 +1,7 @@
-import getBestHand from "../../../../src/model/hand/getBestHand";
-import cards from "../../../../src/model/card/cards";
-import { HandType } from "../../../../src/model/hand/Hand";
-import hasEqualValue from "../../../../src/model/hand/hasEqualValue";
+import getBestHand from "../../../../src/model/hand/getBestHand.js";
+import cards from "../../../../src/model/card/cards.js";
+import { HandType } from "../../../../src/model/hand/Hand.js";
+import hasEqualValue from "../../../../src/model/hand/hasEqualValue.js";
 
 describe("compare equal-value hands", () => {
   test("a straight flush is equal to another straight flush of different suit", () => {

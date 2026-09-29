@@ -1,3 +1,3 @@
 // Utility exports for CLI package
-export * from "./cardParser";
-export * from "./outputFormatter";
+export * from "./cardParser.js";
+export * from "./outputFormatter.js";

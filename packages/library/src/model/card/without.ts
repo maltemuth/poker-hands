@@ -1,6 +1,6 @@
-import { Card } from "./Card";
-import toString from "./toString";
-import fromString from "./fromString";
+import { Card } from "./Card.js";
+import toString from "./toString.js";
+import fromString from "./fromString.js";
 
 const without = (cards: Card[], ...removables: Card[]): Card[] => {
   const cardStrings = cards.map(toString);

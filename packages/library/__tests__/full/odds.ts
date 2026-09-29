@@ -1,5 +1,5 @@
-import cards from "../../src/model/card/cards";
-import odds from "../../src/model/odds/odds";
+import cards from "../../src/model/card/cards.js";
+import odds from "../../src/model/odds/odds.js";
 
 // tested against http://www.propokertools.com/simulations
 describe("calculate odds", () => {

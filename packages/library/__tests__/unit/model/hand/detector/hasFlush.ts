@@ -1,5 +1,5 @@
-import hasFlush from "../../../../../src/model/hand/detect/hasFlush";
-import cards from "../../../../../src/model/card/cards";
+import hasFlush from "../../../../../src/model/hand/detect/hasFlush.js";
+import cards from "../../../../../src/model/card/cards.js";
 
 describe("detect flushes", () => {
   test("detect a flush", () => {

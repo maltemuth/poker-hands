@@ -1,7 +1,7 @@
-import getFullHouse from "../../../../../src/model/hand/get/getFullHouse";
-import cards from "../../../../../src/model/card/cards";
-import { HandType } from "../../../../../src/model/hand/Hand";
-import { Value } from "../../../../../src/model/card/Card";
+import getFullHouse from "../../../../../src/model/hand/get/getFullHouse.js";
+import cards from "../../../../../src/model/card/cards.js";
+import { HandType } from "../../../../../src/model/hand/Hand.js";
+import { Value } from "../../../../../src/model/card/Card.js";
 
 describe("retrieve full house", () => {
   test("retrieve full house", () => {

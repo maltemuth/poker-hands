@@ -18,6 +18,8 @@ const config: Config = {
   transformIgnorePatterns: ["/node_modules/(?!commander/)"],
   // test against the library sources, not whatever was last built into its dist
   moduleNameMapper: {
+    // sources import each other as .js (ESM style); Jest resolves the .ts file
+    "^(\\.{1,2}/.*)\\.js$": "$1",
     "^@malte\\.muth/poker-hands$": "<rootDir>/../library/index.ts",
   },
   moduleFileExtensions: ["ts", "js", "json"],

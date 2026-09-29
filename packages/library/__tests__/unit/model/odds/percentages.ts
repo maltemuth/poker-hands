@@ -1,11 +1,11 @@
-import cards from "../../../../src/model/card/cards";
-import percentages from "../../../../src/model/odds/percentages";
-import combinations from "../../../../src/model/combinatorics/combinations";
-import getBestHand from "../../../../src/model/hand/getBestHand";
-import create from "../../../../src/model/deck/create";
-import without from "../../../../src/model/card/without";
-import { HandType } from "../../../../src/model/hand/Hand";
-import { Card } from "../../../../src/model/card/Card";
+import cards from "../../../../src/model/card/cards.js";
+import percentages from "../../../../src/model/odds/percentages.js";
+import combinations from "../../../../src/model/combinatorics/combinations.js";
+import getBestHand from "../../../../src/model/hand/getBestHand.js";
+import create from "../../../../src/model/deck/create.js";
+import without from "../../../../src/model/card/without.js";
+import { HandType } from "../../../../src/model/hand/Hand.js";
+import { Card } from "../../../../src/model/card/Card.js";
 
 // the straightforward way: build every board and count its best hand's type
 const reference = (hole: Card[], board: Card[], dead: Card[]) => {

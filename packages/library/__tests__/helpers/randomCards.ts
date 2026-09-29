@@ -1,5 +1,5 @@
-import create from "../../src/model/deck/create";
-import { Card } from "../../src/model/card/Card";
+import create from "../../src/model/deck/create.js";
+import { Card } from "../../src/model/card/Card.js";
 
 /**
  * mulberry32: a small seeded generator, so every run uses the same cards

@@ -1,5 +1,5 @@
-import { Card, Suit } from "../card/Card";
-import { rankOf } from "./rankOf";
+import { Card, Suit } from "../card/Card.js";
+import { rankOf } from "./rankOf.js";
 
 /**
  * The rank of the best hand in 5 to 7 cards, as handRank(getBestHand(cards))

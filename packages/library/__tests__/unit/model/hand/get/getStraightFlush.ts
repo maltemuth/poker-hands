@@ -1,7 +1,7 @@
-import getStraightFlush from "../../../../../src/model/hand/get/getStraightFlush";
-import cards from "../../../../../src/model/card/cards";
-import { HandType } from "../../../../../src/model/hand/Hand";
-import { Value } from "../../../../../src/model/card/Card";
+import getStraightFlush from "../../../../../src/model/hand/get/getStraightFlush.js";
+import cards from "../../../../../src/model/card/cards.js";
+import { HandType } from "../../../../../src/model/hand/Hand.js";
+import { Value } from "../../../../../src/model/card/Card.js";
 
 describe("retrieve straight flushes", () => {
   test("retrieve a straight flush", () => {

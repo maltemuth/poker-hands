@@ -1,6 +1,6 @@
-import hasValueCount from "../../card/hasValueCount";
-import { Card } from "../../card/Card";
-import sortValueCounts from "../../card/sortValueCounts";
+import hasValueCount from "../../card/hasValueCount.js";
+import { Card } from "../../card/Card.js";
+import sortValueCounts from "../../card/sortValueCounts.js";
 
 /**
  * returns true if a pair is contained within the given cards

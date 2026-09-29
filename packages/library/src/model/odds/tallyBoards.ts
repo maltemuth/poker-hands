@@ -1,11 +1,11 @@
-import { Card } from "../card/Card";
-import combinationCount from "../combinatorics/combinationCount";
-import createBoardTally, { Tally } from "./boardTally";
-import forEachBoard from "./forEachBoard";
-import { suitMasksOf } from "../hand/rankOf";
-import { Hole, ProgressCallback } from "./HoleOdds";
+import { Card } from "../card/Card.js";
+import combinationCount from "../combinatorics/combinationCount.js";
+import createBoardTally, { Tally } from "./boardTally.js";
+import forEachBoard from "./forEachBoard.js";
+import { suitMasksOf } from "../hand/rankOf.js";
+import { Hole, ProgressCallback } from "./HoleOdds.js";
 
-export type { Tally } from "./boardTally";
+export type { Tally } from "./boardTally.js";
 
 /**
  * Counts which holes win or tie on every way to complete the board with the

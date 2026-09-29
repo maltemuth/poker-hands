@@ -1,5 +1,5 @@
-import cards from "../card/cards";
-import { Card } from "../card/Card";
+import cards from "../card/cards.js";
+import { Card } from "../card/Card.js";
 
 const cardStrings = [
   "2h",
@@ -72,7 +72,7 @@ const cardStrings = [
  *
  * @example
  * ```typescript
- * import create from './create';
+ * import create from './create.js';
  *
  * const deck = create();
  * console.log(deck.length); // 52
@@ -87,7 +87,7 @@ const cardStrings = [
  * @example
  * ```typescript
  * // Create a deck and then shuffle it
- * import shuffle from './shuffle';
+ * import shuffle from './shuffle.js';
  *
  * const deck = create();
  * const shuffledDeck = shuffle(deck);

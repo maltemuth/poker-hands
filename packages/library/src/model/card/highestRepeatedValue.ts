@@ -1,5 +1,5 @@
-import { Value, Card } from "./Card";
-import valueCounts from "./valueCounts";
+import { Value, Card } from "./Card.js";
+import valueCounts from "./valueCounts.js";
 
 /**
  * Finds the highest card value that appears at least the specified number of times.

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { Command } from "commander";
-import { PokerHandsService } from "./index";
+import { PokerHandsService } from "./index.js";
 import { version } from "../package.json";
 
 const program = new Command();

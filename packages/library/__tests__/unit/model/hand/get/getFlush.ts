@@ -1,8 +1,8 @@
-import getFlush from "../../../../../src/model/hand/get/getFlush";
-import cards from "../../../../../src/model/card/cards";
-import { HandType } from "../../../../../src/model/hand/Hand";
-import { Value } from "../../../../../src/model/card/Card";
-import toString from "../../../../../src/model/card/toString";
+import getFlush from "../../../../../src/model/hand/get/getFlush.js";
+import cards from "../../../../../src/model/card/cards.js";
+import { HandType } from "../../../../../src/model/hand/Hand.js";
+import { Value } from "../../../../../src/model/card/Card.js";
+import toString from "../../../../../src/model/card/toString.js";
 
 describe("retrieve flushes", () => {
   test("retrieve flush", () => {

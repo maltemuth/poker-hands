@@ -1,5 +1,5 @@
 import request from "supertest";
-import { PokerHandsService } from "../../src/index";
+import { PokerHandsService } from "../../src/index.js";
 
 // the whole service with the real library: validation, calculation, response
 describe("calculations", () => {

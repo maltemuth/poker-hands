@@ -1,9 +1,9 @@
 import express from "express";
-import { spec } from "../spec";
-import { sendError } from "../utils";
-import { CalculationError } from "../odds/CalculationError";
-import { validateBody } from "../validation/requestValidator";
-import { handlers, Handlers } from "./handlers";
+import { spec } from "../spec.js";
+import { sendError } from "../utils/index.js";
+import { CalculationError } from "../odds/CalculationError.js";
+import { validateBody } from "../validation/requestValidator.js";
+import { handlers, Handlers } from "./handlers.js";
 
 const methods = ["get", "post", "put", "patch", "delete"] as const;
 

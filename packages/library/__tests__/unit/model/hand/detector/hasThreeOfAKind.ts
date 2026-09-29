@@ -1,5 +1,5 @@
-import hasThreeOfAKind from "../../../../../src/model/hand/detect/hasThreeOfAKind";
-import cards from "../../../../../src/model/card/cards";
+import hasThreeOfAKind from "../../../../../src/model/hand/detect/hasThreeOfAKind.js";
+import cards from "../../../../../src/model/card/cards.js";
 
 describe("detect three-of-a-kind", () => {
   test("pair is not three-of-a-kind", () => {

@@ -1,6 +1,6 @@
-import handRank from "../../../../src/model/hand/handRank";
-import getBestHand from "../../../../src/model/hand/getBestHand";
-import cards from "../../../../src/model/card/cards";
+import handRank from "../../../../src/model/hand/handRank.js";
+import getBestHand from "../../../../src/model/hand/getBestHand.js";
+import cards from "../../../../src/model/card/cards.js";
 
 const rank = (...input: string[]) => {
   const hand = getBestHand(cards(...input));

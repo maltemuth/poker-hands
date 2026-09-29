@@ -1,4 +1,4 @@
-import { validateRequestBody } from "../../../src/validation/requestValidator";
+import { validateRequestBody } from "../../../src/validation/requestValidator.js";
 
 // the rules come from openapi.yaml; the messages are the service's own
 describe("validateRequestBody", () => {

@@ -1,8 +1,8 @@
-import getThreeOfAKind from "../../../../../src/model/hand/get/getThreeOfAKind";
-import cards from "../../../../../src/model/card/cards";
-import { HandType } from "../../../../../src/model/hand/Hand";
-import { Value } from "../../../../../src/model/card/Card";
-import toString from "../../../../../src/model/card/toString";
+import getThreeOfAKind from "../../../../../src/model/hand/get/getThreeOfAKind.js";
+import cards from "../../../../../src/model/card/cards.js";
+import { HandType } from "../../../../../src/model/hand/Hand.js";
+import { Value } from "../../../../../src/model/card/Card.js";
+import toString from "../../../../../src/model/card/toString.js";
 
 describe("retrieve three-of-a-kind", () => {
   test("retrieve three-of-a-kind in the correct order", () => {

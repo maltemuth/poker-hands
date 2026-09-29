@@ -1,11 +1,11 @@
-import { Card } from "../../card/Card";
-import { Hand, HandType } from "../Hand";
-import getThreeOfAKind from "./getThreeOfAKind";
-import without from "../../card/without";
-import getPair from "./getPair";
-import purify from "../../../lib/purify";
-import valueCounts from "../../card/valueCounts";
-import sortedValues from "../../card/sortedValues";
+import { Card } from "../../card/Card.js";
+import { Hand, HandType } from "../Hand.js";
+import getThreeOfAKind from "./getThreeOfAKind.js";
+import without from "../../card/without.js";
+import getPair from "./getPair.js";
+import purify from "../../../lib/purify.js";
+import valueCounts from "../../card/valueCounts.js";
+import sortedValues from "../../card/sortedValues.js";
 
 const getFullHouse = (
   cards: Card[],

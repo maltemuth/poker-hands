@@ -1,5 +1,5 @@
-import sortedSuits from "../../card/sortedSuits";
-import { Card } from "../../card/Card";
+import sortedSuits from "../../card/sortedSuits.js";
+import { Card } from "../../card/Card.js";
 
 /**
  * returns true if a flush is contained within the given cards

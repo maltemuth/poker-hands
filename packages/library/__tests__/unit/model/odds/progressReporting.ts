@@ -1,5 +1,5 @@
-import cards from "../../../../src/model/card/cards";
-import odds, { ProgressCallback } from "../../../../src/model/odds/odds";
+import cards from "../../../../src/model/card/cards.js";
+import odds, { ProgressCallback } from "../../../../src/model/odds/odds.js";
 
 const collect = () => {
   const reports: number[] = [];

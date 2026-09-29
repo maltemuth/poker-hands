@@ -1,4 +1,4 @@
-import { Value, ValueAsString } from "./Card";
+import { Value, ValueAsString } from "./Card.js";
 
 /**
  * returns a string representing the given value

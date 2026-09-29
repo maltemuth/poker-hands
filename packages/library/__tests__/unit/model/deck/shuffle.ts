@@ -1,6 +1,6 @@
-import create from "../../../../src/model/deck/create";
-import shuffle from "../../../../src/model/deck/shuffle";
-import toString from "../../../../src/model/card/toString";
+import create from "../../../../src/model/deck/create.js";
+import shuffle from "../../../../src/model/deck/shuffle.js";
+import toString from "../../../../src/model/card/toString.js";
 
 describe("shuffle decks", () => {
   test("a deck has 52 cards", () => {

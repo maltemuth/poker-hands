@@ -1,6 +1,6 @@
-import sortByValue from "../../../../src/model/card/sortByValue";
-import cards from "../../../../src/model/card/cards";
-import toString from "../../../../src/model/card/toString";
+import sortByValue from "../../../../src/model/card/sortByValue.js";
+import cards from "../../../../src/model/card/cards.js";
+import toString from "../../../../src/model/card/toString.js";
 
 describe("sort cards by value", () => {
   test("sorts from lowest to highest", () => {

@@ -1,10 +1,10 @@
-import evaluate from "../../src/model/hand/evaluate";
-import handRank from "../../src/model/hand/handRank";
-import getBestHand from "../../src/model/hand/getBestHand";
-import toString from "../../src/model/card/toString";
-import { Card } from "../../src/model/card/Card";
-import { HandType } from "../../src/model/hand/Hand";
-import { randomCards, seededRandom } from "../helpers/randomCards";
+import evaluate from "../../src/model/hand/evaluate.js";
+import handRank from "../../src/model/hand/handRank.js";
+import getBestHand from "../../src/model/hand/getBestHand.js";
+import toString from "../../src/model/card/toString.js";
+import { Card } from "../../src/model/card/Card.js";
+import { HandType } from "../../src/model/hand/Hand.js";
+import { randomCards, seededRandom } from "../helpers/randomCards.js";
 
 const random = seededRandom(7);
 

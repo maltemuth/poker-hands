@@ -1,5 +1,5 @@
-import hasFourOfAKind from "../../../../../src/model/hand/detect/hasFourOfAKind";
-import cards from "../../../../../src/model/card/cards";
+import hasFourOfAKind from "../../../../../src/model/hand/detect/hasFourOfAKind.js";
+import cards from "../../../../../src/model/card/cards.js";
 
 describe("detect four-of-akind", () => {
   test("three-of-a-kind is not four-of-akind", () => {

@@ -1,5 +1,5 @@
-import { Card } from "./Card";
-import sortValueCounts from "./sortValueCounts";
+import { Card } from "./Card.js";
+import sortValueCounts from "./sortValueCounts.js";
 /**
  * returns true if any value is repeated at least minimumCount times in the given list of cards
  * if atLeast is given and greater than 1, only returns true if at least atLeast different values are repeated at least minimumCount times

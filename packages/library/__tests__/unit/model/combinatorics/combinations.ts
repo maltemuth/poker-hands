@@ -1,4 +1,4 @@
-import combinations from "../../../../src/model/combinatorics/combinations";
+import combinations from "../../../../src/model/combinatorics/combinations.js";
 
 describe("ordered combinations of a given length", () => {
   test("picking nothing yields exactly one empty combination", () => {

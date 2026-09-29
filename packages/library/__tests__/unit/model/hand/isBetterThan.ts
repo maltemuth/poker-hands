@@ -1,9 +1,9 @@
-import isBetterThan from "../../../../src/model/hand/isBetterThan";
-import getBestHand from "../../../../src/model/hand/getBestHand";
-import cards from "../../../../src/model/card/cards";
-import { HandType } from "../../../../src/model/hand/Hand";
-import hasEqualValue from "../../../../src/model/hand/hasEqualValue";
-import { randomCards, seededRandom } from "../../../helpers/randomCards";
+import isBetterThan from "../../../../src/model/hand/isBetterThan.js";
+import getBestHand from "../../../../src/model/hand/getBestHand.js";
+import cards from "../../../../src/model/card/cards.js";
+import { HandType } from "../../../../src/model/hand/Hand.js";
+import hasEqualValue from "../../../../src/model/hand/hasEqualValue.js";
+import { randomCards, seededRandom } from "../../../helpers/randomCards.js";
 
 describe("compare hands", () => {
   test("a pair is better than a high card", () => {

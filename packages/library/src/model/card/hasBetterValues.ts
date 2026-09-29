@@ -1,4 +1,4 @@
-import { Card, Value } from "./Card";
+import { Card, Value } from "./Card.js";
 
 /**
  * Extracts and sorts card values in descending order

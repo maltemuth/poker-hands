@@ -1,5 +1,5 @@
-import valueFromString from "../../../../src/model/card/valueFromString";
-import { Value } from "../../../../src/model/card/Card";
+import valueFromString from "../../../../src/model/card/valueFromString.js";
+import { Value } from "../../../../src/model/card/Card.js";
 
 describe("reading values from strings", () => {
   test("valid values", () => {

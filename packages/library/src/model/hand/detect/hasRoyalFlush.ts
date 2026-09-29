@@ -1,5 +1,5 @@
-import toString from "../../card/toString";
-import { Card } from "../../card/Card";
+import toString from "../../card/toString.js";
+import { Card } from "../../card/Card.js";
 
 /**
  * the list of all 4 royal flushes

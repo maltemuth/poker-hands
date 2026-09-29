@@ -1,5 +1,5 @@
-import calculatePercentages from "../../../src/odds/calculatePercentages";
-import { PercentagesData } from "../../../src/types";
+import calculatePercentages from "../../../src/odds/calculatePercentages.js";
+import { PercentagesData } from "../../../src/types/index.js";
 
 const totalCount = (percentages: PercentagesData) =>
   Object.values(percentages).reduce((sum, { count }) => sum + count, 0);

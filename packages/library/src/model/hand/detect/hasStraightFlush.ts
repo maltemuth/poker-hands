@@ -1,9 +1,9 @@
-import { Value, Card } from "../../card/Card";
-import hasContiguousSubSetsOfLength5 from "../../card/hasContiguousSubSetsOfLength5";
-import hasFlush from "./hasFlush";
-import hasStraight from "./hasStraight";
-import sortedValues from "../../card/sortedValues";
-import sortedSuits from "../../card/sortedSuits";
+import { Value, Card } from "../../card/Card.js";
+import hasContiguousSubSetsOfLength5 from "../../card/hasContiguousSubSetsOfLength5.js";
+import hasFlush from "./hasFlush.js";
+import hasStraight from "./hasStraight.js";
+import sortedValues from "../../card/sortedValues.js";
+import sortedSuits from "../../card/sortedSuits.js";
 
 /**
  * returns true if a straight flush is contained within the given cards

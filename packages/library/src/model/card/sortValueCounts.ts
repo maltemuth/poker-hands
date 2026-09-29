@@ -1,6 +1,6 @@
-import { Card } from "./Card";
-import valueCounts from "./valueCounts";
-import numericalSort from "../../lib/numericalSort";
+import { Card } from "./Card.js";
+import valueCounts from "./valueCounts.js";
+import numericalSort from "../../lib/numericalSort.js";
 
 /**
  * Gets the frequency counts of card values and sorts them in descending order.

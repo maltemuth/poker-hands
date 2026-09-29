@@ -4,7 +4,7 @@
  * The request and response types are generated from openapi.yaml into
  * api.ts (`npm run generate`); edit the spec, not the generated file.
  */
-import type { components } from "./api";
+import type { components } from "./api.js";
 
 type Schemas = components["schemas"];
 

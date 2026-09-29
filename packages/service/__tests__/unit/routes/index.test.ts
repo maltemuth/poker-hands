@@ -1,8 +1,8 @@
 import express from "express";
 import request from "supertest";
-import { setupRoutes } from "../../../src/routes";
-import { handlers, Handlers } from "../../../src/routes/handlers";
-import { CalculationError } from "../../../src/odds/CalculationError";
+import { setupRoutes } from "../../../src/routes/index.js";
+import { handlers, Handlers } from "../../../src/routes/handlers.js";
+import { CalculationError } from "../../../src/odds/CalculationError.js";
 
 // the calculations are replaced; routing, validation and responses are real
 const calculateOdds = jest.fn() as jest.MockedFunction<

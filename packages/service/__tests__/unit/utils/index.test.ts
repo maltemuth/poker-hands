@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { sendError } from "../../../src/utils";
+import { sendError } from "../../../src/utils/index.js";
 
 describe("sendError", () => {
   it("should send the message as a JSON string with the status", () => {

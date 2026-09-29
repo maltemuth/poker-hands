@@ -1,4 +1,4 @@
-import calculateOdds from "../../../src/odds/calculateOdds";
+import calculateOdds from "../../../src/odds/calculateOdds.js";
 
 describe("calculateOdds", () => {
   it("calculates exact odds for a known river", () => {

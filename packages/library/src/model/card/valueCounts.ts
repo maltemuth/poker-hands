@@ -1,5 +1,5 @@
-import { Card } from "./Card";
-import sortedValues from "./sortedValues";
+import { Card } from "./Card.js";
+import sortedValues from "./sortedValues.js";
 
 export type ValueCounts = { [value: number]: number };
 

@@ -1,5 +1,5 @@
-import { Card, Suit, Value } from "../card/Card";
-import { HandType } from "./Hand";
+import { Card, Suit, Value } from "../card/Card.js";
+import { HandType } from "./Hand.js";
 
 /**
  * The index of each suit in SuitMasks

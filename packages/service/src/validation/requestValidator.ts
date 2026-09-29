@@ -1,7 +1,7 @@
 import Ajv, { ErrorObject, ValidateFunction } from "ajv";
 import express from "express";
-import { spec } from "../spec";
-import { sendError } from "../utils";
+import { spec } from "../spec.js";
+import { sendError } from "../utils/index.js";
 
 type ValidationError = { error: string } | null;
 

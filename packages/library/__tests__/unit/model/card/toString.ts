@@ -1,5 +1,5 @@
-import toString from "../../../../src/model/card/toString";
-import { Suit, Value } from "../../../../src/model/card/Card";
+import toString from "../../../../src/model/card/toString.js";
+import { Suit, Value } from "../../../../src/model/card/Card.js";
 
 describe("convert cards to string", () => {
   test("ace of spades", () => {

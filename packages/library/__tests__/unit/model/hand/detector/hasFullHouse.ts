@@ -1,5 +1,5 @@
-import hasFullHouse from "../../../../../src/model/hand/detect/hasFullHouse";
-import cards from "../../../../../src/model/card/cards";
+import hasFullHouse from "../../../../../src/model/hand/detect/hasFullHouse.js";
+import cards from "../../../../../src/model/card/cards.js";
 
 describe("detect full houses", () => {
   test("three-of-a-kind is not a full house", () => {

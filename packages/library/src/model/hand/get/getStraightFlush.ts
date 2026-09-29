@@ -1,7 +1,7 @@
-import { Card } from "../../card/Card";
-import { HandType, Hand } from "../Hand";
-import getStraight from "./getStraight";
-import purify from "../../../lib/purify";
+import { Card } from "../../card/Card.js";
+import { HandType, Hand } from "../Hand.js";
+import getStraight from "./getStraight.js";
+import purify from "../../../lib/purify.js";
 
 const getStraightFlush = (
   cards: Card[]

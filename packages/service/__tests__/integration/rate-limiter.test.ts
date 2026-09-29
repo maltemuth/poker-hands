@@ -1,6 +1,6 @@
 import request from "supertest";
-import { PokerHandsService } from "../../src/index";
-import calculateOdds from "../../src/odds/calculateOdds";
+import { PokerHandsService } from "../../src/index.js";
+import calculateOdds from "../../src/odds/calculateOdds.js";
 
 // keep validation real, but control when a calculation "finishes"
 jest.mock("../../src/odds/calculateOdds", () => ({

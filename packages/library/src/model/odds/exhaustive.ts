@@ -1,9 +1,9 @@
-import { Card } from "../card/Card";
-import create from "../deck/create";
-import without from "../card/without";
-import assertUnique from "../card/assertUnique";
-import { Hole, HoleOdds, ProgressCallback } from "./HoleOdds";
-import tallyBoards from "./tallyBoards";
+import { Card } from "../card/Card.js";
+import create from "../deck/create.js";
+import without from "../card/without.js";
+import assertUnique from "../card/assertUnique.js";
+import { Hole, HoleOdds, ProgressCallback } from "./HoleOdds.js";
+import tallyBoards from "./tallyBoards.js";
 
 /**
  * Calculates exact poker odds by exhaustively simulating all possible board combinations.

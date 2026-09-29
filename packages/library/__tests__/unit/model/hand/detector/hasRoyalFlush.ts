@@ -1,5 +1,5 @@
-import hasRoyalFlush from "../../../../../src/model/hand/detect/hasRoyalFlush";
-import cards from "../../../../../src/model/card/cards";
+import hasRoyalFlush from "../../../../../src/model/hand/detect/hasRoyalFlush.js";
+import cards from "../../../../../src/model/card/cards.js";
 
 describe("detect royal flushes", () => {
   test("detect a royal flush", () => {

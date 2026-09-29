@@ -1,5 +1,5 @@
-import { rankOf, suitMasksOf } from "../hand/rankOf";
-import { Hole, ProgressCallback } from "./HoleOdds";
+import { rankOf, suitMasksOf } from "../hand/rankOf.js";
+import { Hole, ProgressCallback } from "./HoleOdds.js";
 
 /**
  * How often each hole wins or ties, over a number of boards

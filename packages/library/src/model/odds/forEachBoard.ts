@@ -1,5 +1,5 @@
-import { Card } from "../card/Card";
-import { SuitMasks, suitMasksOf } from "../hand/rankOf";
+import { Card } from "../card/Card.js";
+import { SuitMasks, suitMasksOf } from "../hand/rankOf.js";
 
 /**
  * Completes the board in every possible way: for each combination of

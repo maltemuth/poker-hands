@@ -1,6 +1,6 @@
-import { Value, Card } from "../../card/Card";
-import hasContiguousSubSetsOfLength5 from "../../card/hasContiguousSubSetsOfLength5";
-import sortedValues from "../../card/sortedValues";
+import { Value, Card } from "../../card/Card.js";
+import hasContiguousSubSetsOfLength5 from "../../card/hasContiguousSubSetsOfLength5.js";
+import sortedValues from "../../card/sortedValues.js";
 
 /**
  * returns true if a straight is contained within the given cards

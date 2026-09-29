@@ -1,5 +1,5 @@
 import { EventEmitter } from "events";
-import { createRateLimiter } from "../../../src/middleware/rateLimiter";
+import { createRateLimiter } from "../../../src/middleware/rateLimiter.js";
 import { Request, Response } from "express";
 
 describe("Rate Limiter Middleware", () => {

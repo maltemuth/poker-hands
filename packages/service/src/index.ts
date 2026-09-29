@@ -1,7 +1,7 @@
 import express, { json } from "express";
 import cors from "cors";
-import { setupRoutes } from "./routes";
-import { createRateLimiter } from "./middleware/rateLimiter";
+import { setupRoutes } from "./routes/index.js";
+import { createRateLimiter } from "./middleware/rateLimiter.js";
 
 export class PokerHandsService {
   private app: express.Application;

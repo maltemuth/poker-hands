@@ -17,17 +17,17 @@
  * a faster evaluator has to reproduce them exactly.
  */
 import { GCProfiler } from "node:v8";
-import { Card } from "../src/model/card/Card";
-import cards from "../src/model/card/cards";
-import combinationCount from "../src/model/combinatorics/combinationCount";
-import evaluate from "../src/model/hand/evaluate";
-import getBestHand from "../src/model/hand/getBestHand";
-import { HandType } from "../src/model/hand/Hand";
-import exhaustive from "../src/model/odds/exhaustive";
-import percentages, { HandPercentages } from "../src/model/odds/percentages";
-import { Hole, HoleOdds } from "../src/model/odds/HoleOdds";
-import { randomCards, seededRandom } from "../__tests__/helpers/randomCards";
-import winningHoles from "../__tests__/helpers/winningHoles";
+import { Card } from "../src/model/card/Card.js";
+import cards from "../src/model/card/cards.js";
+import combinationCount from "../src/model/combinatorics/combinationCount.js";
+import evaluate from "../src/model/hand/evaluate.js";
+import getBestHand from "../src/model/hand/getBestHand.js";
+import { HandType } from "../src/model/hand/Hand.js";
+import exhaustive from "../src/model/odds/exhaustive.js";
+import percentages, { HandPercentages } from "../src/model/odds/percentages.js";
+import { Hole, HoleOdds } from "../src/model/odds/HoleOdds.js";
+import { randomCards, seededRandom } from "../__tests__/helpers/randomCards.js";
+import winningHoles from "../__tests__/helpers/winningHoles.js";
 
 const quick = process.argv.includes("--quick");
 

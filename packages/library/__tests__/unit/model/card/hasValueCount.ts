@@ -1,5 +1,5 @@
-import hasValueCount from "../../../../src/model/card/hasValueCount";
-import cards from "../../../../src/model/card/cards";
+import hasValueCount from "../../../../src/model/card/hasValueCount.js";
+import cards from "../../../../src/model/card/cards.js";
 
 describe("can detect value counts", () => {
   test("detects a value count of two", () => {

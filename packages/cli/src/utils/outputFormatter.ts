@@ -6,7 +6,7 @@ import {
   PercentagesData,
   CLISuccessResponse,
   CLIErrorResponse,
-} from "../types/schemas";
+} from "../types/schemas.js";
 
 /**
  * Format card for display

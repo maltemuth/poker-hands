@@ -1,5 +1,5 @@
-import hasBetterValues from "../../../../src/model/card/hasBetterValues";
-import cards from "../../../../src/model/card/cards";
+import hasBetterValues from "../../../../src/model/card/hasBetterValues.js";
+import cards from "../../../../src/model/card/cards.js";
 
 describe("hasBetterValues", () => {
   test("higher first value wins", () => {

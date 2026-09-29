@@ -1,8 +1,8 @@
-import getHighCard from "../../../../../src/model/hand/get/getHighCard";
-import cards from "../../../../../src/model/card/cards";
-import { HandType } from "../../../../../src/model/hand/Hand";
-import toString from "../../../../../src/model/card/toString";
-import { Value } from "../../../../../src/model/card/Card";
+import getHighCard from "../../../../../src/model/hand/get/getHighCard.js";
+import cards from "../../../../../src/model/card/cards.js";
+import { HandType } from "../../../../../src/model/hand/Hand.js";
+import toString from "../../../../../src/model/card/toString.js";
+import { Value } from "../../../../../src/model/card/Card.js";
 
 describe("retrieve high cards", () => {
   test("retrieve high card from one card", () => {
