@@ -6,6 +6,29 @@ The library, CLI and service are versioned together.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.0] - 2026-09-29
+
+### Changed
+
+- Library: the default `auto` threshold is 2,200,000 boards instead of
+  10,000, above the most any spot can have (2,118,760 for a single hole
+  pre-flop). `odds()` now calculates every spot exactly unless a lower
+  `threshold` is given; before, pre-flop and multi-way flops fell back to
+  10,000 Monte Carlo samples. Exact pre-flop odds take at most about 0.2
+  seconds of CPU time. The CLI's `--threshold` and the service's
+  `options.threshold` use the same default, so their `auto` results for
+  these spots are now exact and no longer include `winChanceError`.
+- Service: a concurrency slot is freed as soon as its response ends. Holding
+  it for calculations that outlive the request was only needed while they
+  ran in worker threads.
+
+### Development
+
+- Library: tests and benchmark share one seeded random generator and card
+  draw (`__tests__/helpers`); `winningHoles`, which only they used, moved
+  there from `src`. The old Monte Carlo perf script passes lint.
+- The Tri-Coin Hold'em design doc moved to the poker-game repository.
+
 ## [0.9.0] - 2026-09-29
 
 ### Changed
@@ -252,6 +275,7 @@ Restructured into a monorepo with three packages. Not published to npm.
 
 Versions up to 0.3.1 (June 2020) predate this changelog.
 
+[0.10.0]: https://github.com/malte-muth/poker-hands/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/malte-muth/poker-hands/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/malte-muth/poker-hands/compare/v0.7.3...v0.8.0
 [0.7.3]: https://github.com/malte-muth/poker-hands/compare/v0.7.2...v0.7.3
