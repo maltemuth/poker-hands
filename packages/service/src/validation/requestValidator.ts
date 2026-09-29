@@ -60,6 +60,9 @@ const toMessage = (
   const value = valueAt(body, path);
   const segments = path.split("/").slice(1);
 
+  if (path === "/holes" && error.keyword === "maxItems") {
+    return `At most ${error.params.limit} players allowed`;
+  }
   if (path === "" || path === "/holes") {
     const players = minPlayers === 1 ? "player" : "players";
     return `Holes must be provided as an array with at least ${minPlayers} ${players}`;
@@ -87,7 +90,9 @@ const toMessage = (
     return "Threshold must be a positive integer";
   }
   if (path === "/options/sampleSize") {
-    return "Sample size must be a positive integer";
+    return error.keyword === "maximum"
+      ? `Sample size must be at most ${error.params.limit}`
+      : "Sample size must be a positive integer";
   }
   return `${path.slice(1) || "body"} ${error.message}`;
 };

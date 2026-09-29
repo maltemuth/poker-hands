@@ -123,7 +123,7 @@ export interface components {
                  */
                 threshold?: number;
                 /**
-                 * @description Sample size for Monte Carlo mode (default: 10000)
+                 * @description Sample size for Monte Carlo mode (default: 10000, at most 1,000,000)
                  * @example 100000
                  */
                 sampleSize?: number;

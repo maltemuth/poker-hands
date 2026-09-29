@@ -162,6 +162,22 @@ describe("validateRequestBody", () => {
     });
   });
 
+  describe("odds requests with many players", () => {
+    const holes = "AKQJT98765"
+      .split("")
+      .map((value) => [`${value}h`, `${value}d`]);
+
+    it("should accept 10 players", () => {
+      expect(validateRequestBody("/api/odds", { holes })).toBeNull();
+    });
+
+    it("should return error for more than 10 players", () => {
+      expect(
+        validateRequestBody("/api/odds", { holes: [...holes, ["4h", "4d"]] })
+      ).toEqual({ error: "At most 10 players allowed" });
+    });
+  });
+
   describe("odds requests with options", () => {
     it("should return null for valid input with mode option", () => {
       const input = {
@@ -312,6 +328,32 @@ describe("validateRequestBody", () => {
       });
     });
 
+    it("should accept a sampleSize of 1,000,000", () => {
+      const input = {
+        holes: [
+          ["Ah", "Kh"],
+          ["7c", "2d"],
+        ],
+        options: { sampleSize: 1_000_000 },
+      };
+
+      expect(validateRequestBody("/api/odds", input)).toBeNull();
+    });
+
+    it("should return error for a sampleSize above 1,000,000", () => {
+      const input = {
+        holes: [
+          ["Ah", "Kh"],
+          ["7c", "2d"],
+        ],
+        options: { sampleSize: 1_000_001 },
+      };
+
+      expect(validateRequestBody("/api/odds", input)).toEqual({
+        error: "Sample size must be at most 1000000",
+      });
+    });
+
     it("should return null when options is undefined", () => {
       const input = {
         holes: [
@@ -355,6 +397,19 @@ describe("validateRequestBody", () => {
           board: ["Ts", "9h", "8c"],
         })
       ).toBeNull();
+    });
+
+    it("should accept at most 10 players", () => {
+      const holes = "AKQJT98765"
+        .split("")
+        .map((value) => [`${value}h`, `${value}d`]);
+
+      expect(validateRequestBody("/api/percentages", { holes })).toBeNull();
+      expect(
+        validateRequestBody("/api/percentages", {
+          holes: [...holes, ["4h", "4d"]],
+        })
+      ).toEqual({ error: "At most 10 players allowed" });
     });
 
     it("should require at least one player", () => {

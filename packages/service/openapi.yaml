@@ -242,6 +242,7 @@ components:
             minItems: 2
             maxItems: 2
           minItems: 2
+          maxItems: 10
           example: [["Ah", "Kh"], ["Qd", "Jd"]]
         board:
           type: array
@@ -269,7 +270,8 @@ components:
             sampleSize:
               type: integer
               minimum: 1
-              description: "Sample size for Monte Carlo mode (default: 10000)"
+              maximum: 1000000
+              description: "Sample size for Monte Carlo mode (default: 10000, at most 1,000,000)"
               example: 100000
           example:
             mode: "monteCarlo"
@@ -339,6 +341,7 @@ components:
             minItems: 2
             maxItems: 2
           minItems: 1
+          maxItems: 10
           example: [["Ah", "Kh"]]
         board:
           type: array
