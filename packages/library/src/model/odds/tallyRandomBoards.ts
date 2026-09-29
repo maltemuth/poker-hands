@@ -1,5 +1,5 @@
 import { Card } from "../card/Card";
-import { suitMasksOf } from "../hand/handState";
+import { suitMasksOf } from "../hand/rankOf";
 import createBoardTally, { Tally } from "./boardTally";
 import { Hole, ProgressCallback } from "./HoleOdds";
 

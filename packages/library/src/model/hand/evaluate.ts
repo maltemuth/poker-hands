@@ -1,5 +1,5 @@
 import { Card, Suit } from "../card/Card";
-import { rankOf } from "./handState";
+import { rankOf } from "./rankOf";
 
 /**
  * The rank of the best hand in 5 to 7 cards, as handRank(getBestHand(cards))

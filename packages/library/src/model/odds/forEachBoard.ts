@@ -1,5 +1,5 @@
 import { Card } from "../card/Card";
-import { SuitMasks, suitMasksOf } from "../hand/handState";
+import { SuitMasks, suitMasksOf } from "../hand/rankOf";
 
 /**
  * Completes the board in every possible way: for each combination of
@@ -17,7 +17,7 @@ const forEachBoard = (
   known: SuitMasks,
   rest: Card[],
   missing: number,
-  visit: (h: number, d: number, c: number, s: number) => void,
+  visit: (h: number, d: number, c: number, s: number) => void
 ): void => {
   // what each card adds to each suit mask: its bit to its suit's, 0 to others
   const restMasks = rest.map((card) => suitMasksOf([card]));
@@ -33,7 +33,7 @@ const forEachBoard = (
     h: number,
     d: number,
     c: number,
-    s: number,
+    s: number
   ) => {
     if (missingCards === 0) {
       visit(h, d, c, s);
@@ -46,7 +46,7 @@ const forEachBoard = (
         h | restH[i],
         d | restD[i],
         c | restC[i],
-        s | restS[i],
+        s | restS[i]
       );
     }
   };

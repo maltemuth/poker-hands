@@ -2,7 +2,7 @@ import { Card } from "../card/Card";
 import combinationCount from "../combinatorics/combinationCount";
 import createBoardTally, { Tally } from "./boardTally";
 import forEachBoard from "./forEachBoard";
-import { suitMasksOf } from "../hand/handState";
+import { suitMasksOf } from "../hand/rankOf";
 import { Hole, ProgressCallback } from "./HoleOdds";
 
 export type { Tally } from "./boardTally";

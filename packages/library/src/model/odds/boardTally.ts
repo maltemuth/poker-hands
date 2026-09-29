@@ -1,4 +1,4 @@
-import { rankOf, suitMasksOf } from "../hand/handState";
+import { rankOf, suitMasksOf } from "../hand/rankOf";
 import { Hole, ProgressCallback } from "./HoleOdds";
 
 /**

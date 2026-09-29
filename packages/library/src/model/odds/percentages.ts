@@ -1,7 +1,7 @@
 import { Card } from "../card/Card";
 import without from "../card/without";
 import create from "../deck/create";
-import { rankOf, suitMasksOf } from "../hand/handState";
+import { rankOf, suitMasksOf } from "../hand/rankOf";
 import assertUnique from "../card/assertUnique";
 import forEachBoard from "./forEachBoard";
 

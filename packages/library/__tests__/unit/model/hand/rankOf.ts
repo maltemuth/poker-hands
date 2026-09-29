@@ -1,4 +1,4 @@
-import { rankOf, suitMasksOf } from "../../../../src/model/hand/handState";
+import { rankOf, suitMasksOf } from "../../../../src/model/hand/rankOf";
 import cards from "../../../../src/model/card/cards";
 
 describe("suitMasksOf", () => {
