@@ -39,20 +39,11 @@ export function formatOdds(oddsResult: HoleOdds[]): string {
   const player2Win = (oddsResult[1]?.winChance || 0) * 100;
   const tie = (oddsResult[0]?.tieChance || 0) * 100;
 
-  // Add confidence intervals if available (Monte Carlo results)
-  let confidenceInfo = "";
-  if (oddsResult[0]?.winChanceError) {
-    confidenceInfo = `
-Note: Results based on Monte Carlo simulation with ±${(
-      oddsResult[0].winChanceError * 100
-    ).toFixed(1)}% confidence interval`;
-  }
-
   return `Winning Odds:
 Player 1: ${player1Win.toFixed(2)}%
 Player 2: ${player2Win.toFixed(2)}%
 Tie: ${tie.toFixed(2)}%
-Total: ${(player1Win + player2Win + tie).toFixed(2)}%${confidenceInfo}`;
+Total: ${(player1Win + player2Win + tie).toFixed(2)}%`;
 }
 
 /**
@@ -133,7 +124,6 @@ export function formatOddsJson(oddsResult: HoleOdds[]): OddsData {
       holeCards: player.hole.map(formatCard),
       winChance: player.winChance,
       tieChance: player.tieChance,
-      ...(player.winChanceError && { winChanceError: player.winChanceError }),
     })),
   };
 }

@@ -61,21 +61,17 @@ describe("poker-hands CLI", () => {
       expect(result.data.players[1].winChance).toBe(0);
     });
 
-    it("passes Monte Carlo options through", () => {
-      const result = JSON.parse(
-        run(
-          "odds",
-          "AhAs",
-          "KdKh",
-          "--mode",
-          "monteCarlo",
-          "--sample-size",
-          "200",
-          "--json"
-        )
-      );
+    it("calculates pre-flop exactly", () => {
+      const result = JSON.parse(run("odds", "AhAs", "KdKh", "--json"));
 
-      expect(result.data.players[0].winChanceError).toBeGreaterThan(0);
+      expect(Object.keys(result.data.players[0])).toEqual([
+        "holeCards",
+        "winChance",
+        "tieChance",
+      ]);
+      // 1,712,304 boards: every chance is a whole number of them
+      const boards = result.data.players[0].winChance * 1712304;
+      expect(Math.abs(boards - Math.round(boards))).toBeLessThan(1e-6);
     });
 
     it("accepts a space-separated board", () => {

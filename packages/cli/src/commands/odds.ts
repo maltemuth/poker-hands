@@ -13,25 +13,9 @@ function validateHoleCards(holeCardsList: Card[][]): void {
   }
 }
 
-function validateAndNormalizeMode(
-  mode?: string
-): "auto" | "exhaustive" | "monteCarlo" {
-  const validModes = ["auto", "exhaustive", "monteCarlo"];
-  return mode && validModes.includes(mode)
-    ? (mode as "auto" | "exhaustive" | "monteCarlo")
-    : "auto";
-}
-
-function buildOddsOptions(
-  mode: "auto" | "exhaustive" | "monteCarlo",
-  options: {
-    threshold?: number;
-    sampleSize?: number;
-    progress?: boolean;
-  }
-): OddsOptions {
-  const oddsOptions: OddsOptions = {
-    mode,
+function buildOddsOptions(options: { progress?: boolean }): OddsOptions {
+  return {
+    mode: "exhaustive",
     progress: options.progress
       ? (progress: number) => {
           // Clear the dots and show progress
@@ -43,18 +27,6 @@ function buildOddsOptions(
         }
       : undefined,
   };
-
-  // Add threshold only for auto mode
-  if (oddsOptions.mode === "auto" && options.threshold !== undefined) {
-    oddsOptions.threshold = options.threshold;
-  }
-
-  // Add sampleSize only for monte-carlo mode
-  if (oddsOptions.mode === "monteCarlo" && options.sampleSize !== undefined) {
-    oddsOptions.sampleSize = options.sampleSize;
-  }
-
-  return oddsOptions;
 }
 
 function handleProgressCleanup(progress?: boolean): void {
@@ -77,9 +49,6 @@ function calculateOdds(
   holes: string[],
   options: {
     board?: string;
-    mode?: string;
-    threshold?: number;
-    sampleSize?: number;
     progress?: boolean;
     json?: boolean;
   }
@@ -93,13 +62,7 @@ function calculateOdds(
   // Validate inputs
   validateHoleCards(holeCardsList);
 
-  // Validate and normalize mode
-  const mode = validateAndNormalizeMode(options.mode);
-
-  // Build options object with mode-specific parameters
-  const oddsOptions = buildOddsOptions(mode, {
-    threshold: options.threshold,
-    sampleSize: options.sampleSize,
+  const oddsOptions = buildOddsOptions({
     progress: options.progress && !options.json, // Don't show progress if JSON is requested
   });
 
@@ -161,21 +124,6 @@ export const createOddsCommand = () =>
     .description("Calculate winning odds for given hole cards and board")
     .argument("<holes...>", "Player hole cards (e.g., AhAs KdKh QcQd)")
     .option("--board <board>", "Community board cards (e.g., 2h5d9c)", "")
-    .option(
-      "-m, --mode <mode>",
-      "Calculation mode (auto, exhaustive, monteCarlo)",
-      "auto"
-    )
-    .option(
-      "-t, --threshold <threshold>",
-      "Threshold for auto mode (default: 2200000)",
-      parseInt
-    )
-    .option(
-      "-s, --sample-size <sampleSize>",
-      "Sample size for monte-carlo mode (default: 10000)",
-      parseInt
-    )
     .option("--progress", "Show progress during calculation")
     .option("--json", "Output results in JSON format")
     .action(
@@ -183,9 +131,6 @@ export const createOddsCommand = () =>
         holes: string[],
         options: {
           board?: string;
-          mode?: string;
-          threshold?: number;
-          sampleSize?: number;
           progress?: boolean;
           json?: boolean;
         }

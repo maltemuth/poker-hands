@@ -31,7 +31,6 @@ export interface OddsPlayerData {
   holeCards: string[];
   winChance: number;
   tieChance: number;
-  winChanceError?: number; // Optional, only present in Monte Carlo results
 }
 
 export interface OddsData {
