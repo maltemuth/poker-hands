@@ -6,6 +6,23 @@ The library, CLI and service are versioned together.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.0] - 2026-09-29
+
+### Changed
+
+- All packages are ES modules (`"type": "module"`). CommonJS code on
+  Node.js 24 can still load the library with `require()`, and the CLI and
+  service executables are unchanged.
+- Library: an `exports` map limits imports to the package root. Imports
+  from inside `dist` (e.g. `@malte.muth/poker-hands/dist/src/model/card/Card`)
+  no longer work; import the same names from `@malte.muth/poker-hands`.
+  **Breaking** for code that used such deep imports.
+
+### Development
+
+- Relative imports name their `.js` file, as ESM requires; Jest maps them to
+  the TypeScript sources. Tests still run as CommonJS.
+
 ## [0.11.1] - 2026-09-29
 
 ### Fixed
@@ -331,6 +348,7 @@ Restructured into a monorepo with three packages. Not published to npm.
 
 Versions up to 0.3.1 (June 2020) predate this changelog.
 
+[0.12.0]: https://github.com/maltemuth/poker-hands/compare/v0.11.1...v0.12.0
 [0.11.1]: https://github.com/maltemuth/poker-hands/compare/v0.11.0...v0.11.1
 [0.11.0]: https://github.com/maltemuth/poker-hands/compare/v0.10.1...v0.11.0
 [0.10.1]: https://github.com/maltemuth/poker-hands/compare/v0.10.0...v0.10.1
