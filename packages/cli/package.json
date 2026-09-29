@@ -27,7 +27,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "lint": "eslint src --ext .ts",
+    "lint": "eslint src __tests__ index.ts --ext .ts",
     "clean": "rm -rf dist",
     "prepublishOnly": "npm run build",
     "start": "tsx src/cli.ts",

@@ -25,5 +25,12 @@ export default defineConfig(
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
     },
+  },
+  {
+    // tests assert that a hand exists with `!`; if it does not, the test fails
+    files: ["__tests__/**/*.ts", "__perf__/**/*.ts"],
+    rules: {
+      "@typescript-eslint/no-non-null-assertion": "off",
+    },
   }
 );
