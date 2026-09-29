@@ -6,6 +6,21 @@ The library, CLI and service are versioned together.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.1] - 2026-09-29
+
+### Fixed
+
+- The `repository` field of all three packages, the README clone commands
+  and the links in this changelog pointed to `github.com/malte-muth`
+  instead of `github.com/maltemuth`.
+
+### Development
+
+- `npm run lint` also checks the tests (and the library's perf scripts);
+  they pass without warnings.
+- The library README and the service's `openapi.yaml` are formatted with
+  Prettier; the API is unchanged.
+
 ## [0.10.0] - 2026-09-29
 
 ### Changed
@@ -275,6 +290,7 @@ Restructured into a monorepo with three packages. Not published to npm.
 
 Versions up to 0.3.1 (June 2020) predate this changelog.
 
+[0.10.1]: https://github.com/maltemuth/poker-hands/compare/v0.10.0...v0.10.1
 [0.10.0]: https://github.com/maltemuth/poker-hands/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/maltemuth/poker-hands/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/maltemuth/poker-hands/compare/v0.7.3...v0.8.0
