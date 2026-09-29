@@ -424,10 +424,10 @@ const hole2 = cards("7c", "2d");
 const preFlopOdds = odds([hole1, hole2]);
 
 console.log(
-  `Player 1 win chance: ${(preFlopOdds[0].winChance * 100).toFixed(2)}%`
+  `Player 1 win chance: ${(preFlopOdds[0].winChance * 100).toFixed(2)}%`,
 );
 console.log(
-  `Player 2 win chance: ${(preFlopOdds[1].winChance * 100).toFixed(2)}%`
+  `Player 2 win chance: ${(preFlopOdds[1].winChance * 100).toFixed(2)}%`,
 );
 
 // Post-flop odds
@@ -448,13 +448,13 @@ const handPercentages = percentages(hole, board);
 const mostLikelyHand = Object.entries(handPercentages).reduce(
   (max, [type, data]) =>
     data.percentage > max.percentage ? { type, ...data } : max,
-  { type: "", percentage: 0 }
+  { type: "", percentage: 0 },
 );
 
 console.log(
   `Most likely hand: ${mostLikelyHand.type} (${(
     mostLikelyHand.percentage * 100
-  ).toFixed(1)}%)`
+  ).toFixed(1)}%)`,
 );
 ```
 
