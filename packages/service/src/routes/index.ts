@@ -1,7 +1,6 @@
 import express from "express";
 import { spec } from "../spec";
 import { sendError } from "../utils";
-import { holdSlotUntil } from "../middleware/rateLimiter";
 import { CalculationError } from "../odds/CalculationError";
 import { validateBody } from "../validation/requestValidator";
 import { handlers, Handlers } from "./handlers";
@@ -9,13 +8,10 @@ import { handlers, Handlers } from "./handlers";
 const methods = ["get", "post", "put", "patch", "delete"] as const;
 
 /**
- * Responds with the result of a handler. A calculation keeps its concurrency
- * slot until it finishes, even if the client disconnects.
+ * Responds with the result of a handler, or with an error if it throws.
  */
 function respond(res: express.Response, run: () => unknown): void {
-  const result = new Promise((resolve) => resolve(run()));
-  holdSlotUntil(res, result);
-  result
+  new Promise((resolve) => resolve(run()))
     .then((body) => {
       res.json(body);
     })

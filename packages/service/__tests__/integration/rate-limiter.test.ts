@@ -134,28 +134,6 @@ describe("Rate Limiting Integration", () => {
     await inFlight;
   });
 
-  it("keeps the slot while an abandoned calculation is still running", async () => {
-    const app = new PokerHandsService(3000, true, 1).getApp();
-    const calculations = holdCalculations();
-
-    // the client gives up, but the calculation keeps running
-    const abandoned = request(app)
-      .post("/api/odds")
-      .send(body)
-      .timeout(100)
-      .catch(() => "aborted");
-    await waitFor(() => calculations.started() === 1);
-    expect(await abandoned).toBe("aborted");
-
-    expect(await statusWhileSaturated(app)).toBe(429);
-
-    calculations.release();
-    const next = fire(app);
-    await waitFor(() => calculations.started() === 1);
-    calculations.release();
-    expect((await next).status).toBe(200);
-  });
-
   it("keeps limits separate per service instance", async () => {
     const saturated = new PokerHandsService(3000, true, 1).getApp();
     const other = new PokerHandsService(3000, true, 1).getApp();

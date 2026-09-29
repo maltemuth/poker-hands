@@ -5,17 +5,6 @@ interface RateLimiterOptions {
   maxConcurrentRequests: number;
 }
 
-type HoldSlot = (work: Promise<unknown>) => void;
-
-/**
- * Keeps the request's concurrency slot occupied until `work` has settled,
- * even if the response has already been sent or the client disconnected.
- * Use it for calculations that keep running on their own.
- */
-export function holdSlotUntil(res: Response, work: Promise<unknown>): void {
-  (res.locals.holdSlotUntil as HoldSlot | undefined)?.(work);
-}
-
 export function createRateLimiter(options: RateLimiterOptions) {
   const { maxConcurrentRequests } = options;
   let activeRequests = 0;
@@ -38,19 +27,12 @@ export function createRateLimiter(options: RateLimiterOptions) {
     // Track the request
     activeRequests += 1;
 
-    const heldWork: Promise<unknown>[] = [];
-    res.locals.holdSlotUntil = ((work) => {
-      heldWork.push(work);
-    }) satisfies HoldSlot;
-
-    // Free the slot once the response has ended and all held work has settled
+    // Free the slot once the response has ended
     let ended = false;
     const cleanup = () => {
       if (ended) return;
       ended = true;
-      Promise.allSettled(heldWork).then(() => {
-        activeRequests -= 1;
-      });
+      activeRequests -= 1;
     };
 
     // Add cleanup to response and error handlers

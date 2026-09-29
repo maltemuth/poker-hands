@@ -1,8 +1,5 @@
 import { EventEmitter } from "events";
-import {
-  createRateLimiter,
-  holdSlotUntil,
-} from "../../../src/middleware/rateLimiter";
+import { createRateLimiter } from "../../../src/middleware/rateLimiter";
 import { Request, Response } from "express";
 
 describe("Rate Limiter Middleware", () => {
@@ -85,67 +82,35 @@ describe("Rate Limiter Middleware", () => {
         locals: {},
       }) as unknown as Response & EventEmitter;
 
-    const flush = () => new Promise((resolve) => setImmediate(resolve));
-
-    const deferred = () => {
-      let resolve!: () => void;
-      const promise = new Promise<void>((done) => (resolve = done));
-      return { promise, resolve };
-    };
-
     beforeEach(() => {
       rateLimiter = createRateLimiter({ maxConcurrentRequests: 1 });
     });
 
-    it("frees the slot when the response ends", async () => {
+    it("frees the slot once when the response ends", () => {
       const first = createResponse();
       rateLimiter(mockRequest as Request, first, next);
       first.emit("finish");
       first.emit("close");
-      await flush();
 
       const second = createResponse();
       rateLimiter(mockRequest as Request, second, next);
       expect(second.status).not.toHaveBeenCalled();
       expect(next).toHaveBeenCalledTimes(2);
-    });
 
-    it("keeps the slot until held work settles, even after the client disconnects", async () => {
-      const work = deferred();
-      const first = createResponse();
-      rateLimiter(mockRequest as Request, first, next);
-      holdSlotUntil(first, work.promise);
-      first.emit("close");
-      await flush();
-
-      const second = createResponse();
-      rateLimiter(mockRequest as Request, second, next);
-      expect(second.status).toHaveBeenCalledWith(429);
-
-      work.resolve();
-      await flush();
-
+      // "finish" and "close" together freed one slot, not two
       const third = createResponse();
       rateLimiter(mockRequest as Request, third, next);
-      expect(third.status).not.toHaveBeenCalled();
+      expect(third.status).toHaveBeenCalledWith(429);
     });
 
-    it("frees the slot when held work fails", async () => {
+    it("frees the slot when the client disconnects", () => {
       const first = createResponse();
       rateLimiter(mockRequest as Request, first, next);
-      holdSlotUntil(first, Promise.reject(new Error("calculation failed")));
       first.emit("close");
-      await flush();
 
       const second = createResponse();
       rateLimiter(mockRequest as Request, second, next);
       expect(second.status).not.toHaveBeenCalled();
-    });
-
-    it("ignores holdSlotUntil outside of rate-limited requests", () => {
-      expect(() =>
-        holdSlotUntil(createResponse(), Promise.resolve())
-      ).not.toThrow();
     });
   });
 });
