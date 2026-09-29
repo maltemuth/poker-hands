@@ -3,6 +3,8 @@ import monteCarloOdds from "../src/model/odds/monteCarloOdds";
 import cards from "../src/model/card/cards";
 import withProfiling from "./withProfiling";
 
+const percent = (value = 0) => `${(value * 100).toFixed(2)}%`;
+
 // Test performance comparison
 const runPerformanceTest = () => {
   console.log("=== Performance Comparison ===");
@@ -13,9 +15,7 @@ const runPerformanceTest = () => {
   const exhaustive1 = exhaustive([cards("Ah", "As"), cards("Td", "Tc")]);
   console.timeEnd("Exhaustive");
   console.log(
-    `Exhaustive - AA win: ${(exhaustive1[0].winChance * 100).toFixed(
-      2
-    )}%, TT win: ${(exhaustive1[1].winChance * 100).toFixed(2)}%`
+    `Exhaustive - AA win: ${percent(exhaustive1[0].winChance)}, TT win: ${percent(exhaustive1[1].winChance)}`
   );
 
   console.time("Monte Carlo (10k)");
@@ -26,11 +26,7 @@ const runPerformanceTest = () => {
   );
   console.timeEnd("Monte Carlo (10k)");
   console.log(
-    `Monte Carlo - AA win: ${(monteCarlo1[0].winChance * 100).toFixed(2)}% ± ${(
-      monteCarlo1[0].winChanceError! * 100
-    ).toFixed(2)}%, TT win: ${(monteCarlo1[1].winChance * 100).toFixed(
-      2
-    )}% ± ${(monteCarlo1[1].winChanceError! * 100).toFixed(2)}%`
+    `Monte Carlo - AA win: ${percent(monteCarlo1[0].winChance)} ± ${percent(monteCarlo1[0].winChanceError)}, TT win: ${percent(monteCarlo1[1].winChance)} ± ${percent(monteCarlo1[1].winChanceError)}`
   );
 
   // Test case 2: Flop scenario
@@ -42,9 +38,7 @@ const runPerformanceTest = () => {
   );
   console.timeEnd("Exhaustive");
   console.log(
-    `Exhaustive - AA win: ${(exhaustive2[0].winChance * 100).toFixed(
-      2
-    )}%, TT win: ${(exhaustive2[1].winChance * 100).toFixed(2)}%`
+    `Exhaustive - AA win: ${percent(exhaustive2[0].winChance)}, TT win: ${percent(exhaustive2[1].winChance)}`
   );
 
   console.time("Monte Carlo (10k)");
@@ -55,11 +49,7 @@ const runPerformanceTest = () => {
   );
   console.timeEnd("Monte Carlo (10k)");
   console.log(
-    `Monte Carlo - AA win: ${(monteCarlo2[0].winChance * 100).toFixed(2)}% ± ${(
-      monteCarlo2[0].winChanceError! * 100
-    ).toFixed(2)}%, TT win: ${(monteCarlo2[1].winChance * 100).toFixed(
-      2
-    )}% ± ${(monteCarlo2[1].winChanceError! * 100).toFixed(2)}%`
+    `Monte Carlo - AA win: ${percent(monteCarlo2[0].winChance)} ± ${percent(monteCarlo2[0].winChanceError)}, TT win: ${percent(monteCarlo2[1].winChance)} ± ${percent(monteCarlo2[1].winChanceError)}`
   );
 
   // Test case 3: Turn scenario
@@ -71,9 +61,7 @@ const runPerformanceTest = () => {
   );
   console.timeEnd("Exhaustive");
   console.log(
-    `Exhaustive - AA win: ${(exhaustive3[0].winChance * 100).toFixed(
-      2
-    )}%, TT win: ${(exhaustive3[1].winChance * 100).toFixed(2)}%`
+    `Exhaustive - AA win: ${percent(exhaustive3[0].winChance)}, TT win: ${percent(exhaustive3[1].winChance)}`
   );
 
   console.time("Monte Carlo (10k)");
@@ -84,11 +72,7 @@ const runPerformanceTest = () => {
   );
   console.timeEnd("Monte Carlo (10k)");
   console.log(
-    `Monte Carlo - AA win: ${(monteCarlo3[0].winChance * 100).toFixed(2)}% ± ${(
-      monteCarlo3[0].winChanceError! * 100
-    ).toFixed(2)}%, TT win: ${(monteCarlo3[1].winChance * 100).toFixed(
-      2
-    )}% ± ${(monteCarlo3[1].winChanceError! * 100).toFixed(2)}%`
+    `Monte Carlo - AA win: ${percent(monteCarlo3[0].winChance)} ± ${percent(monteCarlo3[0].winChanceError)}, TT win: ${percent(monteCarlo3[1].winChance)} ± ${percent(monteCarlo3[1].winChanceError)}`
   );
 
   // Test case 4: Performance with different sample sizes
@@ -97,7 +81,7 @@ const runPerformanceTest = () => {
 
   [1000, 5000, 10000, 50000].forEach((sampleSize) => {
     console.time(`Monte Carlo (${sampleSize})`);
-    const result = monteCarloOdds(holes, [], sampleSize);
+    monteCarloOdds(holes, [], sampleSize);
     console.timeEnd(`Monte Carlo (${sampleSize})`);
   });
 };
