@@ -6,6 +6,26 @@ The library, CLI and service are versioned together.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.11.0] - 2026-09-29
+
+### Removed
+
+- Library: Monte Carlo odds and the `auto` mode. `odds()` always evaluates
+  every way to complete the board, so results are exact and the same on
+  every run; pre-flop, this takes at most about 0.2 seconds of CPU time.
+  `OddsOptions` is now `{ progress?: ProgressCallback }`; a `mode`,
+  `threshold` or `sampleSize` passed from JavaScript is ignored, while
+  TypeScript callers have to remove them. `HoleOdds` no longer has
+  `winChanceError` and `tieChanceError`. **Breaking.**
+- CLI: the odds command no longer has `--mode`, `--threshold` and
+  `--sample-size`, which are now rejected as unknown options, and no longer
+  prints a margin of error. **Breaking.**
+- Service: `POST /api/odds` no longer documents `options` and no longer
+  returns `winChanceError`. Options sent by older clients are ignored, so
+  they get exact results instead of a `400`; the sample size limit is gone,
+  the limit of 10 players remains. **Breaking** for clients that read
+  `winChanceError`.
+
 ## [0.10.1] - 2026-09-29
 
 ### Fixed
@@ -290,6 +310,7 @@ Restructured into a monorepo with three packages. Not published to npm.
 
 Versions up to 0.3.1 (June 2020) predate this changelog.
 
+[0.11.0]: https://github.com/maltemuth/poker-hands/compare/v0.10.1...v0.11.0
 [0.10.1]: https://github.com/maltemuth/poker-hands/compare/v0.10.0...v0.10.1
 [0.10.0]: https://github.com/maltemuth/poker-hands/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/maltemuth/poker-hands/compare/v0.8.0...v0.9.0
