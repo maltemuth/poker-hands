@@ -614,7 +614,7 @@ We welcome contributions! Please follow these steps:
 
 ```bash
 # Clone the repository
-git clone https://github.com/malte-muth/poker-hands.git
+git clone https://github.com/maltemuth/poker-hands.git
 cd poker-hands/packages/library
 
 # Install dependencies
