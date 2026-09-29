@@ -37,7 +37,8 @@
     "test:coverage": "jest --coverage",
     "typecheck": "openapi-typescript openapi.yaml -o src/types/api.ts --check && tsc -p tsconfig.test.json",
     "generate": "openapi-typescript openapi.yaml -o src/types/api.ts",
-    "lint:spec": "redocly lint openapi.yaml"
+    "lint:spec": "redocly lint openapi.yaml",
+    "prepack": "npm run build"
   },
   "dependencies": {
     "@malte.muth/poker-hands": "^0.11.0",

@@ -26,13 +26,13 @@
   ],
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "npm run clean && tsc",
     "lint": "eslint src __tests__ index.ts --ext .ts",
     "clean": "rm -rf dist",
-    "prepublishOnly": "npm run build",
     "start": "tsx src/cli.ts",
     "test": "npm run typecheck && jest",
-    "typecheck": "tsc -p tsconfig.test.json"
+    "typecheck": "tsc -p tsconfig.test.json",
+    "prepack": "npm run build"
   },
   "dependencies": {
     "@malte.muth/poker-hands": "^0.11.0",
