@@ -5,24 +5,24 @@ info:
     A REST API service for calculating poker hand odds and probabilities.
     This service provides endpoints for calculating winning probabilities for different poker hands
     and analyzing hand type distributions.
-    
+
     ## Features
-    
+
     - **Odds Calculation**: Calculate winning probabilities for given hole cards and community board
     - **Hand Type Analysis**: Analyze probability distributions for different poker hand types
     - **Multiple Calculation Modes**: Support for exhaustive, Monte Carlo, and auto calculation modes
     - **Health Monitoring**: Service health check endpoint
-    
+
     ## Getting Started
-    
+
     The API accepts poker cards in the format `valueSuit` where:
     - Values: `2-9`, `T` (Ten), `J` (Jack), `Q` (Queen), `K` (King), `A` (Ace)
     - Suits: `h` (hearts), `d` (diamonds), `c` (clubs), `s` (spades)
-    
+
     Example cards: `Ah` (Ace of hearts), `Td` (Ten of diamonds), `2c` (Two of clubs)
-    
+
     ## Authentication
-    
+
     This API does not require authentication at this time.
   version: 0.10.0
   license:
@@ -46,7 +46,7 @@ paths:
         Calculate winning probabilities for multiple players' hole cards with an optional community board.
         Supports different calculation modes: exhaustive (exact calculation), Monte Carlo (statistical simulation),
         and auto (automatically selects the best method based on input size).
-        
+
         The service validates all input card formats and ensures at least 2 players are provided.
         Each player must have exactly 2 hole cards, and the board can contain 0-5 community cards.
       operationId: calculateOdds
@@ -55,7 +55,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/OddsRequest'
+              $ref: "#/components/schemas/OddsRequest"
             examples:
               example1:
                 summary: Two players with no board cards
@@ -74,12 +74,12 @@ paths:
                     mode: "monteCarlo"
                     sampleSize: 50000
       responses:
-        '200':
+        "200":
           description: Successful odds calculation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OddsData'
+                $ref: "#/components/schemas/OddsData"
               examples:
                 success:
                   summary: Successful calculation
@@ -92,12 +92,12 @@ paths:
                       - holeCards: ["Qd", "Jd"]
                         winChance: 0.3
                         tieChance: 0.05
-        '400':
+        "400":
           description: Invalid input, or cards the library rejects (e.g. a card used twice)
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               examples:
                 invalidCards:
                   summary: Invalid card format
@@ -108,22 +108,22 @@ paths:
                 duplicateCards:
                   summary: A card is used twice
                   value: "Duplicates found in card list 'Ah,As,Ah,Kh'"
-        '429':
+        "429":
           description: All calculation slots are busy
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               examples:
                 tooManyRequests:
                   summary: Too many concurrent calculations
                   value: "Too many concurrent requests"
-        '500':
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               examples:
                 internalError:
                   summary: Unexpected error
@@ -147,7 +147,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PercentagesRequest'
+              $ref: "#/components/schemas/PercentagesRequest"
             examples:
               singlePlayer:
                 summary: One player on the flop
@@ -160,18 +160,18 @@ paths:
                   holes: [["Ah", "Kh"], ["Th", "9c"]]
                   board: ["Qh", "Jh", "2c"]
       responses:
-        '200':
+        "200":
           description: Successful calculation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PercentagesResponse'
-        '400':
+                $ref: "#/components/schemas/PercentagesResponse"
+        "400":
           description: Invalid input, or cards the library rejects (e.g. a card used twice)
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               examples:
                 missingCard:
                   summary: A player without two hole cards
@@ -179,22 +179,22 @@ paths:
                 duplicateCards:
                   summary: A card is used twice
                   value: "Duplicates found in card list 'Ah,Kh,Ah,9c'"
-        '429':
+        "429":
           description: All calculation slots are busy
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               examples:
                 tooManyRequests:
                   summary: Too many concurrent calculations
                   value: "Too many concurrent requests"
-        '500':
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               examples:
                 internalError:
                   summary: Unexpected error
@@ -210,12 +210,12 @@ paths:
         Returns a simple status indicating whether the service is running properly.
       operationId: healthCheck
       responses:
-        '200':
+        "200":
           description: Service is healthy
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HealthResponse'
+                $ref: "#/components/schemas/HealthResponse"
               examples:
                 healthy:
                   summary: Healthy service
@@ -276,7 +276,7 @@ components:
           example:
             mode: "monteCarlo"
             sampleSize: 50000
-    
+
     OddsPlayerData:
       type: object
       required:
@@ -311,7 +311,7 @@ components:
           maximum: 1
           description: 95% margin of error of winChance (Monte Carlo results only)
           example: 0.02
-    
+
     OddsData:
       type: object
       required:
@@ -321,8 +321,8 @@ components:
           type: array
           description: Array of players with their hole cards and odds
           items:
-            $ref: '#/components/schemas/OddsPlayerData'
-    
+            $ref: "#/components/schemas/OddsPlayerData"
+
     # Percentages calculation schemas
     PercentagesRequest:
       type: object
@@ -352,7 +352,7 @@ components:
             description: A poker card in valueSuit format
           maxItems: 5
           example: ["2h", "5d", "9c"]
-    
+
     HandTypeData:
       type: object
       required:
@@ -371,7 +371,7 @@ components:
           maximum: 1
           description: Share of all possible boards (0-1)
           example: 0.123456
-    
+
     PercentagesData:
       type: object
       required:
@@ -387,26 +387,26 @@ components:
         - royalFlush
       properties:
         highCard:
-          $ref: '#/components/schemas/HandTypeData'
+          $ref: "#/components/schemas/HandTypeData"
         pair:
-          $ref: '#/components/schemas/HandTypeData'
+          $ref: "#/components/schemas/HandTypeData"
         twoPair:
-          $ref: '#/components/schemas/HandTypeData'
+          $ref: "#/components/schemas/HandTypeData"
         threeOfAKind:
-          $ref: '#/components/schemas/HandTypeData'
+          $ref: "#/components/schemas/HandTypeData"
         straight:
-          $ref: '#/components/schemas/HandTypeData'
+          $ref: "#/components/schemas/HandTypeData"
         flush:
-          $ref: '#/components/schemas/HandTypeData'
+          $ref: "#/components/schemas/HandTypeData"
         fullHouse:
-          $ref: '#/components/schemas/HandTypeData'
+          $ref: "#/components/schemas/HandTypeData"
         fourOfAKind:
-          $ref: '#/components/schemas/HandTypeData'
+          $ref: "#/components/schemas/HandTypeData"
         straightFlush:
-          $ref: '#/components/schemas/HandTypeData'
+          $ref: "#/components/schemas/HandTypeData"
         royalFlush:
-          $ref: '#/components/schemas/HandTypeData'
-    
+          $ref: "#/components/schemas/HandTypeData"
+
     PercentagesPlayerData:
       type: object
       required:
@@ -420,7 +420,7 @@ components:
             description: The player's hole cards
           example: ["Ah", "Kh"]
         percentages:
-          $ref: '#/components/schemas/PercentagesData'
+          $ref: "#/components/schemas/PercentagesData"
 
     PercentagesResponse:
       type: object
@@ -431,13 +431,13 @@ components:
           type: array
           description: One entry per player, in the order of holes
           items:
-            $ref: '#/components/schemas/PercentagesPlayerData'
+            $ref: "#/components/schemas/PercentagesPlayerData"
 
     # Error response schema
     ErrorResponse:
       type: string
       description: Error message describing what went wrong
-    
+
     # Health check schema
     HealthResponse:
       type: object
