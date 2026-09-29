@@ -107,7 +107,9 @@ const percentages = (
   let boards = 0;
   forEachBoard(state, deckWithoutKnownBoard, 5 - board.length, () => {
     // the hand type is the rank's leading hex digit
-    counts[(rankOf(state) >> 20) - 1]++;
+    const { suitMasks } = state;
+    const rank = rankOf(suitMasks[0], suitMasks[1], suitMasks[2], suitMasks[3]);
+    counts[(rank >> 20) - 1]++;
     boards++;
   });
 

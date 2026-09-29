@@ -70,7 +70,12 @@ const createBoardTally = (
       for (let i = 0; i < suits.length; i++) {
         addCard(state, suits[i], values[i]);
       }
-      const rank = rankOf(state);
+      const rank = rankOf(
+        state.suitMasks[0],
+        state.suitMasks[1],
+        state.suitMasks[2],
+        state.suitMasks[3]
+      );
       for (let i = 0; i < suits.length; i++) {
         removeCard(state, suits[i], values[i]);
       }
