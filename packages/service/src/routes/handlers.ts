@@ -1,5 +1,7 @@
 import type { operations } from "../types/api";
-import { runInWorker } from "../odds/runInWorker";
+import calculateOdds from "../odds/calculateOdds";
+import calculatePercentages from "../odds/calculatePercentages";
+import { CalculationError } from "../odds/CalculationError";
 
 type JsonBody<Operation> = Operation extends {
   requestBody: { content: { "application/json": infer Body } };
@@ -28,8 +30,25 @@ export type Handlers = {
   [OperationId in keyof operations]: Handler<operations[OperationId]>;
 };
 
+/**
+ * Runs a calculation directly: with the request limits in openapi.yaml, even
+ * the largest takes a fraction of a second. Whatever the library throws for a
+ * validated request, e.g. a card used twice, is the client's error.
+ */
+const calculate =
+  <Request, Result>(run: (request: Request) => Result) =>
+  (request: Request): Result => {
+    try {
+      return run(request);
+    } catch (error) {
+      throw new CalculationError(
+        error instanceof Error ? error.message : String(error)
+      );
+    }
+  };
+
 export const handlers: Handlers = {
-  calculateOdds: (body) => runInWorker("odds", body),
-  calculatePercentages: (body) => runInWorker("percentages", body),
+  calculateOdds: calculate(calculateOdds),
+  calculatePercentages: calculate(calculatePercentages),
   healthCheck: () => ({ status: "healthy" }),
 };

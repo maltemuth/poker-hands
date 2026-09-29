@@ -1,14 +1,16 @@
 import request from "supertest";
 import { PokerHandsService } from "../../src/index";
-import { runInWorker } from "../../src/odds/runInWorker";
+import calculateOdds from "../../src/odds/calculateOdds";
 
 // keep validation real, but control when a calculation "finishes"
-jest.mock("../../src/odds/runInWorker", () => ({
-  ...jest.requireActual("../../src/odds/runInWorker"),
-  runInWorker: jest.fn(),
+jest.mock("../../src/odds/calculateOdds", () => ({
+  __esModule: true,
+  default: jest.fn(),
 }));
 
-const mockedCalculate = runInWorker as jest.MockedFunction<typeof runInWorker>;
+// the service calculates synchronously; the mock returns promises instead,
+// so that the test can hold calculations open and fill the slots
+const mockedCalculate = calculateOdds as unknown as jest.Mock;
 
 const odds = {
   players: [

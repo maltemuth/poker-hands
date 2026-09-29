@@ -2,7 +2,7 @@ import express from "express";
 import { spec } from "../spec";
 import { sendError } from "../utils";
 import { holdSlotUntil } from "../middleware/rateLimiter";
-import { CalculationError } from "../odds/runInWorker";
+import { CalculationError } from "../odds/CalculationError";
 import { validateBody } from "../validation/requestValidator";
 import { handlers, Handlers } from "./handlers";
 

@@ -2,7 +2,7 @@ import express from "express";
 import request from "supertest";
 import { setupRoutes } from "../../../src/routes";
 import { handlers, Handlers } from "../../../src/routes/handlers";
-import { CalculationError } from "../../../src/odds/runInWorker";
+import { CalculationError } from "../../../src/odds/CalculationError";
 
 // the calculations are replaced; routing, validation and responses are real
 const calculateOdds = jest.fn() as jest.MockedFunction<
@@ -73,12 +73,12 @@ describe("Routes", () => {
     });
 
     it("should return 500 when the calculation fails otherwise", async () => {
-      calculateOdds.mockRejectedValue(new Error("Worker crashed"));
+      calculateOdds.mockRejectedValue(new Error("Something went wrong"));
 
       const response = await request(app).post("/api/odds").send(validInput);
 
       expect(response.status).toBe(500);
-      expect(response.body).toBe("Worker crashed");
+      expect(response.body).toBe("Something went wrong");
     });
 
     it("should return 400 for a request without a body", async () => {
