@@ -54,5 +54,8 @@
     "npm": ">=10.8.2"
   },
   "author": "Malte Muth",
-  "license": "MIT"
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  }
 }
