@@ -6,6 +6,8 @@
  *   npm run bench -- --quick   without exhaustive pre-flop
  *
  * Each case is measured in three rounds, and the two fastest are averaged.
+ * Times are reported as wall-clock time and as CPU time; CPU time leaves out
+ * the time other programs took, so it varies less on a busy machine.
  * Besides the time, each case reports its memory use: how much it allocates
  * per run, how many garbage collections run per run and how long they take,
  * and how far the heap grew at most. These come from V8's GC profiler.
@@ -58,8 +60,10 @@ const randomDeals = (count: number, size: number, seed: number): Card[][] => {
 };
 
 interface Measurement {
-  /** mean duration of one run */
+  /** mean wall-clock time of one run */
   ms: number;
+  /** mean CPU time of one run: without the time other programs took */
+  cpuMs: number;
   /** bytes allocated per run */
   allocated: number;
   /** garbage collections per run */
@@ -81,6 +85,7 @@ const measureRound = (run: () => void, minTime: number): Measurement => {
   profiler.start();
 
   let runs = 0;
+  const startCpu = process.cpuUsage();
   const start = performance.now();
   let elapsed;
   do {
@@ -88,6 +93,7 @@ const measureRound = (run: () => void, minTime: number): Measurement => {
     runs++;
     elapsed = performance.now() - start;
   } while (elapsed < minTime);
+  const { user, system } = process.cpuUsage(startCpu);
 
   const endHeap = heapUsed();
   const statistics = profiler.stop()?.statistics ?? [];
@@ -107,6 +113,7 @@ const measureRound = (run: () => void, minTime: number): Measurement => {
 
   return {
     ms: elapsed / runs,
+    cpuMs: (user + system) / 1000 / runs,
     allocated: allocated / runs,
     gcs: statistics.length / runs,
     gcMs: gcMicroseconds / 1000 / runs,
@@ -117,7 +124,9 @@ const measureRound = (run: () => void, minTime: number): Measurement => {
 /**
  * Runs `run` once to warm up (unless it runs long anyway), then measures it
  * in three rounds of at least `minTime` ms each and averages the two fastest
- * rounds, so that a round disturbed by other load on the machine is left out
+ * rounds, so that a round disturbed by other load on the machine is left out.
+ * Wall-clock and CPU time each come from their own two fastest rounds, the
+ * memory use from the two fastest by wall-clock time.
  */
 const measure = (
   run: () => void,
@@ -126,13 +135,14 @@ const measure = (
 ): Measurement => {
   if (warmUp) run();
 
-  const [first, second] = [0, 1, 2]
-    .map(() => measureRound(run, minTime))
-    .sort((a, b) => a.ms - b.ms);
+  const rounds = [0, 1, 2].map(() => measureRound(run, minTime));
+  const [first, second] = [...rounds].sort((a, b) => a.ms - b.ms);
+  const [firstCpu, secondCpu] = [...rounds].sort((a, b) => a.cpuMs - b.cpuMs);
   const average = (key: keyof Measurement) => (first[key] + second[key]) / 2;
 
   return {
     ms: average("ms"),
+    cpuMs: (firstCpu.cpuMs + secondCpu.cpuMs) / 2,
     allocated: average("allocated"),
     gcs: average("gcs"),
     gcMs: average("gcMs"),
@@ -150,7 +160,7 @@ const size = (bytes: number) =>
 
 const report = (
   name: string,
-  { ms, allocated, gcs, gcMs, peakGrowth }: Measurement,
+  { ms, cpuMs, allocated, gcs, gcMs, peakGrowth }: Measurement,
   rate: string,
   result: string
 ) =>
@@ -158,6 +168,7 @@ const report = (
     [
       name.padEnd(50),
       `${format(ms)} ms`.padStart(14),
+      `${format(cpuMs)} ms`.padStart(12),
       rate.padStart(22),
       size(allocated).padStart(12),
       gcs.toFixed(2).padStart(9),
@@ -179,8 +190,9 @@ console.log(`Node ${process.version}${quick ? ", --quick" : ""}`);
 console.log(
   [
     "case".padEnd(50),
-    "per run".padStart(14),
-    "rate".padStart(22),
+    "wall/run".padStart(14),
+    "CPU/run".padStart(12),
+    "rate (CPU)".padStart(22),
     "alloc/run".padStart(12),
     "GCs/run".padStart(9),
     "GC/run".padStart(11),
@@ -205,7 +217,7 @@ console.log(
   report(
     "getBestHand, 100k random 7-card hands",
     measured,
-    `${format((hands.length / measured.ms) * 1000)} hands/s`,
+    `${format((hands.length / measured.cpuMs) * 1000)} hands/s`,
     `${counts.Pair} pairs, ${counts.Flush} flushes`
   );
 }
@@ -225,7 +237,7 @@ console.log(
   report(
     "evaluate, 100k random 7-card hands",
     measured,
-    `${format((hands.length / measured.ms) * 1000)} hands/s`,
+    `${format((hands.length / measured.cpuMs) * 1000)} hands/s`,
     `${counts.Pair} pairs, ${counts.Flush} flushes`
   );
 }
@@ -246,7 +258,7 @@ console.log(
   report(
     "winningHoles, 100k heads-up showdowns",
     measured,
-    `${format((showdowns.length / measured.ms) * 1000)} showdowns/s`,
+    `${format((showdowns.length / measured.cpuMs) * 1000)} showdowns/s`,
     `player 1 wins ${wins}`
   );
 }
@@ -309,7 +321,7 @@ for (const [name, holes, board, enabled] of oddsCases) {
   report(
     `${name} (${format(boards)} boards)`,
     measured,
-    `${format((boards / measured.ms) * 1000)} boards/s`,
+    `${format((boards / measured.cpuMs) * 1000)} boards/s`,
     chances(odds)
   );
 }
@@ -323,7 +335,7 @@ for (const [name, holes, board, enabled] of oddsCases) {
   report(
     "monte carlo, heads-up, pre-flop, 10k",
     measured,
-    `${format((10_000 / measured.ms) * 1000)} boards/s`,
+    `${format((10_000 / measured.cpuMs) * 1000)} boards/s`,
     ""
   );
 }
@@ -349,7 +361,7 @@ for (const [name, hole, board, enabled] of percentagesCases) {
   report(
     `${name} (${format(boards)} boards)`,
     measured,
-    `${format((boards / measured.ms) * 1000)} boards/s`,
+    `${format((boards / measured.cpuMs) * 1000)} boards/s`,
     result ? `${result.pair.count} pairs, ${result.flush.count} flushes` : ""
   );
 }
