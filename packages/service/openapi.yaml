@@ -265,7 +265,7 @@ components:
             threshold:
               type: integer
               minimum: 1
-              description: "Threshold for auto mode (default: 10000)"
+              description: "Threshold for auto mode (default: 2200000)"
               example: 50000
             sampleSize:
               type: integer

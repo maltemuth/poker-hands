@@ -116,7 +116,7 @@ Calculate winning odds for given hole cards and board.
 - `board` (optional): up to five community cards
 - `options` (optional): `mode` is `auto` (default), `exhaustive` or
   `monteCarlo`; `threshold` applies to `auto` mode (the maximum number of
-  boards to calculate exactly, default 10000), `sampleSize` to `monteCarlo`
+  boards to calculate exactly, default 2200000), `sampleSize` to `monteCarlo`
   mode (default 10000, at most 1,000,000); both are integers of at least 1
 
 **Response:**

@@ -168,7 +168,7 @@ export const createOddsCommand = () =>
     )
     .option(
       "-t, --threshold <threshold>",
-      "Threshold for auto mode (default: 10000)",
+      "Threshold for auto mode (default: 2200000)",
       parseInt
     )
     .option(

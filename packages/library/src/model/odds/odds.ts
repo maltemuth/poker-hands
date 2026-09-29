@@ -36,6 +36,13 @@ const calculateBoardCombinations = (
   return combinationCount(deckWithoutKnownBoard.length, cardsNeeded);
 };
 
+/**
+ * Default for the "auto" mode threshold: above the most boards any spot can
+ * have (a single hole pre-flop, C(50, 5) = 2,118,760), so every calculation
+ * is exact unless a lower threshold is given
+ */
+const defaultThreshold = 2_200_000;
+
 export type OddsOptions = (
   | {
       mode: "auto";
@@ -60,6 +67,8 @@ export type OddsOptions = (
  * @param options - Configuration options for odds calculation:
  *   - mode: Calculation method ("auto", "exhaustive", or "monteCarlo")
  *   - threshold: For "auto" mode, maximum combinations for exhaustive calculation
+ *     (default: 2,200,000, so every spot is calculated exactly); above it, Monte
+ *     Carlo runs with `threshold` samples
  *   - sampleSize: For "monteCarlo" mode, number of simulations to run
  *   - progress: Optional callback function to report calculation progress
  * @returns Array of HoleOdds objects, one for each player's hole cards,
@@ -97,13 +106,13 @@ export type OddsOptions = (
 const odds = (
   holes: Hole[],
   board: Card[] = [],
-  options: OddsOptions = { mode: "auto", threshold: 10000 }
+  options: OddsOptions = { mode: "auto" }
 ): HoleOdds[] => {
   if (holes.length === 0) {
     throw new Error("Cannot calculate odds without any holes.");
   }
   if (options.mode === "auto") {
-    const threshold = options.threshold || 10000;
+    const threshold = options.threshold || defaultThreshold;
     // Calculate the number of combinations the exhaustive algorithm would need to check
     const combinationCount = calculateBoardCombinations(holes, board);
 

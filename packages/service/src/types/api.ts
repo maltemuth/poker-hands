@@ -118,7 +118,7 @@ export interface components {
                  */
                 mode?: "auto" | "exhaustive" | "monteCarlo";
                 /**
-                 * @description Threshold for auto mode (default: 10000)
+                 * @description Threshold for auto mode (default: 2200000)
                  * @example 50000
                  */
                 threshold?: number;

@@ -563,8 +563,12 @@ try {
 
 The library automatically selects the best algorithm based on the number of combinations:
 
-- **Exhaustive**: Used when combinations ≤ 10,000 (exact results)
-- **Monte Carlo**: Used when combinations > 10,000 (statistical approximation)
+- **Exhaustive**: Used when combinations ≤ `threshold` (exact results)
+- **Monte Carlo**: Used when combinations > `threshold`, with `threshold` samples (statistical approximation)
+
+The default threshold of 2,200,000 is above the most boards any spot can have
+(2,118,760 for a single hole pre-flop), so by default every calculation is
+exact. Pass a lower threshold to trade precision for speed.
 
 You can manually override this behavior:
 

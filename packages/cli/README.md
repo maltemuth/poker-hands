@@ -93,7 +93,7 @@ The percentages command returns a JSON object with the following structure:
 - `<holes...>`: One argument per player with their hole cards (e.g., `AhKh QdJd`)
 - `--board <board>`: Community board cards as one argument (e.g., `2h5d9c` or `"2h 5d 9c"`)
 - `-m, --mode <mode>`: Calculation mode (auto, exhaustive, monteCarlo)
-- `-t, --threshold <threshold>`: Threshold for auto mode (default: 10000)
+- `-t, --threshold <threshold>`: Threshold for auto mode (default: 2200000)
 - `-s, --sample-size <sampleSize>`: Sample size for monte-carlo mode (default: 10000)
 - `--progress`: Show progress during calculation
 - `--json`: Output results in JSON format

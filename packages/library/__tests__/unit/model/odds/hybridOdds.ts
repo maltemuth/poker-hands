@@ -2,6 +2,7 @@ import odds, {
   calculateBoardCombinations,
 } from "../../../../src/model/odds/odds";
 import cards from "../../../../src/model/card/cards";
+import exhaustive from "../../../../src/model/odds/exhaustive";
 
 describe("odds", () => {
   it("should use exhaustive algorithm when combinations are below threshold", () => {
@@ -26,6 +27,15 @@ describe("odds", () => {
     const total = totalWinChance + totalTieChance;
 
     expect(total).toBeCloseTo(1.0, 2); // Allow for small floating point errors
+  });
+
+  it.each([
+    // C(48, 5) = 1,712,304 boards
+    ["heads-up", [cards("As", "Ah"), cards("Ks", "Kh")]],
+    // C(50, 5) = 2,118,760 boards, the most any spot can have
+    ["a single hole", [cards("As", "Ah")]],
+  ])("calculates pre-flop exactly by default, %s", (_, holes) => {
+    expect(odds(holes)).toEqual(exhaustive(holes));
   });
 
   it("should use Monte Carlo algorithm when combinations exceed threshold", () => {
