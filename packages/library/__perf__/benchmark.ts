@@ -5,6 +5,7 @@
  *   npm run bench              all cases
  *   npm run bench -- --quick   without exhaustive pre-flop
  *
+ * Each case is measured in three rounds, and the two fastest are averaged.
  * Besides the time, each case reports its memory use: how much it allocates
  * per run, how many garbage collections run per run and how long they take,
  * and how far the heap grew at most. These come from V8's GC profiler.
@@ -70,17 +71,10 @@ interface Measurement {
 }
 
 /**
- * Runs `run` once to warm up (unless it runs long anyway), then repeatedly
- * for at least `minTime` ms, but at least once, and measures the mean
- * duration and memory use of one run
+ * Runs `run` repeatedly for at least `minTime` ms, but at least once, and
+ * measures the mean duration and memory use of one run
  */
-const measure = (
-  run: () => void,
-  minTime: number,
-  warmUp = true
-): Measurement => {
-  if (warmUp) run();
-
+const measureRound = (run: () => void, minTime: number): Measurement => {
   const heapUsed = () => process.memoryUsage().heapUsed;
   const profiler = new GCProfiler();
   const startHeap = heapUsed();
@@ -117,6 +111,32 @@ const measure = (
     gcs: statistics.length / runs,
     gcMs: gcMicroseconds / 1000 / runs,
     peakGrowth: peakHeap - startHeap,
+  };
+};
+
+/**
+ * Runs `run` once to warm up (unless it runs long anyway), then measures it
+ * in three rounds of at least `minTime` ms each and averages the two fastest
+ * rounds, so that a round disturbed by other load on the machine is left out
+ */
+const measure = (
+  run: () => void,
+  minTime: number,
+  warmUp = true
+): Measurement => {
+  if (warmUp) run();
+
+  const [first, second] = [0, 1, 2]
+    .map(() => measureRound(run, minTime))
+    .sort((a, b) => a.ms - b.ms);
+  const average = (key: keyof Measurement) => (first[key] + second[key]) / 2;
+
+  return {
+    ms: average("ms"),
+    allocated: average("allocated"),
+    gcs: average("gcs"),
+    gcMs: average("gcMs"),
+    peakGrowth: Math.max(first.peakGrowth, second.peakGrowth),
   };
 };
 
@@ -175,7 +195,7 @@ console.log(
   const counts: Record<string, number> = {};
   const measured = measure(() => {
     for (const hand of hands) getBestHand(hand);
-  }, 3000);
+  }, 1000);
   for (const hand of hands) {
     const best = getBestHand(hand);
     if (!best) continue;
@@ -196,7 +216,7 @@ console.log(
   const counts: Record<string, number> = {};
   const measured = measure(() => {
     for (const hand of hands) evaluate(hand);
-  }, 3000);
+  }, 1000);
   for (const hand of hands) {
     // the hand type is the rank's leading hex digit
     const type = HandType[evaluate(hand) >> 20];
@@ -219,7 +239,7 @@ console.log(
   ]);
   const measured = measure(() => {
     for (const [holes, board] of showdowns) winningHoles(holes, board);
-  }, 3000);
+  }, 1000);
   const wins = showdowns.filter(
     ([holes, board]) => winningHoles(holes, board).join() === "0"
   ).length;
@@ -271,7 +291,7 @@ for (const [name, holes, board, enabled] of oddsCases) {
     () => {
       odds = exhaustive(holes, board);
     },
-    long ? 0 : 3000,
+    long ? 0 : 1000,
     !long
   );
   report(
@@ -286,7 +306,7 @@ for (const [name, holes, board, enabled] of oddsCases) {
   // Monte Carlo draws with Math.random, so its result varies between runs
   const measured = measure(
     () => monteCarloOdds([cards("Ah", "As"), cards("Td", "Tc")], [], 10_000),
-    3000
+    1000
   );
   report(
     "monte carlo, heads-up, pre-flop, 10k",
@@ -311,7 +331,7 @@ for (const [name, hole, board, enabled] of percentagesCases) {
     () => {
       result = percentages(hole, board);
     },
-    long ? 0 : 3000,
+    long ? 0 : 1000,
     !long
   );
   report(
