@@ -3,7 +3,7 @@ import getBestHand from "../../../../src/model/hand/getBestHand";
 import cards from "../../../../src/model/card/cards";
 import { HandType } from "../../../../src/model/hand/Hand";
 import hasEqualValue from "../../../../src/model/hand/hasEqualValue";
-import create from "../../../../src/model/deck/create";
+import { randomCards, seededRandom } from "../../../helpers/randomCards";
 
 describe("compare hands", () => {
   test("a pair is better than a high card", () => {
@@ -334,17 +334,9 @@ describe("compare hands consistently", () => {
   });
 
   test("exactly one of a > b, b > a or a == b holds for random 7-card hands", () => {
-    const deck = create();
-    // deterministic LCG so failures are reproducible
-    let seed = 42;
-    const random = () => {
-      seed = (seed * 1103515245 + 12345) % 2147483648;
-      return seed / 2147483648;
-    };
-    const draw = () => {
-      const pool = [...deck];
-      return Array.from({ length: 7 }, () => pool.splice(Math.floor(random() * pool.length), 1)[0]);
-    };
+    // seeded so failures are reproducible
+    const random = seededRandom(42);
+    const draw = () => randomCards(random, 7);
 
     for (let i = 0; i < 5000; i++) {
       const a = getBestHand(draw())!;

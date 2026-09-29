@@ -20,7 +20,6 @@ import { GCProfiler } from "node:v8";
 import { Card } from "../src/model/card/Card";
 import cards from "../src/model/card/cards";
 import combinationCount from "../src/model/combinatorics/combinationCount";
-import create from "../src/model/deck/create";
 import evaluate from "../src/model/hand/evaluate";
 import getBestHand from "../src/model/hand/getBestHand";
 import { HandType } from "../src/model/hand/Hand";
@@ -29,34 +28,16 @@ import monteCarloOdds from "../src/model/odds/monteCarloOdds";
 import percentages, { HandPercentages } from "../src/model/odds/percentages";
 import winningHoles from "../src/model/odds/winningHoles";
 import { Hole, HoleOdds } from "../src/model/odds/HoleOdds";
+import { randomCards, seededRandom } from "../__tests__/helpers/randomCards";
 
 const quick = process.argv.includes("--quick");
-
-/**
- * mulberry32: a small seeded generator, so runs are reproducible
- */
-const seededRandom = (seed: number) => () => {
-  seed = (seed + 0x6d2b79f5) | 0;
-  let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
-  t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-  return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-};
 
 /**
  * `count` deals of `size` distinct cards each
  */
 const randomDeals = (count: number, size: number, seed: number): Card[][] => {
   const random = seededRandom(seed);
-  const deck = create();
-  return Array.from({ length: count }, () => {
-    const cards = [...deck];
-    // partial Fisher-Yates: the first `size` cards are a random draw
-    for (let i = 0; i < size; i++) {
-      const j = i + Math.floor(random() * (cards.length - i));
-      [cards[i], cards[j]] = [cards[j], cards[i]];
-    }
-    return cards.slice(0, size);
-  });
+  return Array.from({ length: count }, () => randomCards(random, size));
 };
 
 interface Measurement {
