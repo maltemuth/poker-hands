@@ -21,7 +21,7 @@ const withProfiling = async (F: () => void, profileName: string) => {
   //   Click Open dedicated DevTools for Node
   //   Select the profiler tab
   //   Load your file
-  writeFileSync(join(__dirname, `${id}.cpuprofile`), JSON.stringify(profile));
+  writeFileSync(join(import.meta.dirname, `${id}.cpuprofile`), JSON.stringify(profile));
 };
 
 export default withProfiling;
