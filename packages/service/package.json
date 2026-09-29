@@ -1,6 +1,6 @@
 {
   "name": "@malte.muth/poker-hands-service",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "private": false,
   "description": "A HTTP API service for Texas Hold'em poker odds calculation. Built on Express.js with TypeScript.",
   "main": "dist/index.js",
@@ -40,7 +40,7 @@
     "lint:spec": "redocly lint openapi.yaml"
   },
   "dependencies": {
-    "@malte.muth/poker-hands": "^0.9.0",
+    "@malte.muth/poker-hands": "^0.10.0",
     "ajv": "^8.20.0",
     "commander": "^15.0.0",
     "cors": "^2.8.6",
