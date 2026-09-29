@@ -26,66 +26,6 @@ Calculate hand type percentages for given hole cards and an optional board:
 poker-hands percentages AhKh QdJdTs
 ```
 
-## JSON Output
-
-The CLI supports JSON output for interoperability with other tools:
-
-```bash
-poker-hands odds AhKh QdJd --board Ts9h8c --json
-poker-hands percentages AhKh QdJdTs --json
-```
-
-## JSON Schemas
-
-For programmatic use, JSON schemas are provided to validate the output format:
-
-### Odds Command Schema
-
-The odds command returns a JSON object with the following structure:
-
-```json
-{
-  "success": true,
-  "command": "odds",
-  "data": {
-    "players": [
-      {
-        "holeCards": ["Ah", "Kh"],
-        "winChance": 0.65,
-        "tieChance": 0.05,
-        "winChanceError": 0.02
-      }
-    ]
-  }
-}
-```
-
-**Schema Location:** [`schemas/odds.json`](./schemas/odds.json)
-
-### Percentages Command Schema
-
-The percentages command returns a JSON object with the following structure:
-
-```json
-{
-  "success": true,
-  "command": "percentages",
-  "data": {
-    "highCard": {
-      "count": 123456,
-      "percentage": 0.123456
-    },
-    "pair": {
-      "count": 98765,
-      "percentage": 0.098765
-    }
-    // ... other hand types
-  }
-}
-```
-
-**Schema Location:** [`schemas/percentages.json`](./schemas/percentages.json)
-
 ## Command Options
 
 ### Odds Command
@@ -93,24 +33,19 @@ The percentages command returns a JSON object with the following structure:
 - `<holes...>`: One argument per player with their hole cards (e.g., `AhKh QdJd`)
 - `--board <board>`: Community board cards as one argument (e.g., `2h5d9c` or `"2h 5d 9c"`)
 - `--progress`: Show progress during calculation
-- `--json`: Output results in JSON format
 
 ### Percentages Command
 
 - `<hole>`: Hole cards (e.g., `AhKh`)
 - `[board...]`: Community board cards, as one or several arguments (e.g., `QdJdTs` or `Qd Jd Ts`)
-- `--json`: Output results in JSON format
 
 ## Error Handling
 
-Both commands return error information in JSON format when the `--json` flag is used:
+Invalid input, such as an unknown card or a card used twice, prints `Error:` and the reason to stderr, and the command exits with status 1:
 
-```json
-{
-  "success": false,
-  "command": "odds",
-  "error": "Invalid card format: 'invalid'"
-}
+```bash
+$ poker-hands percentages AhAh
+Error: Duplicates found in card list 'Ah,Ah'
 ```
 
 ## Card Format
@@ -134,13 +69,6 @@ poker-hands odds "AhKh" "QdJd"
 
 # With community cards
 poker-hands odds "AhKh" "QdJd" --board "2s3s4s"
-```
-
-### JSON Output for Integration
-
-```bash
-# Get odds in JSON format for processing
-poker-hands odds AhKh QdJd --board Ts9h8c --json | jq '.data.players[0].winChance'
 ```
 
 ### Percentages Calculation

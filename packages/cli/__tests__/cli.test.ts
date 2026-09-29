@@ -1,7 +1,6 @@
 import { readFileSync } from "fs";
 import { join } from "path";
 import { createProgram } from "../src/cli.js";
-import { OddsData, PercentagesData } from "../src/types/index.js";
 
 /** Runs the CLI in-process and returns everything written to stdout. */
 const run = (...args: string[]): string => {
@@ -35,79 +34,56 @@ describe("poker-hands CLI", () => {
   });
 
   describe("odds", () => {
-    it("prints JSON odds for each player", () => {
-      const result = JSON.parse(
-        run("odds", "AhAs", "KdKh", "--board", "2h5d9c", "--json")
-      );
-
-      expect(result.success).toBe(true);
-      expect(result.command).toBe("odds");
-      const data: OddsData = result.data;
-      expect(data.players.map((player) => player.holeCards)).toEqual([
-        ["Ah", "As"],
-        ["Kd", "Kh"],
-      ]);
-      expect(data.players[0].winChance).toBeGreaterThan(
-        data.players[1].winChance
+    it("prints each player's win chance and the tie chance", () => {
+      expect(run("odds", "AhAs", "KdKc")).toBe(
+        [
+          "Winning Odds:",
+          "Player 1: 81.06%",
+          "Player 2: 18.55%",
+          "Tie: 0.38%",
+          "Total: 100.00%",
+        ].join("\n")
       );
     });
 
     it("resolves a known river exactly", () => {
-      const result = JSON.parse(
-        run("odds", "AsKd", "Ah9c", "--board", "8c7d5h3s2c", "--json")
-      );
+      const output = run("odds", "AsKd", "Ah9c", "--board", "8c7d5h3s2c");
 
-      expect(result.data.players[0].winChance).toBe(1);
-      expect(result.data.players[1].winChance).toBe(0);
-    });
-
-    it("calculates pre-flop exactly", () => {
-      const result = JSON.parse(run("odds", "AhAs", "KdKh", "--json"));
-
-      expect(Object.keys(result.data.players[0])).toEqual([
-        "holeCards",
-        "winChance",
-        "tieChance",
-      ]);
-      // 1,712,304 boards: every chance is a whole number of them
-      const boards = result.data.players[0].winChance * 1712304;
-      expect(Math.abs(boards - Math.round(boards))).toBeLessThan(1e-6);
+      expect(output).toContain("Player 1: 100.00%");
+      expect(output).toContain("Player 2: 0.00%");
     });
 
     it("accepts a space-separated board", () => {
-      const result = JSON.parse(
-        run("odds", "AsKd", "Ah9c", "--board", "8c 7d 5h 3s 2c", "--json")
-      );
+      const output = run("odds", "AsKd", "Ah9c", "--board", "8c 7d 5h 3s 2c");
 
-      expect(result.data.players[0].winChance).toBe(1);
-    });
-
-    it("reports invalid input as a JSON error", () => {
-      const result = JSON.parse(run("odds", "AhAs", "AhKh", "--json"));
-
-      expect(result.success).toBe(false);
-      expect(result.error).toEqual(expect.any(String));
+      expect(output).toContain("Player 1: 100.00%");
     });
   });
 
   describe("percentages", () => {
-    it("accepts the board as separate arguments", () => {
-      const result = JSON.parse(
-        run("percentages", "AhKh", "QhJhTh", "2c", "3d", "--json")
+    it("prints the percentage of every hand type", () => {
+      expect(run("percentages", "AhKh", "QhJh2c")).toBe(
+        [
+          "Hand Type Percentages:",
+          "High Card: 17.48%",
+          "Pair: 29.14%",
+          "Two Pair: 7.22%",
+          "Three of a Kind: 1.20%",
+          "Straight: 9.99%",
+          "Flush: 30.71%",
+          "Full House: 0.00%",
+          "Four of a Kind: 0.00%",
+          "Straight Flush: 0.00%",
+          "Royal Flush: 4.26%",
+          "Total: 100.00%",
+        ].join("\n")
       );
-
-      expect(result.success).toBe(true);
-      expect(result.data.royalFlush.percentage).toBe(1);
     });
 
-    it("prints JSON hand type percentages", () => {
-      const result = JSON.parse(
-        run("percentages", "AhKh", "QhJhTh2c3d", "--json")
+    it("accepts the board as separate arguments", () => {
+      expect(run("percentages", "AhKh", "QhJhTh", "2c", "3d")).toContain(
+        "Royal Flush: 100.00%"
       );
-
-      expect(result.success).toBe(true);
-      const data: PercentagesData = result.data;
-      expect(data.royalFlush.percentage).toBe(1);
     });
   });
 });

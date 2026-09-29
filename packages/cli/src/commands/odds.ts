@@ -49,7 +49,6 @@ function calculateOdds(
   options: {
     board?: string;
     progress?: boolean;
-    json?: boolean;
   }
 ) {
   // Parse hole cards for all players
@@ -61,9 +60,7 @@ function calculateOdds(
   // Validate inputs
   validateHoleCards(holeCardsList);
 
-  const oddsOptions = buildOddsOptions({
-    progress: options.progress && !options.json, // Don't show progress if JSON is requested
-  });
+  const oddsOptions = buildOddsOptions({ progress: options.progress });
 
   // Calculate odds
   return odds(holeCardsList, boardCards, oddsOptions);
@@ -73,48 +70,12 @@ function displayOddsResult(
   oddsResult: HoleOdds[],
   options: {
     progress?: boolean;
-    json?: boolean;
   }
 ) {
   // Clean up progress display
-  handleProgressCleanup(options.progress && !options.json);
+  handleProgressCleanup(options.progress);
 
-  // Output results
-  if (options.json) {
-    console.log(
-      JSON.stringify(
-        outputFormatter.createJsonResponse(
-          true,
-          "odds",
-          outputFormatter.formatOddsJson(oddsResult)
-        )
-      )
-    );
-  } else {
-    console.log(outputFormatter.formatOdds(oddsResult));
-  }
-}
-
-function handleOddsError(
-  error: unknown,
-  options: {
-    json?: boolean;
-  }
-) {
-  if (options.json) {
-    console.log(
-      JSON.stringify(
-        outputFormatter.createJsonResponse(
-          false,
-          "odds",
-          undefined,
-          error instanceof Error ? error.message : "Unknown error occurred"
-        )
-      )
-    );
-  } else {
-    handleError(error);
-  }
+  console.log(outputFormatter.formatOdds(oddsResult));
 }
 
 export const createOddsCommand = () =>
@@ -124,21 +85,19 @@ export const createOddsCommand = () =>
     .argument("<holes...>", "Player hole cards (e.g., AhAs KdKh QcQd)")
     .option("--board <board>", "Community board cards (e.g., 2h5d9c)", "")
     .option("--progress", "Show progress during calculation")
-    .option("--json", "Output results in JSON format")
     .action(
       (
         holes: string[],
         options: {
           board?: string;
           progress?: boolean;
-          json?: boolean;
         }
       ) => {
         try {
           const oddsResult = calculateOdds(holes, options);
           displayOddsResult(oddsResult, options);
         } catch (error) {
-          handleOddsError(error, options);
+          handleError(error);
         }
       }
     );

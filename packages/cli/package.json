@@ -21,7 +21,6 @@
   },
   "files": [
     "dist",
-    "schemas",
     "README.md"
   ],
   "types": "dist/index.d.ts",
