@@ -168,7 +168,7 @@ describe("PokerHandsService", () => {
 
 describe("Direct execution", () => {
   it("should start service when run directly", () => {
-    // Skip this test as require.main cannot be reliably mocked in Jest
+    // Skip this test as import.meta.main cannot be reliably mocked in Jest
     // This test would require integration testing approach
     expect(true).toBe(true);
   });

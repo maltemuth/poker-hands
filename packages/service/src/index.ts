@@ -45,7 +45,7 @@ export class PokerHandsService {
 export default PokerHandsService;
 
 // Start the service if this file is run directly
-if (require.main === module) {
+if (import.meta.main) {
   // Get command line arguments
   const args = process.argv.slice(2);
 

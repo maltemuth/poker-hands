@@ -1,8 +1,13 @@
 #!/usr/bin/env node
 
+import { readFileSync } from "fs";
+import { join } from "path";
 import { Command } from "commander";
 import { PokerHandsService } from "./index.js";
-import { version } from "../package.json";
+
+const { version } = JSON.parse(
+  readFileSync(join(import.meta.dirname, "../package.json"), "utf8")
+);
 
 const program = new Command();
 

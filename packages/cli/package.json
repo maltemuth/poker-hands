@@ -57,5 +57,6 @@
   "license": "MIT",
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "type": "module"
 }

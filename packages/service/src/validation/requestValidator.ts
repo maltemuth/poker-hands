@@ -1,4 +1,4 @@
-import Ajv, { ErrorObject, ValidateFunction } from "ajv";
+import { Ajv, ErrorObject, ValidateFunction } from "ajv";
 import express from "express";
 import { spec } from "../spec.js";
 import { sendError } from "../utils/index.js";

@@ -18,7 +18,7 @@ export interface SpecOperation {
  */
 export const spec = parse(
   // openapi.yaml sits in the package root, one level above src/ and dist/
-  readFileSync(join(__dirname, "../openapi.yaml"), "utf8")
+  readFileSync(join(import.meta.dirname, "../openapi.yaml"), "utf8")
 ) as {
   paths: Record<string, Partial<Record<string, SpecOperation>>>;
 };

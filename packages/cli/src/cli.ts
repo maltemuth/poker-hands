@@ -7,7 +7,7 @@ import { createOddsCommand } from "./commands/odds.js";
 import { createPercentagesCommand } from "./commands/percentages.js";
 
 const { version } = JSON.parse(
-  readFileSync(join(__dirname, "../package.json"), "utf8")
+  readFileSync(join(import.meta.dirname, "../package.json"), "utf8")
 );
 
 /**
@@ -24,6 +24,6 @@ export const createProgram = (): Command =>
     .addCommand(createPercentagesCommand());
 
 // Parse command line arguments when run as the poker-hands executable
-if (require.main === module) {
+if (import.meta.main) {
   createProgram().parse();
 }
