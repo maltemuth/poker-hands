@@ -6,6 +6,27 @@ The library, CLI and service are versioned together.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.11.1] - 2026-09-29
+
+### Fixed
+
+- All packages: the published packages include the MIT `LICENSE`; the CLI
+  and service declare `license` and `author`.
+- Library: only `dist` and the README are published. The ESLint and Jest
+  configurations were published too.
+- CLI: compiled files of commands removed long ago are no longer
+  published; the build removes old output first. The CLI and service build
+  before every pack and publish.
+- CLI and service: they are published with public access, which their first
+  publish needs.
+
+### Changed
+
+- All packages require Node.js 24 instead of 24.21.0; development still
+  uses 24.21.0 (`.nvmrc`).
+- All packages: published without source and declaration maps, which
+  pointed to sources that are not published.
+
 ## [0.11.0] - 2026-09-29
 
 ### Removed
@@ -310,6 +331,7 @@ Restructured into a monorepo with three packages. Not published to npm.
 
 Versions up to 0.3.1 (June 2020) predate this changelog.
 
+[0.11.1]: https://github.com/maltemuth/poker-hands/compare/v0.11.0...v0.11.1
 [0.11.0]: https://github.com/maltemuth/poker-hands/compare/v0.10.1...v0.11.0
 [0.10.1]: https://github.com/maltemuth/poker-hands/compare/v0.10.0...v0.10.1
 [0.10.0]: https://github.com/maltemuth/poker-hands/compare/v0.9.0...v0.10.0
