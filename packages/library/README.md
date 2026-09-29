@@ -16,6 +16,9 @@ A comprehensive TypeScript library for Texas Hold'em poker hand evaluation and o
 npm install @malte.muth/poker-hands
 ```
 
+The package is an ES module and needs Node.js 24 or later. Import everything
+from the package root; CommonJS code can load it with `require()` as well.
+
 ## Quick Start
 
 ```typescript
