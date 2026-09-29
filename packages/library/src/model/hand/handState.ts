@@ -32,7 +32,12 @@ const bit = (value: number): number => 1 << value;
  */
 const highest = (mask: number): number => (mask ? 31 - Math.clz32(mask) : 0);
 
-const bitCount = (mask: number): number => {
+// Lookup tables over all masks of the values 2-14 (bits 2-14), indexed by
+// mask >> 2. They are computed once, by the loops below, so that rankOf
+// only reads them.
+const TABLE_SIZE = 1 << 13;
+
+const countCards = (mask: number): number => {
   let count = 0;
   for (; mask; count++) mask &= mask - 1;
   return count;
@@ -42,7 +47,7 @@ const bitCount = (mask: number): number => {
  * The top card of the highest straight in a mask of values, or 0 if there is
  * none. The ace also counts as 1, for the wheel A-2-3-4-5.
  */
-const straightTop = (mask: number): number => {
+const findStraightTop = (mask: number): number => {
   const withLowAce = mask & bit(Value.ace) ? mask | bit(1) : mask;
   for (let top: number = Value.ace; top >= Value.five; top--) {
     const run = 0b11111 << (top - 4);
@@ -50,6 +55,47 @@ const straightTop = (mask: number): number => {
   }
   return 0;
 };
+
+/**
+ * The five highest values of a mask, one hex digit each, highest first;
+ * filled up with 0 if the mask has fewer
+ */
+const findHighestFive = (mask: number): number => {
+  let digits = 0;
+  let count = 0;
+  for (
+    let value: number = Value.ace;
+    count < 5 && value >= Value.two;
+    value--
+  ) {
+    if (mask & bit(value)) {
+      digits = (digits << 4) | value;
+      count++;
+    }
+  }
+  return digits << (4 * (5 - count));
+};
+
+const tableOf = <Table extends Uint8Array | Uint32Array>(
+  table: Table,
+  compute: (mask: number) => number
+): Table => {
+  for (let index = 0; index < TABLE_SIZE; index++) {
+    table[index] = compute(index << 2);
+  }
+  return table;
+};
+
+const CARD_COUNT = tableOf(new Uint8Array(TABLE_SIZE), countCards);
+const STRAIGHT_TOP = tableOf(new Uint8Array(TABLE_SIZE), findStraightTop);
+const HIGHEST_FIVE = tableOf(new Uint32Array(TABLE_SIZE), findHighestFive);
+
+const cardCount = (mask: number): number => CARD_COUNT[mask >> 2];
+
+/**
+ * The top card of the highest straight in a mask of values, or 0
+ */
+const straightTop = (mask: number): number => STRAIGHT_TOP[mask >> 2];
 
 /**
  * Appends a value to a rank `times` times, one hex digit each
@@ -60,21 +106,10 @@ const withValue = (rank: number, value: number, times: number): number => {
 };
 
 /**
- * Appends the `count` highest values of a mask to a rank
+ * Appends the `count` (1 to 5) highest values of a mask to a rank
  */
-const withHighest = (rank: number, mask: number, count: number): number => {
-  for (
-    let value: number = Value.ace;
-    count > 0 && value >= Value.two;
-    value--
-  ) {
-    if (mask & bit(value)) {
-      rank = (rank << 4) | value;
-      count--;
-    }
-  }
-  return rank;
-};
+const withHighest = (rank: number, mask: number, count: number): number =>
+  (rank << (4 * count)) | (HIGHEST_FIVE[mask >> 2] >>> (4 * (5 - count)));
 
 const straightRank = (type: HandType, top: number): number => {
   let rank: number = type;
@@ -115,10 +150,10 @@ export const rankOf = ({ suitMasks }: HandState): number => {
 
   // with at most 7 cards, only one suit can have five
   let flush = 0;
-  if (bitCount(h) >= 5) flush = h;
-  else if (bitCount(d) >= 5) flush = d;
-  else if (bitCount(c) >= 5) flush = c;
-  else if (bitCount(s) >= 5) flush = s;
+  if (cardCount(h) >= 5) flush = h;
+  else if (cardCount(d) >= 5) flush = d;
+  else if (cardCount(c) >= 5) flush = c;
+  else if (cardCount(s) >= 5) flush = s;
 
   if (flush) {
     const top = straightTop(flush);
