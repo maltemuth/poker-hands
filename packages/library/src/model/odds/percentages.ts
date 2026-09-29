@@ -1,12 +1,7 @@
 import { Card } from "../card/Card";
 import without from "../card/without";
 import create from "../deck/create";
-import {
-  SUIT_INDEX,
-  addCard,
-  createHandState,
-  rankOf,
-} from "../hand/handState";
+import { rankOf, suitMasksOf } from "../hand/handState";
 import assertUnique from "../card/assertUnique";
 import forEachBoard from "./forEachBoard";
 
@@ -97,21 +92,19 @@ const percentages = (
     ...dead
   );
 
-  const state = createHandState();
-  for (const card of [...hole, ...board]) {
-    addCard(state, SUIT_INDEX[card.suit], card.value);
-  }
-
   // how often each hand type (1-10) occurs
   const counts = handTypes.map(() => 0);
   let boards = 0;
-  forEachBoard(state, deckWithoutKnownBoard, 5 - board.length, () => {
-    // the hand type is the rank's leading hex digit
-    const { suitMasks } = state;
-    const rank = rankOf(suitMasks[0], suitMasks[1], suitMasks[2], suitMasks[3]);
-    counts[(rank >> 20) - 1]++;
-    boards++;
-  });
+  forEachBoard(
+    suitMasksOf([...hole, ...board]),
+    deckWithoutKnownBoard,
+    5 - board.length,
+    (h, d, c, s) => {
+      // the hand type is the rank's leading hex digit
+      counts[(rankOf(h, d, c, s) >> 20) - 1]++;
+      boards++;
+    }
+  );
 
   return handTypes.reduce(
     (results, type, index) => ({

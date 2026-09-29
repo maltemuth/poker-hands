@@ -2,7 +2,7 @@ import { Card, Suit, Value } from "../card/Card";
 import { HandType } from "./Hand";
 
 /**
- * The index of each suit in a HandState's suit masks
+ * The index of each suit in SuitMasks
  */
 export const SUIT_INDEX: Record<Suit, number> = {
   [Suit.hearts]: 0,
@@ -23,20 +23,6 @@ export const suitMasksOf = (cards: Card[]): SuitMasks => {
   for (const card of cards) masks[SUIT_INDEX[card.suit]] |= 1 << card.value;
   return masks;
 };
-
-/**
- * The cards of a hand in the form rankOf reads them: bit v of a suit mask is
- * set if the hand has that suit's card of value v. Cards are added and
- * removed in place, so a loop over many hands can reuse one state and
- * allocate nothing.
- */
-export interface HandState {
-  suitMasks: Uint16Array;
-}
-
-export const createHandState = (): HandState => ({
-  suitMasks: new Uint16Array(4),
-});
 
 const bit = (value: number): number => 1 << value;
 
@@ -128,27 +114,6 @@ const straightRank = (type: HandType, top: number): number => {
   let rank: number = type;
   for (let value = top; value > top - 5; value--) rank = (rank << 4) | value;
   return rank;
-};
-
-/**
- * Adds a card, given by its suit index (see SUIT_INDEX) and value
- */
-export const addCard = (state: HandState, suit: number, value: number) => {
-  state.suitMasks[suit] |= bit(value);
-};
-
-/**
- * Removes a card that was added before
- */
-export const removeCard = (state: HandState, suit: number, value: number) => {
-  state.suitMasks[suit] &= ~bit(value);
-};
-
-/**
- * Removes all cards
- */
-export const clearHandState = (state: HandState) => {
-  state.suitMasks.fill(0);
 };
 
 /**

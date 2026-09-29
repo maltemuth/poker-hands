@@ -2,6 +2,7 @@ import { Card } from "../card/Card";
 import combinationCount from "../combinatorics/combinationCount";
 import createBoardTally, { Tally } from "./boardTally";
 import forEachBoard from "./forEachBoard";
+import { suitMasksOf } from "../hand/handState";
 import { Hole, ProgressCallback } from "./HoleOdds";
 
 export type { Tally } from "./boardTally";
@@ -28,14 +29,13 @@ const tallyBoards = (
   progressCallback?: ProgressCallback
 ): Tally => {
   const missing = 5 - board.length;
-  const { state, tallyBoard, result } = createBoardTally(
+  const { tallyBoard, result } = createBoardTally(
     holes,
-    board,
     combinationCount(rest.length, missing),
     progressCallback
   );
 
-  forEachBoard(state, rest, missing, tallyBoard);
+  forEachBoard(suitMasksOf(board), rest, missing, tallyBoard);
 
   return result();
 };

@@ -1,42 +1,57 @@
 import { Card } from "../card/Card";
-import { HandState, SUIT_INDEX, addCard, removeCard } from "../hand/handState";
+import { SuitMasks, suitMasksOf } from "../hand/handState";
 
 /**
- * Completes the board in a hand state in every possible way: adds each
- * combination of `missing` cards from `rest` to the state, calls `visit`
- * with the complete board in the state, and removes the cards again. No
- * boards are built, and a card shared by many boards is added only once.
- * Afterwards, the state is as it was before.
+ * Completes the board in every possible way: for each combination of
+ * `missing` cards from `rest`, calls `visit` with the suit masks of the known
+ * cards plus that combination. No boards are built: the masks are passed down
+ * as numbers while the cards are chosen one by one, so a card shared by many
+ * boards is added only once.
  *
- * @param state - The hand state holding the known cards
+ * @param known - The suit masks of the known cards
  * @param rest - The cards the board can be completed with
  * @param missing - How many cards the board is missing
- * @param visit - Called once for each complete board
+ * @param visit - Called once for each complete board, with its suit masks
  */
 const forEachBoard = (
-  state: HandState,
+  known: SuitMasks,
   rest: Card[],
   missing: number,
-  visit: () => void
+  visit: (h: number, d: number, c: number, s: number) => void,
 ): void => {
-  // suit indices and values, looked up once instead of for every board
-  const restSuits = rest.map((card) => SUIT_INDEX[card.suit]);
-  const restValues = rest.map((card) => card.value);
+  // what each card adds to each suit mask: its bit to its suit's, 0 to others
+  const restMasks = rest.map((card) => suitMasksOf([card]));
+  const restH = restMasks.map((masks) => masks[0]);
+  const restD = restMasks.map((masks) => masks[1]);
+  const restC = restMasks.map((masks) => masks[2]);
+  const restS = restMasks.map((masks) => masks[3]);
 
   // adds the missing cards in every combination, from rest[start] on
-  const completeBoard = (start: number, missingCards: number) => {
+  const completeBoard = (
+    start: number,
+    missingCards: number,
+    h: number,
+    d: number,
+    c: number,
+    s: number,
+  ) => {
     if (missingCards === 0) {
-      visit();
+      visit(h, d, c, s);
       return;
     }
     for (let i = start; i <= rest.length - missingCards; i++) {
-      addCard(state, restSuits[i], restValues[i]);
-      completeBoard(i + 1, missingCards - 1);
-      removeCard(state, restSuits[i], restValues[i]);
+      completeBoard(
+        i + 1,
+        missingCards - 1,
+        h | restH[i],
+        d | restD[i],
+        c | restC[i],
+        s | restS[i],
+      );
     }
   };
 
-  completeBoard(0, missing);
+  completeBoard(0, missing, known[0], known[1], known[2], known[3]);
 };
 
 export default forEachBoard;

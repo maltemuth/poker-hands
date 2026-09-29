@@ -1,5 +1,5 @@
 import { Card } from "../card/Card";
-import { SUIT_INDEX, addCard, removeCard } from "../hand/handState";
+import { suitMasksOf } from "../hand/handState";
 import createBoardTally, { Tally } from "./boardTally";
 import { Hole, ProgressCallback } from "./HoleOdds";
 
@@ -31,33 +31,41 @@ const tallyRandomBoards = (
   random: () => number = Math.random
 ): Tally => {
   const missing = 5 - board.length;
-  const { state, tallyBoard, result } = createBoardTally(
+  const { tallyBoard, result } = createBoardTally(
     holes,
-    board,
     samples,
     progressCallback
   );
 
-  const restSuits = rest.map((card) => SUIT_INDEX[card.suit]);
-  const restValues = rest.map((card) => card.value);
+  const [boardH, boardD, boardC, boardS] = suitMasksOf(board);
+  // what each card adds to each suit mask: its bit to its suit's, 0 to others
+  const restMasks = rest.map((card) => suitMasksOf([card]));
+  const restH = restMasks.map((masks) => masks[0]);
+  const restD = restMasks.map((masks) => masks[1]);
+  const restC = restMasks.map((masks) => masks[2]);
+  const restS = restMasks.map((masks) => masks[3]);
   // indices into rest; the first `missing` positions are the drawn cards
   const order = rest.map((_, index) => index);
 
   for (let sample = 0; sample < samples; sample++) {
+    let h = boardH;
+    let d = boardD;
+    let c = boardC;
+    let s = boardS;
+
     // draw each missing card from the cards not drawn yet in this sample
     for (let i = 0; i < missing; i++) {
       const j = i + Math.floor(random() * (order.length - i));
       const drawn = order[j];
       order[j] = order[i];
       order[i] = drawn;
-      addCard(state, restSuits[drawn], restValues[drawn]);
+      h |= restH[drawn];
+      d |= restD[drawn];
+      c |= restC[drawn];
+      s |= restS[drawn];
     }
 
-    tallyBoard();
-
-    for (let i = 0; i < missing; i++) {
-      removeCard(state, restSuits[order[i]], restValues[order[i]]);
-    }
+    tallyBoard(h, d, c, s);
   }
 
   return result();
