@@ -24,7 +24,6 @@ import evaluate from "../src/model/hand/evaluate";
 import getBestHand from "../src/model/hand/getBestHand";
 import { HandType } from "../src/model/hand/Hand";
 import exhaustive from "../src/model/odds/exhaustive";
-import monteCarloOdds from "../src/model/odds/monteCarloOdds";
 import percentages, { HandPercentages } from "../src/model/odds/percentages";
 import { Hole, HoleOdds } from "../src/model/odds/HoleOdds";
 import { randomCards, seededRandom } from "../__tests__/helpers/randomCards";
@@ -304,20 +303,6 @@ for (const [name, holes, board, enabled] of oddsCases) {
     measured,
     `${format((boards / measured.cpuMs) * 1000)} boards/s`,
     chances(odds)
-  );
-}
-
-{
-  // Monte Carlo draws with Math.random, so its result varies between runs
-  const measured = measure(
-    () => monteCarloOdds([cards("Ah", "As"), cards("Td", "Tc")], [], 10_000),
-    1000
-  );
-  report(
-    "monte carlo, heads-up, pre-flop, 10k",
-    measured,
-    `${format((10_000 / measured.cpuMs) * 1000)} boards/s`,
-    ""
   );
 }
 

@@ -15,7 +15,6 @@ function validateHoleCards(holeCardsList: Card[][]): void {
 
 function buildOddsOptions(options: { progress?: boolean }): OddsOptions {
   return {
-    mode: "exhaustive",
     progress: options.progress
       ? (progress: number) => {
           // Clear the dots and show progress

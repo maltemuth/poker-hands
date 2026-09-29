@@ -6,7 +6,7 @@ A comprehensive TypeScript library for Texas Hold'em poker hand evaluation and o
 
 - **Hand Evaluation**: Determine the best possible poker hand from any set of cards
 - **Hand Comparison**: Compare two poker hands to determine which is better
-- **Odds Calculation**: Calculate winning probabilities using exhaustive or Monte Carlo methods
+- **Odds Calculation**: Calculate exact winning probabilities over every possible board
 - **Hand Type Percentages**: Calculate the probability of achieving each hand type
 - **Card Manipulation**: Create, shuffle, and manipulate poker decks and cards
 
@@ -149,22 +149,20 @@ console.log(handRank(kingsFull) > handRank(queensFull)); // true
 
 #### `odds(holes: Card[][], board: Card[] = [], options?: OddsOptions): HoleOdds[]`
 
-Calculates winning odds for given hole cards and board using either exhaustive or Monte Carlo methods.
+Calculates the exact winning odds for given hole cards and board. Every way to
+complete the board is evaluated; before the flop, that takes at most about 0.2
+seconds.
 
 **Parameters:**
 
 - `holes`: Array of hole cards for each player
 - `board`: Currently revealed board cards (optional)
-- `options`: Calculation options
+- `options`: Optional settings
 
 **Options** (the `OddsOptions` type is exported):
 
 ```typescript
-type OddsOptions = (
-  | { mode: "auto"; threshold?: number }
-  | { mode: "exhaustive" }
-  | { mode: "monteCarlo"; sampleSize?: number }
-) & {
+type OddsOptions = {
   progress?: ProgressCallback;
 };
 ```
@@ -180,19 +178,10 @@ const hole1 = cards("Ah", "Kh");
 const hole2 = cards("7c", "2d");
 const board = cards("Ts", "9h", "8c");
 
-// Auto mode (chooses best method automatically)
 const oddsResult = odds([hole1, hole2], board);
-
-// Monte Carlo mode with custom sample size
-const monteCarloResult = odds([hole1, hole2], board, {
-  mode: "monteCarlo",
-  sampleSize: 50000,
-});
 
 // With progress callback
 const resultWithProgress = odds([hole1, hole2], board, {
-  mode: "monteCarlo",
-  sampleSize: 10000,
   progress: (progress) =>
     console.log(`Progress: ${Math.round(progress * 100)}%`),
 });
@@ -471,10 +460,7 @@ const hole1 = cards("Ah", "Kh");
 const hole2 = cards("7c", "2d");
 const board = cards("Ts", "9h", "8c");
 
-// Use Monte Carlo with progress tracking
 const oddsResult = odds([hole1, hole2], board, {
-  mode: "monteCarlo",
-  sampleSize: 50000,
   progress: progressCallback,
 });
 ```
@@ -559,29 +545,13 @@ try {
 
 ## Performance Considerations
 
-### Algorithm Selection
+### Exact Results Only
 
-The library automatically selects the best algorithm based on the number of combinations:
-
-- **Exhaustive**: Used when combinations ≤ `threshold` (exact results)
-- **Monte Carlo**: Used when combinations > `threshold`, with `threshold` samples (statistical approximation)
-
-The default threshold of 2,200,000 is above the most boards any spot can have
-(2,118,760 for a single hole pre-flop), so by default every calculation is
-exact. Pass a lower threshold to trade precision for speed.
-
-You can manually override this behavior:
-
-```typescript
-// Force exhaustive calculation (exact but slower)
-const exactOdds = odds([hole1, hole2], board, { mode: "exhaustive" });
-
-// Force Monte Carlo (faster but approximate)
-const approximateOdds = odds([hole1, hole2], board, {
-  mode: "monteCarlo",
-  sampleSize: 10000,
-});
-```
+Odds and percentages evaluate every way to complete the board, so results are
+exact and the same on every run. The most boards any spot can have is
+2,118,760 (a single hole pre-flop). Up to version 0.10, the library could
+also estimate odds by Monte Carlo sampling; since exact pre-flop odds take at
+most about 0.2 seconds, that was removed in 0.11.0.
 
 ### How It Is Fast
 
@@ -594,7 +564,6 @@ Measured with `npm run bench` on a laptop with Node 24, as CPU time; wall-clock 
 - **Hand evaluation** (7 cards, ranked without building a hand): about 5 million hands per second
 - **Exhaustive odds**, pre-flop (heads-up: 1,712,304 boards; 4 players: 1,086,008 boards): under 0.2 seconds
 - **Exhaustive odds**, heads-up on the flop (990 boards): under 1 ms
-- **Monte Carlo odds**, 10,000 samples: about 3 ms
 - **Percentages**, pre-flop (2,118,760 boards): about 0.1 seconds
 
 `npm run bench -- --quick` skips the pre-flop cases. Each case is measured three times and the two fastest are averaged; besides wall-clock and CPU time, the benchmark reports how much each case allocates and how much time goes into garbage collection.

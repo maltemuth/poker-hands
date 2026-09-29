@@ -38,14 +38,11 @@ describe("complete board", () => {
     );
   });
 
-  test("odds: works in every mode", () => {
+  test("odds: the better made hand wins", () => {
     const holes = [cards("As", "Kd"), cards("Ah", "9c")];
     const board = cards("8c", "7d", "5h", "3s", "2c");
 
-    expect(odds(holes, board, { mode: "exhaustive" })[0].winChance).toBe(1);
-    expect(
-      odds(holes, board, { mode: "monteCarlo", sampleSize: 10 })[0].winChance
-    ).toBe(1);
+    expect(odds(holes, board)[0].winChance).toBe(1);
   });
 
   test("percentages: the made hand has a percentage of 1", () => {

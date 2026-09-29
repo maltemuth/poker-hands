@@ -4,10 +4,7 @@ import odds from "../../src/model/odds/odds";
 // tested against http://www.propokertools.com/simulations
 describe("calculate odds", () => {
   test("equal value have equal win chance", () => {
-    // exhaustive, since Monte Carlo sampling would not produce identical counts
-    const results = odds([cards("Ah", "As"), cards("Ad", "Ac")], [], {
-      mode: "exhaustive",
-    });
+    const results = odds([cards("Ah", "As"), cards("Ad", "Ac")]);
 
     expect(results[0].wins).toEqual(results[1].wins);
     expect(results[0].ties).toEqual(results[1].ties);

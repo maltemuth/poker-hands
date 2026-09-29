@@ -18,38 +18,11 @@ const expectWellFormed = (reports: number[]) => {
 };
 
 describe("odds progress reporting", () => {
-  test("Monte Carlo reports progress fractions ending at 1", () => {
-    const { reports, progress } = collect();
-
-    odds([cards("Ah", "As"), cards("Td", "Tc")], [], {
-      mode: "monteCarlo",
-      sampleSize: 1000,
-      progress,
-    });
-
-    expectWellFormed(reports);
-    // reported every 100 simulations
-    expect(reports).toHaveLength(10);
-  });
-
-  test("exhaustive reports progress fractions ending at 1", () => {
+  test("reports progress fractions ending at 1", () => {
     const { reports, progress } = collect();
 
     // C(45, 2) = 990 remaining boards, not a multiple of the reporting interval
     odds([cards("Ah", "As"), cards("Td", "Tc")], cards("7s", "8h", "Th"), {
-      mode: "exhaustive",
-      progress,
-    });
-
-    expectWellFormed(reports);
-  });
-
-  test("auto mode forwards the callback to Monte Carlo", () => {
-    const { reports, progress } = collect();
-
-    odds([cards("Ac", "Ad"), cards("Td", "Tc")], cards("7s", "8h"), {
-      mode: "auto",
-      threshold: 50,
       progress,
     });
 
@@ -61,7 +34,6 @@ describe("odds progress reporting", () => {
 
     // only 44 river cards remain
     odds([cards("Ah", "As"), cards("Td", "Tc")], cards("7s", "8h", "Th", "2c"), {
-      mode: "exhaustive",
       progress,
     });
 
@@ -70,10 +42,7 @@ describe("odds progress reporting", () => {
 
   test("no callback means no reports and no errors", () => {
     expect(() =>
-      odds([cards("Ah", "As"), cards("Td", "Tc")], [], {
-        mode: "monteCarlo",
-        sampleSize: 100,
-      })
+      odds([cards("Ah", "As"), cards("Td", "Tc")], cards("7s", "8h", "Th"))
     ).not.toThrow();
   });
 });

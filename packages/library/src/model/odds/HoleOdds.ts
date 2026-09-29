@@ -14,9 +14,6 @@ export interface HoleOdds {
   ties: number;
   winChance: number;
   tieChance: number;
-  // Confidence interval for statistical accuracy (only in Monte Carlo results)
-  winChanceError?: number;
-  tieChanceError?: number;
 }
 
 /**
