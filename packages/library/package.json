@@ -5,6 +5,10 @@
   "description": "A comprehensive TypeScript library for Texas Hold'em poker hand evaluation and odds calculation",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "keywords": [
     "poker",
     "texas-holdem",

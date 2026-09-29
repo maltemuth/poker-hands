@@ -1,9 +1,0 @@
-__perf__
-__tests__
-src
-!dist/src
-.eslint.js
-jest.config.js
-.gitignore
-tsconfig.json
-index.ts
