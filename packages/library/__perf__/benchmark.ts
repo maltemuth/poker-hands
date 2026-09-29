@@ -277,6 +277,18 @@ const oddsCases: [string, Hole[], Card[], boolean][] = [
     [],
     !quick,
   ],
+  // the most evaluations of any pre-flop spot: boards times players
+  [
+    "exhaustive, 4 players, pre-flop",
+    [
+      cards("Ah", "As"),
+      cards("Td", "Tc"),
+      cards("9s", "8s"),
+      cards("Kc", "Qd"),
+    ],
+    [],
+    !quick,
+  ],
 ];
 
 for (const [name, holes, board, enabled] of oddsCases) {
