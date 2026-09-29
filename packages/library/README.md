@@ -581,19 +581,19 @@ const approximateOdds = odds([hole1, hole2], board, {
 
 ### How It Is Fast
 
-Odds and percentages don't build a hand object for each board. Each player's cards are kept as a bit mask per suit and a count per value, the hand's rank is computed from those with a few integer operations, and the board cards are added to and removed from that state one by one while all boards are enumerated. The calculations allocate almost nothing, however many boards they cover.
+Odds and percentages don't build a hand object for each board. The cards are kept as four bit masks, one per suit, and a hand's rank is computed from those with a few integer operations and lookup tables: pairs, trips and quads follow from which values appear in two, three or four suits. While all boards are enumerated, the board's masks are passed along as plain numbers, and each player's cards are combined with them. The calculations allocate almost nothing, however many boards they cover.
 
 ### Benchmarks
 
-Measured with `npm run bench` on a laptop with Node 24; timings vary with the machine and its load:
+Measured with `npm run bench` on a laptop with Node 24, as CPU time; wall-clock time is higher on a busy machine:
 
-- **Hand evaluation** (7 cards, ranked without building a hand): about 2 million hands per second
-- **Exhaustive odds**, heads-up pre-flop (1,712,304 boards): about 1 second
-- **Exhaustive odds**, heads-up on the flop (990 boards): about 1 ms
-- **Monte Carlo odds**, 10,000 samples: about 10 ms
-- **Percentages**, pre-flop (2,118,760 boards): about 1 second
+- **Hand evaluation** (7 cards, ranked without building a hand): about 5 million hands per second
+- **Exhaustive odds**, pre-flop (heads-up: 1,712,304 boards; 4 players: 1,086,008 boards): under 0.2 seconds
+- **Exhaustive odds**, heads-up on the flop (990 boards): under 1 ms
+- **Monte Carlo odds**, 10,000 samples: about 3 ms
+- **Percentages**, pre-flop (2,118,760 boards): about 0.1 seconds
 
-`npm run bench -- --quick` skips the pre-flop cases. Besides the time, the benchmark reports how much each case allocates and how much time goes into garbage collection.
+`npm run bench -- --quick` skips the pre-flop cases. Each case is measured three times and the two fastest are averaged; besides wall-clock and CPU time, the benchmark reports how much each case allocates and how much time goes into garbage collection.
 
 ## Contributing
 
