@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>poker-hands-wasm in the browser</title>
+  </head>
+  <body>
+    <h1>poker-hands-wasm</h1>
+    <p>
+      Serve the package folder (e.g. <code>python3 -m http.server</code> in
+      <code>packages/wasm</code>) and open <code>/examples/browser/</code>.
+    </p>
+    <pre id="output">calculating…</pre>
+    <script type="module">
+      const output = document.getElementById("output");
+      try {
+        const { odds, percentages, handRank } =
+          await import("../../browser.js");
+        const start = performance.now();
+        const result = odds(["AhAs", "KdKc"]);
+        const ms = performance.now() - start;
+        output.textContent = [
+          ...result.map(
+            (hole) =>
+              `${hole.hole}: ${(hole.winChance * 100).toFixed(2)}% win, ` +
+              `${(hole.tieChance * 100).toFixed(2)}% tie`
+          ),
+          `pre-flop, 1,712,304 boards, in ${ms.toFixed(0)} ms`,
+          `royal flush with AhKh on QhJh2c: ${percentages("AhKh", "QhJh2c").royalFlush.count} of 1081 boards`,
+          `rank of 7c7d7hKsKd: 0x${handRank("7c7d7hKsKd").toString(16)}`,
+        ].join("\n");
+      } catch (error) {
+        output.textContent = `error: ${error}`;
+      }
+    </script>
+  </body>
+</html>
