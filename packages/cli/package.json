@@ -1,6 +1,6 @@
 {
   "name": "@malte.muth/poker-hands-cli",
-  "version": "0.12.0",
+  "version": "0.13.0",
   "private": false,
   "description": "A command-line interface for the poker hands library, providing tools for calculating odds and hand percentages",
   "main": "dist/index.js",
@@ -34,7 +34,7 @@
     "prepack": "npm run build"
   },
   "dependencies": {
-    "@malte.muth/poker-hands": "^0.12.0",
+    "@malte.muth/poker-hands": "^0.13.0",
     "commander": "^15.0.0"
   },
   "devDependencies": {
