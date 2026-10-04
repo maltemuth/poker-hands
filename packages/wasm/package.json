@@ -21,8 +21,11 @@
     "README.md"
   ],
   "scripts": {
-    "build": "wasm-pack build --target web --out-dir pkg --release --no-typescript && wasm-opt pkg/poker_hands_bg.wasm -o pkg/poker_hands_bg.wasm -O3 --enable-reference-types --enable-multivalue --enable-bulk-memory --enable-mutable-globals --enable-nontrapping-float-to-int --enable-sign-ext && rm -f pkg/package.json pkg/.gitignore pkg/README.md",
-    "test": "cargo test && node --test test/*.test.js"
+    "build": "sh scripts/build.sh",
+    "test": "sh scripts/with-rustup.sh cargo test && node --test test/*.test.js",
+    "lint": "sh scripts/with-rustup.sh cargo clippy --all-targets -- -D warnings && sh scripts/with-rustup.sh cargo clippy --target wasm32-unknown-unknown -- -D warnings && sh scripts/with-rustup.sh cargo fmt --check",
+    "clean": "rm -rf pkg target",
+    "bench": "sh scripts/with-rustup.sh cargo run --release --example bench"
   },
   "engines": {
     "node": ">=24"
