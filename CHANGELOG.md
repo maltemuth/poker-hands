@@ -1,10 +1,23 @@
 # Changelog
 
 All notable changes to the packages in this repository are documented here.
-The library, CLI and service are versioned together.
+The library, WebAssembly package, CLI and service are versioned together.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [0.14.0] - 2026-10-04
+
+### Added
+
+- `@malte.muth/poker-hands-wasm`: the library's hand ranking, exact odds and
+  hand type percentages, written in Rust and compiled to WebAssembly. One
+  package works in Node.js (with `import` or `require()`) and in browsers,
+  with the same API: `odds(["AhAs", "KdKc"], "2c7d9h")`,
+  `percentages(hole, board, dead)` and `handRank(cards)`, with cards as
+  strings. It gives the same ranks and counts as the library, about 2.5–3
+  times faster before the flop, and rejects holes without exactly two cards
+  and boards with more than five.
 
 ## [0.13.0] - 2026-10-04
 
@@ -371,6 +384,7 @@ Restructured into a monorepo with three packages. Not published to npm.
 
 Versions up to 0.3.1 (June 2020) predate this changelog.
 
+[0.14.0]: https://github.com/maltemuth/poker-hands/compare/v0.13.0...v0.14.0
 [0.13.0]: https://github.com/maltemuth/poker-hands/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/maltemuth/poker-hands/compare/v0.11.1...v0.12.0
 [0.11.1]: https://github.com/maltemuth/poker-hands/compare/v0.11.0...v0.11.1
