@@ -46,17 +46,4 @@ Total: ${(total * 100).toFixed(2)}%`;
 export const outputFormatter = {
   formatOdds,
   formatPercentages,
-  formatHandType,
 };
-
-/**
- * Format hand type with count and percentage
- */
-export function formatHandType(
-  type: string,
-  count: number,
-  percentage: number
-): string {
-  const formattedPercentage = `${(percentage * 100).toFixed(2)}%`;
-  return `${type}: ${count} occurrences (${formattedPercentage})`;
-}

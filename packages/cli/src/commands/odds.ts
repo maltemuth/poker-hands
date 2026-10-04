@@ -17,11 +17,6 @@ function buildOddsOptions(options: { progress?: boolean }): OddsOptions {
   return {
     progress: options.progress
       ? (progress: number) => {
-          // Clear the dots and show progress
-          if (progressInterval) {
-            clearInterval(progressInterval);
-            progressInterval = null;
-          }
           process.stdout.write(`\r${Math.round(progress * 100)}`);
         }
       : undefined,
@@ -41,8 +36,6 @@ function handleError(error: unknown): void {
   );
   process.exit(1);
 }
-
-let progressInterval: ReturnType<typeof setInterval> | null = null;
 
 function calculateOdds(
   holes: string[],
