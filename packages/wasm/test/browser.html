@@ -1,0 +1,24 @@
+<!doctype html>
+<!-- Loaded by headless Chrome (see README): runs the package's browser entry
+     and reports the outcome as a request to /report?..., which shows up in
+     the web server's log. -->
+<meta charset="utf-8" />
+<script type="module">
+  let report;
+  try {
+    const { odds, percentages, handRank } = await import("../browser.js");
+    const start = performance.now();
+    const [aces, kings] = odds(["AhAs", "KdKc"]);
+    const ms = Math.round(performance.now() - start);
+    const ok =
+      aces.wins === 1388072 &&
+      kings.wins === 317694 &&
+      aces.ties === 6538 &&
+      percentages("AhKh", "QhJh2c").royalFlush.count === 46 &&
+      handRank("7c7d7hKsKd2c3c") === 0x7777dd;
+    report = `${ok ? "ok" : "mismatch"} pre-flop=${ms}ms aces=${aces.wins}`;
+  } catch (error) {
+    report = `error ${error}`;
+  }
+  await fetch(`/report?${encodeURIComponent(report)}`);
+</script>
