@@ -1,4 +1,4 @@
-# Poker Hands WASM (experimental)
+# Poker Hands WASM
 
 Texas Hold'em hand ranking, exact odds and hand type percentages, written in
 Rust and compiled to WebAssembly. One package works in Node.js and in
@@ -6,8 +6,11 @@ browsers, with the same API. It gives the same results as
 [`@malte.muth/poker-hands`](../library), number for number, about 2.5–3 times
 faster before the flop.
 
-This package is an experiment: it isn't published and isn't part of the npm
-workspaces.
+It is versioned together with the other packages of this repository.
+
+```sh
+npm install @malte.muth/poker-hands-wasm
+```
 
 ## Usage
 
@@ -76,21 +79,24 @@ WebAssembly.
 
 Needs Node.js 24, [rustup](https://rustup.rs/) with the
 `wasm32-unknown-unknown` target, and
-[wasm-pack](https://rustwasm.github.io/wasm-pack/). The build runs `wasm-opt`
+[wasm-pack](https://rustwasm.github.io/wasm-pack/). The scripts use rustup's
+stable toolchain even if another Rust installation comes first in `PATH`
+([scripts/with-rustup.sh](scripts/with-rustup.sh)). The build runs `wasm-opt`
 from the `binaryen` npm package, since the one wasm-pack downloads doesn't
 support the WebAssembly features current Rust emits.
 
 ```sh
-npm install          # binaryen, for wasm-opt
+npm install          # in the repository root; includes binaryen, for wasm-opt
 npm run build        # Rust → pkg/poker_hands_bg.wasm, optimized
 npm test             # Rust unit tests, then the comparison with the TypeScript library
-cargo run --release --example bench
+npm run lint         # clippy for both targets, rustfmt
+npm run bench        # the native benchmark
 ```
 
 The comparison ([test/parity.test.js](test/parity.test.js)) ranks 20,000
 random hands and calculates odds and percentages on random spots with both
 libraries, and requires every number to be the same. It uses the TypeScript
-library's build, so run `npm run build:library` in the repository root first.
+library's build; the root `npm run build` builds the library first.
 
 To check the browser build, serve this folder (for example with
 `python3 -m http.server`) and open `/test/browser.html` or
