@@ -18,9 +18,10 @@ nvm install && node <script>
 
 ## Project Overview
 
-This is a TypeScript monorepo for poker-related applications, consisting of three main packages:
+This is a TypeScript monorepo for poker-related applications, consisting of four packages:
 
 - **`packages/library/`**: Core poker library (`@malte.muth/poker-hands`) for hand evaluation, odds calculation, and card manipulation
+- **`packages/wasm/`**: The library's hand ranking, odds and percentages in Rust, compiled to WebAssembly (`@malte.muth/poker-hands-wasm`); its tests compare every result with the TypeScript library. Build it through its npm scripts, which use rustup's toolchain (see its README)
 - **`packages/cli/`**: Command-line interface for using the poker library
 - **`packages/service/`**: Service package for poker-related web services
 

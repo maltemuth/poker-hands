@@ -1,17 +1,18 @@
 # Poker Hands
 
-A project for Texas Hold'em poker hand evaluation, odds calculation, and more. This project provides three packages: a core library, an HTTP service, and a command-line interface.
+A project for Texas Hold'em poker hand evaluation, odds calculation, and more. This project provides four packages: a core library, the same core compiled from Rust to WebAssembly, an HTTP service, and a command-line interface.
 
 What started as a code-workout has become an exercise in vibe coding – substantial parts of this code has been AI-generated.
 
 ## 📦 Monorepo Structure
 
-This project is organized as a monorepo with three main packages:
+This project is organized as a monorepo with four packages:
 
 ```
 poker-hands/
 ├── packages/
 │   ├── library/          # Core poker logic library
+│   ├── wasm/             # Hand ranking and odds in Rust, as WebAssembly
 │   ├── service/          # HTTP service
 │   └── cli/             # Command-line interface
 ├── package.json         # Workspace configuration
@@ -23,6 +24,7 @@ poker-hands/
 | Package                                                           | Description                                   | Installation                                  |
 | ----------------------------------------------------------------- | --------------------------------------------- | --------------------------------------------- |
 | **[@malte.muth/poker-hands](packages/library/README.md)**         | Core poker hand evaluation library            | `npm install @malte.muth/poker-hands`         |
+| **[@malte.muth/poker-hands-wasm](packages/wasm/README.md)**       | Hand ranking and exact odds as WebAssembly    | `npm install @malte.muth/poker-hands-wasm`    |
 | **[@malte.muth/poker-hands-service](packages/service/README.md)** | HTTP service for poker calculations           | `npm install @malte.muth/poker-hands-service` |
 | **[@malte.muth/poker-hands-cli](packages/cli/README.md)**         | Command-line interface for poker calculations | `npm install -g @malte.muth/poker-hands-cli`  |
 
@@ -32,6 +34,7 @@ poker-hands/
 
 - Node.js >= 24.21.0 (see [`.nvmrc`](.nvmrc))
 - npm >= 10.8.2
+- For the WebAssembly package: [rustup](https://rustup.rs/) with the `wasm32-unknown-unknown` target, and [wasm-pack](https://rustwasm.github.io/wasm-pack/)
 
 ### Workspace Installation
 
@@ -61,6 +64,12 @@ npm test
 - **Card Manipulation**: Create, shuffle, and manipulate poker decks and cards
 - **TypeScript Support**: Full type safety with comprehensive TypeScript definitions
 
+### WebAssembly Package (`@malte.muth/poker-hands-wasm`)
+
+- **Rust Core**: Hand ranking, exact odds and hand type percentages, with the same results as the library
+- **Node.js and Browsers**: One package with the same API in both
+- **Speed**: About 2.5–3 times faster than the library before the flop
+
 ### Service Package (`@malte.muth/poker-hands-service`)
 
 - **HTTP API**: HTTP endpoints for odds calculations
@@ -72,6 +81,7 @@ npm test
 ## 📖 Documentation
 
 - [Library Documentation](packages/library/README.md) - API reference and usage examples
+- [WebAssembly Documentation](packages/wasm/README.md) - API, build and performance
 - [Service Documentation](packages/service/README.md) - API endpoints and usage
 - [CLI Documentation](packages/cli/README.md) - Command-line interface usage
 - [Changelog](CHANGELOG.md) - Changes per version
@@ -83,16 +93,19 @@ npm test
 ```bash
 # Build a specific package
 npm run build:library
+npm run build:wasm
 npm run build:service
 npm run build:cli
 
 # Test a specific package
 npm run test:library
+npm run test:wasm
 npm run test:service
 npm run test:cli
 
 # Lint a specific package
 npm run lint:library
+npm run lint:wasm
 npm run lint:service
 npm run lint:cli
 ```
