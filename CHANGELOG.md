@@ -6,6 +6,29 @@ The library, CLI and service are versioned together.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.13.0] - 2026-10-04
+
+### Removed
+
+- CLI: JSON output. The odds and percentages commands no longer have
+  `--json`, which is now rejected as an unknown option, and the JSON schemas
+  and response types are no longer part of the package. **Breaking.**
+- CLI: the unused `formatCard`, `formatCards` and `formatHandType`
+  exports. **Breaking** for code that imported them.
+
+### Fixed
+
+- CLI: the odds of every player are printed. The text output only listed
+  players 1 and 2, with one tie line and a total, so with three players
+  the third was missing and the total came to less than 100%. Each player
+  now gets a line with their hole cards, win chance and own tie chance:
+  `Player 1 (AhAs): 81.06% win, 0.38% tie`.
+
+### Development
+
+- CLI: tests for invalid input (message on stderr, exit status 1) and for
+  `--progress`.
+
 ## [0.12.0] - 2026-09-29
 
 ### Changed
@@ -348,6 +371,7 @@ Restructured into a monorepo with three packages. Not published to npm.
 
 Versions up to 0.3.1 (June 2020) predate this changelog.
 
+[0.13.0]: https://github.com/maltemuth/poker-hands/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/maltemuth/poker-hands/compare/v0.11.1...v0.12.0
 [0.11.1]: https://github.com/maltemuth/poker-hands/compare/v0.11.0...v0.11.1
 [0.11.0]: https://github.com/maltemuth/poker-hands/compare/v0.10.1...v0.11.0
