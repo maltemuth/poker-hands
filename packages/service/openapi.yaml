@@ -24,7 +24,7 @@ info:
     ## Authentication
 
     This API does not require authentication at this time.
-  version: 0.13.0
+  version: 0.14.0
   license:
     name: MIT
     url: https://opensource.org/licenses/MIT

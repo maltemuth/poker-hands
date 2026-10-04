@@ -1,6 +1,6 @@
 [package]
 name = "poker-hands"
-version = "0.1.0"
+version = "0.14.0"
 edition = "2024"
 license = "MIT"
 description = "Texas Hold'em hand ranking and exact odds, for Rust and as WebAssembly"
