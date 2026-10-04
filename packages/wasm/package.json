@@ -33,6 +33,7 @@
   "author": "Malte Muth",
   "license": "MIT",
   "devDependencies": {
+    "@malte.muth/poker-hands": "^0.13.0",
     "binaryen": "^124.0.0"
   }
 }
