@@ -1,0 +1,35 @@
+{
+  "name": "@malte.muth/poker-hands-wasm",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Texas Hold'em hand ranking and exact odds, compiled from Rust to WebAssembly, for Node.js and browsers",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "node": "./node.js",
+      "default": "./browser.js"
+    }
+  },
+  "files": [
+    "api.js",
+    "browser.js",
+    "node.js",
+    "index.d.ts",
+    "pkg/poker_hands.js",
+    "pkg/poker_hands_bg.wasm",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "wasm-pack build --target web --out-dir pkg --release --no-typescript && wasm-opt pkg/poker_hands_bg.wasm -o pkg/poker_hands_bg.wasm -O3 --enable-reference-types --enable-multivalue --enable-bulk-memory --enable-mutable-globals --enable-nontrapping-float-to-int --enable-sign-ext && rm -f pkg/package.json pkg/.gitignore pkg/README.md",
+    "test": "cargo test && node --test test/*.test.js"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "author": "Malte Muth",
+  "license": "MIT",
+  "devDependencies": {
+    "binaryen": "^124.0.0"
+  }
+}
