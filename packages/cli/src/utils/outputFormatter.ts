@@ -1,18 +1,19 @@
-import { HoleOdds, HandPercentages } from "@malte.muth/poker-hands";
+import { HoleOdds, HandPercentages, toString } from "@malte.muth/poker-hands";
+
+const percent = (chance: number) => `${(chance * 100).toFixed(2)}%`;
 
 /**
- * Format odds calculation result
+ * Format odds calculation result: one line per player, in the order of the
+ * holes. Each player has their own tie chance, since in a multi-way pot a
+ * player can tie with some opponents while others lose.
  */
 export function formatOdds(oddsResult: HoleOdds[]): string {
-  const player1Win = (oddsResult[0]?.winChance || 0) * 100;
-  const player2Win = (oddsResult[1]?.winChance || 0) * 100;
-  const tie = (oddsResult[0]?.tieChance || 0) * 100;
-
-  return `Winning Odds:
-Player 1: ${player1Win.toFixed(2)}%
-Player 2: ${player2Win.toFixed(2)}%
-Tie: ${tie.toFixed(2)}%
-Total: ${(player1Win + player2Win + tie).toFixed(2)}%`;
+  const players = oddsResult.map(
+    (player, index) =>
+      `Player ${index + 1} (${player.hole.map(toString).join("")}): ` +
+      `${percent(player.winChance)} win, ${percent(player.tieChance)} tie`
+  );
+  return ["Winning Odds:", ...players].join("\n");
 }
 
 /**

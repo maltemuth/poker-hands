@@ -72,19 +72,42 @@ describe("poker-hands CLI", () => {
       expect(run("odds", "AhAs", "KdKc")).toBe(
         [
           "Winning Odds:",
-          "Player 1: 81.06%",
-          "Player 2: 18.55%",
-          "Tie: 0.38%",
-          "Total: 100.00%",
+          "Player 1 (AhAs): 81.06% win, 0.38% tie",
+          "Player 2 (KdKc): 18.55% win, 0.38% tie",
         ].join("\n")
       );
+    });
+
+    it("prints every player of a multi-way pot", () => {
+      expect(run("odds", "AhAs", "KdKc", "QhQd")).toBe(
+        [
+          "Winning Odds:",
+          "Player 1 (AhAs): 66.74% win, 0.40% tie",
+          "Player 2 (KdKc): 18.38% win, 0.40% tie",
+          "Player 3 (QhQd): 14.48% win, 0.40% tie",
+        ].join("\n")
+      );
+    });
+
+    it("gives each player their own tie chance", () => {
+      // 42 rivers: 7-2 and 7-3 split a jack-high straight on 38 of them;
+      // a queen (4) gives As Ks the ace-high straight, and a seven (2) puts
+      // the straight on the board, so all three tie
+      const output = run("odds", "7h2c", "7d3s", "AsKs", "--board", "8c9dTsJh");
+
+      expect(output).toMatch(/Player 1 \(7h2c\): 0\.00% win, \d+\.\d{2}% tie/);
+      const ties = [...output.matchAll(/win, (\d+\.\d{2})% tie/g)].map(
+        (match) => match[1]
+      );
+      expect(ties[0]).toBe(ties[1]);
+      expect(ties[2]).not.toBe(ties[0]);
     });
 
     it("resolves a known river exactly", () => {
       const output = run("odds", "AsKd", "Ah9c", "--board", "8c7d5h3s2c");
 
-      expect(output).toContain("Player 1: 100.00%");
-      expect(output).toContain("Player 2: 0.00%");
+      expect(output).toContain("Player 1 (AsKd): 100.00% win, 0.00% tie");
+      expect(output).toContain("Player 2 (Ah9c): 0.00% win, 0.00% tie");
     });
 
     it("shows the progress before the result with --progress", () => {
@@ -116,13 +139,13 @@ describe("poker-hands CLI", () => {
         "\r100",
         "\r",
       ]);
-      expect(output).toContain("Total: 100.00%");
+      expect(output).toContain("Player 1 (AhAs):");
     });
 
     it("accepts a space-separated board", () => {
       const output = run("odds", "AsKd", "Ah9c", "--board", "8c 7d 5h 3s 2c");
 
-      expect(output).toContain("Player 1: 100.00%");
+      expect(output).toContain("Player 1 (AsKd): 100.00% win");
     });
   });
 
