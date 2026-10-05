@@ -1,6 +1,6 @@
 {
   "name": "@malte.muth/poker-hands-wasm",
-  "version": "0.14.0",
+  "version": "0.15.0",
   "description": "Texas Hold'em hand ranking and exact odds, compiled from Rust to WebAssembly, for Node.js and browsers",
   "keywords": [
     "poker",
@@ -42,7 +42,7 @@
   "author": "Malte Muth",
   "license": "MIT",
   "devDependencies": {
-    "@malte.muth/poker-hands": "^0.14.0",
+    "@malte.muth/poker-hands": "^0.15.0",
     "binaryen": "^124.0.0"
   },
   "repository": {
