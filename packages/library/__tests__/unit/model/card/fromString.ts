@@ -8,4 +8,8 @@ describe("convert strings to cards", () => {
       value: Value.ace,
     });
   });
+
+  test.each(["", "A", "Ahx", "10h", "Ax"])("rejects %p", (input) => {
+    expect(() => fromString(input)).toThrow(/Could not convert/);
+  });
 });

@@ -7,6 +7,9 @@ import valueFromString from "./valueFromString.js";
  * @param input
  */
 const fromString = (input: string): Card => {
+  if (input.length !== 2) {
+    throw new Error(`Could not convert string ${input} to a card.`);
+  }
   const [stringValue, suit] = input.split("");
 
   const value = valueFromString(stringValue);
