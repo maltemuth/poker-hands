@@ -6,6 +6,51 @@ The library, WebAssembly package, CLI and service are versioned together.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.15.0] - 2026-10-05
+
+### Changed
+
+- Library: `getBestHand` reads the best hand from its rank, the number
+  `handRank` and the WebAssembly package compute, instead of evaluating the
+  cards a second way. The hand types and values are the same; where a value
+  appears more than once, the first card of that value in the input is
+  used, so in about 1% of 7-card hands a straight or a kicker has another
+  suit than before. It ranks about 500,000 random 7-card hands a second
+  instead of 120,000.
+- Library: `getBestHand` never returns `null`. Fewer than five cards make a
+  hand of fewer cards, e.g. a pair without kickers, and no cards a high
+  card without cards, as in the WebAssembly package.
+- Library: `getBestHand` rejects more than seven cards and cards used twice;
+  four aces of hearts were four of a kind. **Breaking** for code that
+  passed them.
+- Library: `isBetterThan` and `hasEqualValue` compare the hands' ranks and
+  take `HandInterface`s. Their results are the same.
+- Library: `shuffle` swaps items as Fisher-Yates does, in linear time. It
+  still uses `Math.random`, which is not cryptographically secure.
+
+### Removed
+
+- Library: `value()` and `subvalue()` of hands. **Breaking** for code that
+  called them: compare hands with `handRank`, and read values from
+  `cards()`.
+
+### Fixed
+
+- Library: card strings with extra characters are rejected; `"Ahx"` was
+  the ace of hearts.
+- Library: `odds` and `percentages` reject holes without two cards and
+  boards of more than five, with the WebAssembly package's messages. A
+  board of six cards overflowed the call stack, and holes of one or three
+  cards were counted.
+- Library: doc examples wrote suits as `'spades'`; they are `'s'`.
+
+### Development
+
+- WebAssembly: the parity test checks that the library rejects the same
+  input, and compares ranks of hands of 0 to 7 cards.
+- Library: `combinations` moved to the test helpers, and the detectors,
+  hand builders and card helpers only `getBestHand` used are gone.
+
 ## [0.14.0] - 2026-10-04
 
 ### Added
@@ -384,6 +429,7 @@ Restructured into a monorepo with three packages. Not published to npm.
 
 Versions up to 0.3.1 (June 2020) predate this changelog.
 
+[0.15.0]: https://github.com/maltemuth/poker-hands/compare/v0.14.0...v0.15.0
 [0.14.0]: https://github.com/maltemuth/poker-hands/compare/v0.13.0...v0.14.0
 [0.13.0]: https://github.com/maltemuth/poker-hands/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/maltemuth/poker-hands/compare/v0.11.1...v0.12.0
