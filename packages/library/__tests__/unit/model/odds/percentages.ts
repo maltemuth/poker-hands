@@ -1,6 +1,6 @@
 import cards from "../../../../src/model/card/cards.js";
 import percentages from "../../../../src/model/odds/percentages.js";
-import combinations from "../../../../src/model/combinatorics/combinations.js";
+import combinations from "../../../helpers/combinations.js";
 import getBestHand from "../../../../src/model/hand/getBestHand.js";
 import create from "../../../../src/model/deck/create.js";
 import without from "../../../../src/model/card/without.js";

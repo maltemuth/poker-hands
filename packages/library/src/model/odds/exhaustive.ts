@@ -45,7 +45,6 @@ const exhaustive = (
   holes: Hole[],
   board: Card[] = [],
   progressCallback?: ProgressCallback
-  // unknownHoles: number = 0
 ): HoleOdds[] => {
   // Validate input
   if (holes.length === 0) {

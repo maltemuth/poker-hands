@@ -4,7 +4,7 @@ import { HandType } from "./Hand.js";
 /**
  * The index of each suit in SuitMasks
  */
-export const SUIT_INDEX: Record<Suit, number> = {
+const SUIT_INDEX: Record<Suit, number> = {
   [Suit.hearts]: 0,
   [Suit.diamonds]: 1,
   [Suit.clubs]: 2,

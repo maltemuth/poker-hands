@@ -1,6 +1,6 @@
 import tallyBoards from "../../../../src/model/odds/tallyBoards.js";
 import winningHoles from "../../../helpers/winningHoles.js";
-import combinations from "../../../../src/model/combinatorics/combinations.js";
+import combinations from "../../../helpers/combinations.js";
 import create from "../../../../src/model/deck/create.js";
 import without from "../../../../src/model/card/without.js";
 import cards from "../../../../src/model/card/cards.js";
