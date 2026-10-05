@@ -34,8 +34,8 @@ const valuesByImportance = (hand: HandInterface): number[] => {
 
 /**
  * The strength of a hand as a single number: a better hand has a higher
- * rank, equally strong hands have the same rank. So instead of isBetterThan
- * and hasEqualValue, ranks can be compared with > and ===.
+ * rank, equally strong hands have the same rank. isBetterThan and
+ * hasEqualValue compare ranks with > and ===.
  *
  * The rank is the hand type followed by the five card values by importance,
  * one hex digit each. E.g. the full house K K K 9 9 is 0x7ddd99, the
