@@ -41,6 +41,18 @@ test("ranks 20,000 random 7-card hands like handRank", () => {
   }
 });
 
+test("ranks random hands of 0 to 7 cards like handRank", () => {
+  const random = seededRandom(4);
+  for (let i = 0; i < 8_000; i++) {
+    const hand = draw(random, i % 8);
+    assert.equal(
+      handRank(hand.join("")),
+      ts.handRank(ts.getBestHand(toCards(hand))),
+      hand.join("")
+    );
+  }
+});
+
 test("counts the same wins and ties as odds() on random spots", () => {
   const random = seededRandom(2);
   // [board cards, number of spots]: pre-flop is slow, so only a few
@@ -105,12 +117,60 @@ test("counts the same hand types as percentages() on random spots", () => {
   }
 });
 
-test("rejects the input the Rust code rejects", () => {
-  assert.throws(() => odds(["AhAs", "Kd"]), /Hole 2 must have 2 cards/);
-  assert.throws(() => odds(["AhAs", "AhKc"]), /used more than once: Ah/);
-  assert.throws(() => odds(["AhAs", "KdKc"], "2c3c4c5c6c7c"), /at most 5/);
-  assert.throws(() => odds(["AhAs", "Xx"]), /Invalid card/);
-  assert.throws(() => odds([]), /At least one hole/);
-  assert.throws(() => percentages("Ah"), /must have 2 cards/);
-  assert.throws(() => handRank("AhKhQhJhTh9h8h7h"), /At most 7/);
+test("rejects the same input as the library", () => {
+  // [WebAssembly call, the same call to the library, message of either]
+  const cases = [
+    [
+      () => odds(["AhAs", "Kd"]),
+      () => ts.odds([toCards(["Ah", "As"]), toCards(["Kd"])]),
+      /Hole 2 must have 2 cards/,
+    ],
+    [
+      () => odds(["AhAs", "AhKc"]),
+      () => ts.odds([toCards(["Ah", "As"]), toCards(["Ah", "Kc"])]),
+      /used more than once: Ah|Duplicates found/,
+    ],
+    [
+      () => odds(["AhAs", "KdKc"], "2c3c4c5c6c7c"),
+      () =>
+        ts.odds(
+          [toCards(["Ah", "As"]), toCards(["Kd", "Kc"])],
+          toCards(["2c", "3c", "4c", "5c", "6c", "7c"])
+        ),
+      /at most 5/,
+    ],
+    [
+      () => odds(["AhAs", "Xx"]),
+      () => ts.cards("Xx"),
+      /Invalid card|Could not convert/,
+    ],
+    [
+      () => odds(["AhAs", "KdKcx"]),
+      () => ts.cards("Kcx"),
+      /Invalid card|Could not convert/,
+    ],
+    [() => odds([]), () => ts.odds([]), /At least one hole|without any holes/],
+    [
+      () => percentages("Ah"),
+      () => ts.percentages(toCards(["Ah"])),
+      /must have 2 cards/,
+    ],
+    [
+      () => handRank("AhKhQhJhTh9h8h7h"),
+      () =>
+        ts.getBestHand(
+          toCards(["Ah", "Kh", "Qh", "Jh", "Th", "9h", "8h", "7h"])
+        ),
+      /At most 7/,
+    ],
+    [
+      () => handRank("AhAhKd"),
+      () => ts.getBestHand(toCards(["Ah", "Ah", "Kd"])),
+      /used more than once: Ah|Duplicates found/,
+    ],
+  ];
+  for (const [wasmCall, libraryCall, message] of cases) {
+    assert.throws(wasmCall, message);
+    assert.throws(libraryCall, message);
+  }
 });
