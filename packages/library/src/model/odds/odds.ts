@@ -1,8 +1,12 @@
 import { Card } from "../card/Card.js";
-import exhaustive from "./exhaustive.js";
-import { Hole, HoleOdds, ProgressCallback } from "./HoleOdds.js";
+import create from "../deck/create.js";
+import without from "../card/without.js";
+import assertUnique from "../card/assertUnique.js";
+import type { Hole, HoleOdds, ProgressCallback } from "./HoleOdds.js";
+import tallyBoards from "./tallyBoards.js";
+import { assertBoardSize, assertHoleSize } from "./assertSizes.js";
 
-export { Hole, HoleOdds, ProgressCallback };
+export type { Hole, HoleOdds, ProgressCallback };
 
 export type OddsOptions = {
   progress?: ProgressCallback;
@@ -53,6 +57,29 @@ const odds = (
   holes: Hole[],
   board: Card[] = [],
   options: OddsOptions = {}
-): HoleOdds[] => exhaustive(holes, board, options.progress);
+): HoleOdds[] => {
+  if (holes.length === 0) {
+    throw new Error("Cannot calculate odds without any holes.");
+  }
+  holes.forEach(assertHoleSize);
+  assertBoardSize(board);
+  assertUnique([...board, ...holes.flat()]);
+
+  const rest = without(create(), ...holes.flat(), ...board);
+  const { wins, ties, boards } = tallyBoards(
+    holes,
+    board,
+    rest,
+    options.progress
+  );
+
+  return holes.map((hole, index) => ({
+    hole,
+    wins: wins[index],
+    ties: ties[index],
+    winChance: wins[index] / boards,
+    tieChance: ties[index] / boards,
+  }));
+};
 
 export default odds;

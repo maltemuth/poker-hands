@@ -23,7 +23,7 @@ import combinationCount from "../src/model/combinatorics/combinationCount.js";
 import evaluate from "../src/model/hand/evaluate.js";
 import getBestHand from "../src/model/hand/getBestHand.js";
 import { HandType } from "../src/model/hand/Hand.js";
-import exhaustive from "../src/model/odds/exhaustive.js";
+import odds from "../src/model/odds/odds.js";
 import percentages, { HandPercentages } from "../src/model/odds/percentages.js";
 import { Hole, HoleOdds } from "../src/model/odds/HoleOdds.js";
 import { randomCards, seededRandom } from "../__tests__/helpers/randomCards.js";
@@ -289,11 +289,11 @@ for (const [name, holes, board, enabled] of oddsCases) {
     52 - holes.length * 2 - board.length,
     5 - board.length
   );
-  let odds: HoleOdds[] = [];
+  let result: HoleOdds[] = [];
   const long = boards > 100_000;
   const measured = measure(
     () => {
-      odds = exhaustive(holes, board);
+      result = odds(holes, board);
     },
     long ? 0 : 1000,
     !long
@@ -302,7 +302,7 @@ for (const [name, holes, board, enabled] of oddsCases) {
     `${name} (${format(boards)} boards)`,
     measured,
     `${format((boards / measured.cpuMs) * 1000)} boards/s`,
-    chances(odds)
+    chances(result)
   );
 }
 

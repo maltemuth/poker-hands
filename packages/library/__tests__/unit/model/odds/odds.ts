@@ -1,5 +1,4 @@
 import odds from "../../../../src/model/odds/odds.js";
-import exhaustive from "../../../../src/model/odds/exhaustive.js";
 import cards from "../../../../src/model/card/cards.js";
 
 describe("odds", () => {
@@ -18,13 +17,19 @@ describe("odds", () => {
     ).toBeCloseTo(1, 10);
   });
 
-  it.each([
-    // C(48, 5) = 1,712,304 boards
-    ["heads-up", [cards("As", "Ah"), cards("Ks", "Kh")]],
+  it("calculates pre-flop exactly, heads-up", () => {
+    // C(48, 5) = 1,712,304 boards, the WebAssembly package's counts
+    const [aces, kings] = odds([cards("Ah", "As"), cards("Kd", "Kc")]);
+
+    expect([aces.wins, aces.ties]).toEqual([1_388_072, 6_538]);
+    expect([kings.wins, kings.ties]).toEqual([317_694, 6_538]);
+  });
+
+  it("calculates pre-flop exactly, a single hole", () => {
     // C(50, 5) = 2,118,760 boards, the most any spot can have
-    ["a single hole", [cards("As", "Ah")]],
-  ])("calculates pre-flop exactly, %s", (_, holes) => {
-    expect(odds(holes)).toEqual(exhaustive(holes));
+    const [aces] = odds([cards("As", "Ah")]);
+
+    expect([aces.wins, aces.ties, aces.winChance]).toEqual([2_118_760, 0, 1]);
   });
 
   it("ignores the mode of earlier versions", () => {
@@ -33,7 +38,7 @@ describe("odds", () => {
     // JavaScript callers may still pass { mode: "monteCarlo" }
     const legacy = { mode: "monteCarlo", sampleSize: 10 } as object;
 
-    expect(odds(holes, board, legacy)).toEqual(exhaustive(holes, board));
+    expect(odds(holes, board, legacy)).toEqual(odds(holes, board));
   });
 
   it.each([
