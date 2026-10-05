@@ -64,29 +64,30 @@ const shuffledDeck = shuffle(deck);
 
 ### Core Functions
 
-#### `getBestHand(cards: Card[]): HandInterface | null`
+#### `getBestHand(cards: Card[]): HandInterface`
 
-Determines the best possible poker hand from a set of cards.
+Determines the best poker hand in up to seven cards.
 
 **Parameters:**
 
-- `cards`: Array of cards to evaluate
+- `cards`: Up to seven distinct cards. Fewer than five make a hand of fewer cards, e.g. a pair without kickers.
 
 **Returns:**
 
-- `HandInterface` representing the best hand, or `null` if no valid hand can be formed
+- `HandInterface` with the hand's type, the cards that make it (most important first, e.g. the trips, then the pair of a full house) and the kickers that complete the best five, highest first
+
+**Throws:** if there are more than seven cards, or a card appears twice.
 
 **Example:**
 
 ```typescript
-const cards = cards("Ah", "Kh", "Qh", "Jh", "Th", "9h", "8h");
-const bestHand = getBestHand(cards);
-// Returns: Royal Flush with cards Ah, Kh, Qh, Jh, Th
+const bestHand = getBestHand(cards("Ah", "Kh", "Qh", "Jh", "Th", "9h", "8h"));
+// a royal flush: bestHand.cards() are Ah, Kh, Qh, Jh, Th
 ```
 
-#### `hasEqualValue(a: Hand, b: Hand): boolean`
+#### `hasEqualValue(a: HandInterface, b: HandInterface): boolean`
 
-Checks if two hands have equal value.
+Checks if two hands are equally strong, so that they would split a pot; suits don't matter. The same as `handRank(a) === handRank(b)`.
 
 **Parameters:**
 
@@ -105,9 +106,9 @@ const hand2 = getBestHand(cards("Ah", "Kh", "Qh", "Jh", "Th"));
 console.log(hasEqualValue(hand1, hand2)); // true
 ```
 
-#### `isBetterThan(a: Hand, b: Hand): boolean`
+#### `isBetterThan(a: HandInterface, b: HandInterface): boolean`
 
-Compares two hands to determine if the first hand is better than the second.
+Compares two hands to determine if the first hand is better than the second. The same as `handRank(a) > handRank(b)`.
 
 **Parameters:**
 
@@ -370,10 +371,8 @@ The library recognizes all standard poker hand types in order of rank (highest t
 ```typescript
 interface HandInterface {
   type: HandType; // The type of hand
-  value: () => Value; // Primary value for comparison
-  subvalue: () => Value | null; // Secondary value for comparison (e.g., in full house)
-  cards: () => Card[]; // All cards in the hand
-  kickers: () => Card[]; // Kicker cards for tie-breaking
+  cards: () => Card[]; // The cards that make the hand, most important first
+  kickers: () => Card[]; // The cards that complete the best five, highest first
 }
 ```
 
@@ -382,13 +381,17 @@ interface HandInterface {
 ### Basic Hand Evaluation
 
 ```typescript
-import { getBestHand, cards } from "@malte.muth/poker-hands";
+import {
+  getBestHand,
+  cards,
+  toString,
+  HandType,
+} from "@malte.muth/poker-hands";
 
 // Evaluate a 7-card hand
-const cards = cards("Ah", "Kh", "Qh", "Jh", "Th", "9h", "8h");
-const bestHand = getBestHand(cards);
+const bestHand = getBestHand(cards("Ah", "Kh", "Qh", "Jh", "Th", "9h", "8h"));
 
-console.log(`Best hand: ${bestHand.type}`);
+console.log(`Best hand: ${HandType[bestHand.type]}`);
 console.log(`Cards: ${bestHand.cards().map(toString).join(", ")}`);
 ```
 
@@ -500,7 +503,7 @@ The library is built with TypeScript and provides comprehensive type definitions
 import { Card, HandType, HandInterface } from "@malte.muth/poker-hands";
 
 // All types are available for your own type annotations
-function evaluateHand(cards: Card[]): HandInterface | null {
+function evaluateHand(cards: Card[]): HandInterface {
   // Your implementation
 }
 
@@ -521,28 +524,27 @@ function getHandTypeName(type: HandType): string {
 The library provides clear error messages for invalid inputs:
 
 ```typescript
-import { cards, getBestHand } from "@malte.muth/poker-hands";
+import { cards, getBestHand, odds } from "@malte.muth/poker-hands";
 
 try {
   // Invalid card
   const invalidCards = cards("1h", "Xz");
 } catch (error) {
-  console.error(error.message); // "Could not convert string 1h to a card."
+  console.error(error.message); // "Could not convert string 1 to a card value."
 }
 
 try {
-  // Insufficient cards for a hand
-  const insufficientCards = cards("Ah");
-  const hand = getBestHand(insufficientCards);
+  // A card that appears twice
+  const hand = getBestHand(cards("Ah", "Ah", "Kd"));
 } catch (error) {
-  console.error(error.message); // "Need at least 5 cards to form a hand"
+  console.error(error.message); // "Duplicates found in card list 'Ah,Ah,Kd'"
 }
 
 try {
-  // Duplicate cards in odds calculation
-  const duplicateCards = odds([cards("Ah", "Kh"), cards("Ah", "Kh")]);
+  // A hole without two cards
+  const result = odds([cards("Ah", "Kh"), cards("Qd")]);
 } catch (error) {
-  console.error(error.message); // "Duplicate cards found"
+  console.error(error.message); // "Hole 2 must have 2 cards, but has 1"
 }
 ```
 

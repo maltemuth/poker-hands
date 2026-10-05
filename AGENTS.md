@@ -42,27 +42,23 @@ packages/
 ├── library/                 # Core poker library package
 │   ├── src/                # Source code
 │   │   ├── index.ts        # Main entry point with all exports
-│   │   ├── lib/            # Utility functions
-│   │   │   ├── numericalSort.ts     # Numerical sorting utility
-│   │   │   └── purify.ts           # Memoization utility
 │   │   └── model/          # Core business logic
 │   │       ├── card/       # Card-related functionality
 │   │       │   ├── Card.ts         # Card interface and enums
 │   │       │   ├── cards.ts        # Create cards from strings
 │   │       │   ├── fromString.ts   # Parse card from string
 │   │       │   ├── toString.ts     # Convert card to string
-│   │       │   ├── valueCounts.ts  # Count card values
 │   │       │   └── ...             # Other card utilities
 │   │       ├── hand/       # Hand evaluation logic
-│   │       │   ├── getBestHand.ts  # Main hand evaluation
-│   │       │   ├── detect/         # Hand detection functions
-│   │       │   ├── get/            # Hand creation functions
-│   │       │   └── ...             # Other hand utilities
+│   │       │   ├── rankOf.ts       # Hand ranking on suit bit masks
+│   │       │   ├── evaluate.ts     # The rank of some cards
+│   │       │   ├── getBestHand.ts  # The best hand's cards, read from its rank
+│   │       │   └── ...             # handRank, isBetterThan, hasEqualValue
 │   │       ├── deck/       # Deck manipulation
 │   │       │   ├── create.ts       # Create full deck
 │   │       │   └── shuffle.ts      # Shuffle deck
 │   │       ├── combinatorics/      # Mathematical utilities
-│   │       │   └── combinations.ts # Calculate combinations
+│   │       │   └── combinationCount.ts # Count combinations
 │   │       └── odds/       # Odds calculation
 │   │           ├── odds.ts         # Main odds calculation
 │   │           └── percentages.ts  # Hand percentage calculation
@@ -95,9 +91,10 @@ packages/
 
 ### Main Functions (from index.ts)
 
-- `getBestHand(cards: Card[]): HandInterface | null` - Get the best possible hand from cards
-- `hasEqualValue(a: Hand, b: Hand): boolean` - Check if two hands have equal value
-- `isBetterThan(a: Hand, b: Hand): boolean` - Compare two hands
+- `getBestHand(cards: Card[]): HandInterface` - Get the best hand in up to seven cards: its type, `cards()` and `kickers()`
+- `handRank(hand: HandInterface): number` - The hand's strength as one number, higher is better
+- `hasEqualValue(a: HandInterface, b: HandInterface): boolean` - Check if two hands have equal rank
+- `isBetterThan(a: HandInterface, b: HandInterface): boolean` - Compare two hands' ranks
 - `odds(holes: Card[][], board: Card[] = []): HoleOdds[]` - Calculate winning odds
 - `percentages(hole: Card[], board: Card[] = []): HandPercentages` - Calculate hand type percentages
 - `cards(...inputs: string[]): Card[]` - Create cards from strings
@@ -135,7 +132,7 @@ packages/
 ### 2. TypeScript Best Practices
 
 - **Strong Typing**: Extensive use of interfaces and enums
-- **Generic Types**: Used for reusable components (e.g., `combinations<T>`)
+- **Generic Types**: Used for reusable components (e.g., `shuffle<T>`)
 - **Type Guards**: Proper type checking and narrowing
 - **Union Types**: For flexible but type-safe APIs
 
@@ -147,8 +144,7 @@ packages/
 
 ### 4. Performance Optimizations
 
-- **Memoization**: `purify` utility for caching expensive calculations
-- **Pre-sorting**: Cards are pre-sorted when possible to avoid repeated sorting
+- **Bit masks**: Hands are ranked from one bit mask per suit (`rankOf`), with lookup tables; odds and percentages never build hand objects
 - **Early Returns**: Functions return early when possible to avoid unnecessary computation
 
 ### 5. Code Organization
@@ -213,8 +209,8 @@ packages/
 ### 1. Performance Issues
 
 - **Problem**: Expensive repeated calculations
-- **Solution**: Use `purify` utility for memoization
-- **Example**: Hand evaluation results are cached
+- **Solution**: Rank cards as suit bit masks with `rankOf`, not as hand objects
+- **Example**: Odds evaluate millions of boards without allocating
 
 ### 2. Edge Cases
 
@@ -238,8 +234,7 @@ packages/
 
 ### Optimization Techniques
 
-- **Caching**: Use `purify` for expensive calculations
-- **Pre-sorting**: Sort data once and reuse sorted results
+- **Bit masks**: Combine cards as suit masks and rank them with `rankOf`
 - **Early Termination**: Stop processing when result is determined
 - **Efficient Data Structures**: Use appropriate data structures for operations
 
