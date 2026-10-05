@@ -13,4 +13,10 @@ describe("convert card values to strings", () => {
   test("ace value", () => {
     expect(valueToString(Value.ace)).toEqual("A");
   });
+
+  test.each([1, 15])("rejects %p", (value) => {
+    expect(() => valueToString(value as Value)).toThrow(
+      `Could not convert value ${value}`
+    );
+  });
 });
