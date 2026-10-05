@@ -4,6 +4,7 @@ import create from "../deck/create.js";
 import { rankOf, suitMasksOf } from "../hand/rankOf.js";
 import assertUnique from "../card/assertUnique.js";
 import forEachBoard from "./forEachBoard.js";
+import { assertBoardSize, assertHoleSize } from "./assertSizes.js";
 
 const handTypes = [
   "highCard",
@@ -52,7 +53,8 @@ export type HandPercentages = Record<
  *          - count: Number of times this hand type appears
  *          - percentage: Probability of this hand type (0-1)
  *
- * @throws {Error} If a card appears more than once in the hole, board and dead cards.
+ * @throws {Error} If the hole doesn't have two cards, the board has more than
+ *   five, or a card appears more than once in the hole, board and dead cards.
  *
  * @example
  * ```typescript
@@ -83,6 +85,8 @@ const percentages = (
   board: Card[] = [],
   dead: Card[] = []
 ): HandPercentages => {
+  assertHoleSize(hole);
+  assertBoardSize(board);
   assertUnique([...hole, ...board, ...dead]);
 
   const deckWithoutHoleCards = without(create(), ...hole);

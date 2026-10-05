@@ -23,7 +23,8 @@ export type OddsOptions = {
  * @returns Array of HoleOdds objects, one for each player's hole cards,
  *          containing wins, ties, and win/tie probabilities.
  *
- * @throws {Error} If no hole cards are provided, or a card is used twice.
+ * @throws {Error} If no hole cards are provided, a hole doesn't have exactly
+ *   two cards, the board has more than five, or a card is used twice.
  *
  * @example
  * ```typescript

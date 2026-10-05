@@ -108,4 +108,16 @@ describe("percentages", () => {
       ).toThrow("Duplicates found");
     });
   });
+
+  test("rejects a hole without two cards", () => {
+    expect(() => percentages(cards("Ah"))).toThrow(
+      "Hole 1 must have 2 cards, but has 1"
+    );
+  });
+
+  test("rejects a board of more than five cards", () => {
+    expect(() =>
+      percentages(cards("Ah", "Kh"), cards("2c", "3c", "4c", "5c", "6c", "7c"))
+    ).toThrow("The board has 6 cards, at most 5 are allowed");
+  });
 });

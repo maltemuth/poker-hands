@@ -4,6 +4,7 @@ import without from "../card/without.js";
 import assertUnique from "../card/assertUnique.js";
 import { Hole, HoleOdds, ProgressCallback } from "./HoleOdds.js";
 import tallyBoards from "./tallyBoards.js";
+import { assertBoardSize, assertHoleSize } from "./assertSizes.js";
 
 /**
  * Calculates exact poker odds by exhaustively simulating all possible board combinations.
@@ -28,7 +29,8 @@ import tallyBoards from "./tallyBoards.js";
  * @param progressCallback Optional callback to report progress (0 to 1)
  * @returns Array of odds for each hole including wins, ties, and probabilities
  *
- * @throws {Error} If no holes are provided or if cards are duplicated
+ * @throws {Error} If no holes are provided, a hole doesn't have two cards,
+ *   the board has more than five, or cards are duplicated
  *
  * @example
  * // Calculate odds for two players with all cards known
@@ -49,6 +51,8 @@ const exhaustive = (
   if (holes.length === 0) {
     throw new Error("Cannot calculate odds without any holes.");
   }
+  holes.forEach(assertHoleSize);
+  assertBoardSize(board);
 
   // Check for duplicate cards across all holes and board
   const allCardsInHoles = holes.reduce((flat, hole) => flat.concat(hole), []);

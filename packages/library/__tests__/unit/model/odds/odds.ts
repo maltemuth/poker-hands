@@ -35,4 +35,27 @@ describe("odds", () => {
 
     expect(odds(holes, board, legacy)).toEqual(exhaustive(holes, board));
   });
+
+  it.each([
+    [
+      "a hole of one card",
+      [cards("As", "Ah"), cards("Kd")],
+      [],
+      /Hole 2 must have 2 cards, but has 1/,
+    ],
+    [
+      "a hole of three cards",
+      [cards("As", "Ah", "Ad")],
+      [],
+      /Hole 1 must have 2 cards, but has 3/,
+    ],
+    [
+      "a board of six cards",
+      [cards("As", "Ah")],
+      cards("2c", "3c", "4c", "5c", "6c", "7c"),
+      /The board has 6 cards, at most 5/,
+    ],
+  ])("rejects %s", (_, holes, board, message) => {
+    expect(() => odds(holes, board)).toThrow(message);
+  });
 });
