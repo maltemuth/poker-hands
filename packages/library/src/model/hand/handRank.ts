@@ -20,7 +20,8 @@ const valuesByImportance = (hand: HandInterface): number[] => {
     hand.type === HandType.StraightFlush ||
     hand.type === HandType.RoyalFlush
   ) {
-    const top = hand.value();
+    // the cards of a straight count down from its top card
+    const top = hand.cards()[0].value;
     return [top, top - 1, top - 2, top - 3, top - 4];
   }
 

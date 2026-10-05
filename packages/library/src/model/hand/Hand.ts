@@ -1,4 +1,4 @@
-import { Value, Card } from "../card/Card.js";
+import { Card } from "../card/Card.js";
 
 /**
  * all possible hand types, in order from lowest to highest
@@ -17,12 +17,11 @@ export enum HandType {
 }
 
 /**
- * an interface for a hand
+ * a hand: its type, the cards that make it and the kickers, which together
+ * are the best five cards
  */
 export interface HandInterface {
   type: HandType;
-  value: () => Value;
-  subvalue: () => Value | null;
   cards: () => Card[];
   kickers: () => Card[];
 }
