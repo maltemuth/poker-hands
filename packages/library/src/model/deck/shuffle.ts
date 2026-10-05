@@ -5,6 +5,7 @@
  * in random order. The original array is not modified. The shuffling
  * algorithm used is the Fisher-Yates (also known as Knuth) shuffle,
  * which provides a uniformly random permutation of the input array.
+ * The randomness is Math.random's, which is not cryptographically secure.
  *
  * @param items - The array to shuffle
  * @returns A new array with elements in random order
@@ -29,23 +30,15 @@
  * // Create and shuffle a deck of cards
  * const deck = create();
  * const shuffledDeck = shuffle(deck);
- *
- * // Each shuffle produces a different order
- * const anotherShuffle = shuffle(deck);
- * console.log(shuffledDeck !== anotherShuffle); // true
  * ```
  */
 const shuffle = <T>(items: T[]): T[] => {
-  const remainingItems = items.concat();
-  const result: T[] = [];
-  for (let i = items.length - 1; i >= 0; i--) {
-    // any of the i + 1 remaining items, including the last one
-    const randomIndex = Math.floor(Math.random() * (i + 1));
-
-    result.push(remainingItems[randomIndex]);
-    remainingItems.splice(randomIndex, 1);
+  const result = [...items];
+  for (let i = result.length - 1; i > 0; i--) {
+    // any of the first i + 1 items, including the one at i
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
   }
-
   return result;
 };
 

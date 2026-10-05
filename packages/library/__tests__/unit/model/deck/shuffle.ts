@@ -36,4 +36,25 @@ describe("shuffle decks", () => {
       expect(count).toBeLessThan(4500);
     });
   });
+
+  test("a deck has hearts, diamonds, clubs and spades from 2 to ace", () => {
+    const deck = create().map(toString);
+
+    expect(deck.slice(0, 13).join(" ")).toBe(
+      "2h 3h 4h 5h 6h 7h 8h 9h Th Jh Qh Kh Ah"
+    );
+    expect([deck[13], deck[26], deck[39], deck[51]]).toEqual([
+      "2d",
+      "2c",
+      "2s",
+      "As",
+    ]);
+  });
+
+  test("shuffling leaves its input unchanged", () => {
+    const items = [0, 1, 2, 3, 4];
+    shuffle(items);
+
+    expect(items).toEqual([0, 1, 2, 3, 4]);
+  });
 });
