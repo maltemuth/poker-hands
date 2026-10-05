@@ -18,7 +18,7 @@ import { Card } from "./Card.js";
  * import cards from './cards.js';
  *
  * // Create individual cards
- * const aceOfSpades = cards('As'); // Returns [Card { suit: 'spades', value: 14 }]
+ * const aceOfSpades = cards('As'); // [{ suit: 's', value: 14 }]
  *
  * // Create multiple cards at once
  * const hand = cards('As', 'Ks', 'Qs', 'Js', 'Ts');

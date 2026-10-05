@@ -13,16 +13,16 @@ import valueToString from "./valueToString.js";
  *
  * @example
  * ```typescript
- * import { Card } from './Card.js';
+ * import { Card, Suit, Value } from './Card.js';
  * import toString from './toString.js';
  *
- * const aceOfSpades: Card = { suit: 'spades', value: 14 };
+ * const aceOfSpades: Card = { suit: Suit.spades, value: Value.ace };
  * console.log(toString(aceOfSpades)); // "As"
  *
- * const tenOfHearts: Card = { suit: 'hearts', value: 10 };
+ * const tenOfHearts: Card = { suit: Suit.hearts, value: Value.ten };
  * console.log(toString(tenOfHearts)); // "Th"
  *
- * const twoOfClubs: Card = { suit: 'clubs', value: 2 };
+ * const twoOfClubs: Card = { suit: Suit.clubs, value: Value.two };
  * console.log(toString(twoOfClubs)); // "2c"
  * ```
  */
