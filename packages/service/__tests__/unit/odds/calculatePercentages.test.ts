@@ -1,3 +1,5 @@
+import assert from "node:assert/strict";
+import { describe, it } from "node:test";
 import calculatePercentages from "../../../src/odds/calculatePercentages.js";
 import { PercentagesData } from "../../../src/types/index.js";
 
@@ -11,9 +13,9 @@ describe("calculatePercentages", () => {
       board: ["Qh", "Jh", "Th", "2c", "3d"],
     });
 
-    expect(result.players).toHaveLength(1);
-    expect(result.players[0].holeCards).toEqual(["Ah", "Kh"]);
-    expect(result.players[0].percentages.royalFlush).toEqual({
+    assert.equal(result.players.length, 1);
+    assert.deepEqual(result.players[0].holeCards, ["Ah", "Kh"]);
+    assert.deepEqual(result.players[0].percentages.royalFlush, {
       count: 1,
       percentage: 1,
     });
@@ -30,10 +32,10 @@ describe("calculatePercentages", () => {
 
     const [first, second] = result.players;
     // 52 cards minus 4 hole cards and 4 board cards
-    expect(totalCount(first.percentages)).toBe(44);
-    expect(totalCount(second.percentages)).toBe(44);
+    assert.equal(totalCount(first.percentages), 44);
+    assert.equal(totalCount(second.percentages), 44);
     // the only card completing the royal flush is in the second player's hand
-    expect(first.percentages.royalFlush.count).toBe(0);
+    assert.equal(first.percentages.royalFlush.count, 0);
   });
 
   it("keeps the players in request order", () => {
@@ -45,14 +47,17 @@ describe("calculatePercentages", () => {
       board: ["Kc", "Qd", "7h", "5s"],
     });
 
-    expect(result.players.map((player) => player.holeCards)).toEqual([
-      ["2c", "3d"],
-      ["Ah", "As"],
-    ]);
+    assert.deepEqual(
+      result.players.map((player) => player.holeCards),
+      [
+        ["2c", "3d"],
+        ["Ah", "As"],
+      ]
+    );
   });
 
   it("rejects duplicate cards", () => {
-    expect(() =>
+    assert.throws(() =>
       calculatePercentages({
         holes: [
           ["Ah", "As"],
@@ -60,6 +65,6 @@ describe("calculatePercentages", () => {
         ],
         board: ["2c", "3d", "4h"],
       })
-    ).toThrow();
+    );
   });
 });

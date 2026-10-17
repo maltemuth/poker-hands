@@ -1,3 +1,6 @@
+import assert from "node:assert/strict";
+import { describe, it } from "node:test";
+import { assertCloseTo } from "../../../helpers/assert.js";
 import cards from "../../../../src/model/card/cards.js";
 import percentages from "../../../../src/model/odds/percentages.js";
 import combinations from "../../../helpers/combinations.js";
@@ -22,7 +25,7 @@ const reference = (hole: Card[], board: Card[], dead: Card[]) => {
 };
 
 describe("percentages", () => {
-  test("counts every possible board once", () => {
+  it("counts every possible board once", () => {
     // 46 possible rivers
     const result = percentages(
       cards("Ah", "Kh"),
@@ -33,18 +36,17 @@ describe("percentages", () => {
       (sum, { count }) => sum + count,
       0
     );
-    expect(total).toBe(46);
-    expect(result.royalFlush.count).toBe(1);
+    assert.equal(total, 46);
+    assert.equal(result.royalFlush.count, 1);
   });
 
-  test.each([
+  for (const [label, hole, board, dead] of [
     ["river", ["Ah", "Kh"], ["Qh", "Jh", "2c", "3d"], []],
     ["turn", ["7s", "7d"], ["7c", "2h", "Kd"], []],
     ["flop, suited connectors", ["9h", "8h"], ["Th", "Jc", "2h"], []],
     ["flop, dead cards", ["Ah", "Kh"], ["Qh", "7c", "2d"], ["Th", "Jh", "9c"]],
-  ])(
-    "%s: counts the same hand types as building every board",
-    (_, hole, board, dead) => {
+  ])
+    it(`${label}: counts the same hand types as building every board`, () => {
       const result = percentages(
         cards(...hole),
         cards(...board),
@@ -57,25 +59,26 @@ describe("percentages", () => {
       );
 
       for (const [type, { count }] of Object.entries(result)) {
-        expect([type, count]).toEqual([type, expected[type] ?? 0]);
+        assert.deepEqual([type, count], [type, expected[type] ?? 0]);
       }
-    }
-  );
+    });
 
-  test("rejects a card that is both in the hole and on the board", () => {
-    expect(() =>
-      percentages(cards("Ah", "Kh"), cards("Ah", "Jh", "2c"))
-    ).toThrow("Duplicates found");
+  it("rejects a card that is both in the hole and on the board", () => {
+    assert.throws(
+      () => percentages(cards("Ah", "Kh"), cards("Ah", "Jh", "2c")),
+      { message: "Duplicates found in card list 'Ah,Kh,Ah,Jh,2c'" }
+    );
   });
 
-  test("rejects a card that appears twice on the board", () => {
-    expect(() =>
-      percentages(cards("Ah", "Kh"), cards("Qh", "Qh", "2c"))
-    ).toThrow("Duplicates found");
+  it("rejects a card that appears twice on the board", () => {
+    assert.throws(
+      () => percentages(cards("Ah", "Kh"), cards("Qh", "Qh", "2c")),
+      { message: "Duplicates found in card list 'Ah,Kh,Qh,Qh,2c'" }
+    );
   });
 
   describe("with dead cards", () => {
-    test("leaves dead cards out of the possible boards", () => {
+    it("leaves dead cards out of the possible boards", () => {
       // 46 rivers, minus the two dead cards
       const result = percentages(
         cards("Ah", "Kh"),
@@ -87,37 +90,43 @@ describe("percentages", () => {
         (sum, { count }) => sum + count,
         0
       );
-      expect(total).toBe(44);
+      assert.equal(total, 44);
       // the only royal flush card is dead
-      expect(result.royalFlush.count).toBe(0);
+      assert.equal(result.royalFlush.count, 0);
     });
 
-    test("uses percentages of the remaining boards", () => {
+    it("uses percentages of the remaining boards", () => {
       const result = percentages(
         cards("Ah", "Kh"),
         cards("Qh", "Jh", "2c", "3d"),
         cards("Th", "9c")
       );
 
-      expect(result.flush.percentage).toBeCloseTo(8 / 44);
+      assertCloseTo(result.flush.percentage, 8 / 44);
     });
 
-    test("rejects a dead card that is also in the hole", () => {
-      expect(() =>
-        percentages(cards("Ah", "Kh"), [], cards("Ah", "2c"))
-      ).toThrow("Duplicates found");
+    it("rejects a dead card that is also in the hole", () => {
+      assert.throws(
+        () => percentages(cards("Ah", "Kh"), [], cards("Ah", "2c")),
+        { message: "Duplicates found in card list 'Ah,Kh,Ah,2c'" }
+      );
     });
   });
 
-  test("rejects a hole without two cards", () => {
-    expect(() => percentages(cards("Ah"))).toThrow(
-      "Hole 1 must have 2 cards, but has 1"
+  it("rejects a hole without two cards", () => {
+    assert.throws(() => percentages(cards("Ah")), {
+      message: "Hole 1 must have 2 cards, but has 1",
+    });
+  });
+
+  it("rejects a board of more than five cards", () => {
+    assert.throws(
+      () =>
+        percentages(
+          cards("Ah", "Kh"),
+          cards("2c", "3c", "4c", "5c", "6c", "7c")
+        ),
+      { message: "The board has 6 cards, at most 5 are allowed" }
     );
-  });
-
-  test("rejects a board of more than five cards", () => {
-    expect(() =>
-      percentages(cards("Ah", "Kh"), cards("2c", "3c", "4c", "5c", "6c", "7c"))
-    ).toThrow("The board has 6 cards, at most 5 are allowed");
   });
 });

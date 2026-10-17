@@ -1,14 +1,16 @@
+import assert from "node:assert/strict";
+import { describe, it } from "node:test";
 import valueFromString from "../../../../src/model/card/valueFromString.js";
 import { Value } from "../../../../src/model/card/Card.js";
 
 describe("reading values from strings", () => {
-  test("valid values", () => {
-    expect(valueFromString("J")).toEqual(Value.jack);
+  it("valid values", () => {
+    assert.deepEqual(valueFromString("J"), Value.jack);
   });
-  test("invalid suit", () => {
-    expect(() => valueFromString("17")).toThrow();
+  it("invalid suit", () => {
+    assert.throws(() => valueFromString("17"));
   });
-  test("read a 10", () => {
-    expect(valueFromString("T")).toEqual(Value.ten);
+  it("read a 10", () => {
+    assert.deepEqual(valueFromString("T"), Value.ten);
   });
 });

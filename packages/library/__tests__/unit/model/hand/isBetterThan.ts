@@ -1,3 +1,5 @@
+import assert from "node:assert/strict";
+import { describe, it } from "node:test";
 import isBetterThan from "../../../../src/model/hand/isBetterThan.js";
 import getBestHand from "../../../../src/model/hand/getBestHand.js";
 import cards from "../../../../src/model/card/cards.js";
@@ -6,301 +8,293 @@ import hasEqualValue from "../../../../src/model/hand/hasEqualValue.js";
 import { randomCards, seededRandom } from "../../../helpers/randomCards.js";
 
 describe("compare hands", () => {
-  test("a pair is better than a high card", () => {
-    expect(
-      isBetterThan(getBestHand(cards("As", "Ac"))!, getBestHand(cards("As"))!)
-    ).toBe(true);
+  it("a pair is better than a high card", () => {
+    assert.equal(isBetterThan(getBestHand(cards("As", "Ac"))!, getBestHand(cards("As"))!), true);
   });
 
-  test("two pair is better than a pair", () => {
-    expect(
-      isBetterThan(
+  it("two pair is better than a pair", () => {
+    assert.equal(isBetterThan(
         getBestHand(cards("Js", "Jc", "Th", "Tc"))!,
         getBestHand(cards("As", "Ac"))!
-      )
-    ).toBe(true);
+      ), true);
   });
-  test("three-of-a-kind is better than two pair", () => {
-    expect(
-      isBetterThan(
+  it("three-of-a-kind is better than two pair", () => {
+    assert.equal(isBetterThan(
         getBestHand(cards("Js", "5c", "Th", "Qc", "5d", "5h"))!,
         getBestHand(cards("Js", "Jc", "Th", "Tc"))!
-      )
-    ).toBe(true);
+      ), true);
   });
-  test("a straight is better than three-of-a-kind", () => {
+  it("a straight is better than three-of-a-kind", () => {
     const threeOfAKind = getBestHand(cards("Js", "5c", "Th", "Qc", "5d", "5h"));
-    expect(threeOfAKind!.type).toEqual(HandType.ThreeOfAKind);
+    assert.deepEqual(threeOfAKind!.type, HandType.ThreeOfAKind);
     const straight = getBestHand(cards("3h", "2c", "6c", "4d", "5s"));
-    expect(straight!.type).toEqual(HandType.Straight);
-    expect(isBetterThan(straight!, threeOfAKind!)).toBe(true);
+    assert.deepEqual(straight!.type, HandType.Straight);
+    assert.equal(isBetterThan(straight!, threeOfAKind!), true);
   });
-  test("a flush is better than three-of-a-kind", () => {
-    expect(
-      isBetterThan(
+  it("a flush is better than three-of-a-kind", () => {
+    assert.equal(isBetterThan(
         getBestHand(cards("Js", "2s", "7s", "As", "3s"))!,
         getBestHand(cards("Js", "5c", "Th", "Qc", "5d", "5h"))!
-      )
-    ).toBe(true);
+      ), true);
   });
-  test("a flush is better than a straight", () => {
+  it("a flush is better than a straight", () => {
     const straight = getBestHand(cards("3h", "2c", "6c", "4d", "5s"));
-    expect(straight!.type).toEqual(HandType.Straight);
+    assert.deepEqual(straight!.type, HandType.Straight);
     const flush = getBestHand(cards("Js", "5c", "Ts", "Qs", "5d", "5s", "2s"));
-    expect(isBetterThan(flush!, straight!)).toBe(true);
+    assert.equal(isBetterThan(flush!, straight!), true);
   });
-  test("a full house is better than a flush", () => {
+  it("a full house is better than a flush", () => {
     const fullHouse = getBestHand(
       cards("Js", "Jc", "Jd", "Qs", "Qd", "5s", "2s")
     );
-    expect(fullHouse!.type).toEqual(HandType.FullHouse);
+    assert.deepEqual(fullHouse!.type, HandType.FullHouse);
     const flush = getBestHand(cards("Js", "5c", "Ts", "Qs", "5d", "5s", "2s"));
-    expect(flush!.type).toEqual(HandType.Flush);
-    expect(isBetterThan(fullHouse!, flush!)).toBe(true);
+    assert.deepEqual(flush!.type, HandType.Flush);
+    assert.equal(isBetterThan(fullHouse!, flush!), true);
   });
-  test("four-of-a-kind is better than a full house", () => {
+  it("four-of-a-kind is better than a full house", () => {
     const fullHouse = getBestHand(
       cards("Js", "Jc", "Jd", "Qs", "Qd", "5s", "2s")
     );
-    expect(fullHouse!.type).toEqual(HandType.FullHouse);
+    assert.deepEqual(fullHouse!.type, HandType.FullHouse);
     const fourOfAKind = getBestHand(
       cards("Js", "Jc", "Ts", "Qs", "Jd", "5s", "Jh")
     );
-    expect(fourOfAKind!.type).toEqual(HandType.FourOfAKind);
-    expect(isBetterThan(fourOfAKind!, fullHouse!)).toBe(true);
+    assert.deepEqual(fourOfAKind!.type, HandType.FourOfAKind);
+    assert.equal(isBetterThan(fourOfAKind!, fullHouse!), true);
   });
-  test("a straight flush is better than four-of-a-kind", () => {
+  it("a straight flush is better than four-of-a-kind", () => {
     const straightFlush = getBestHand(
       cards("Js", "Ts", "9s", "Qs", "Qd", "5s", "8s")
     );
-    expect(straightFlush!.type).toEqual(HandType.StraightFlush);
+    assert.deepEqual(straightFlush!.type, HandType.StraightFlush);
     const fourOfAKind = getBestHand(
       cards("Js", "Jc", "Ts", "Qs", "Jd", "5s", "Jh")
     );
-    expect(fourOfAKind!.type).toEqual(HandType.FourOfAKind);
-    expect(isBetterThan(straightFlush!, fourOfAKind!)).toBe(true);
+    assert.deepEqual(fourOfAKind!.type, HandType.FourOfAKind);
+    assert.equal(isBetterThan(straightFlush!, fourOfAKind!), true);
   });
 
-  test("a straight flush is better with higher starting card", () => {
+  it("a straight flush is better with higher starting card", () => {
     const straightFlush = getBestHand(
       cards("Js", "Ts", "9s", "Qs", "Qd", "5s", "8s")
     );
-    expect(straightFlush!.type).toEqual(HandType.StraightFlush);
+    assert.deepEqual(straightFlush!.type, HandType.StraightFlush);
     const otherStraightFlush = getBestHand(
       cards("Js", "Ts", "9s", "Qs", "Qd", "Ks", "8s")
     );
-    expect(otherStraightFlush!.type).toEqual(HandType.StraightFlush);
-    expect(isBetterThan(otherStraightFlush!, straightFlush!)).toBe(true);
+    assert.deepEqual(otherStraightFlush!.type, HandType.StraightFlush);
+    assert.equal(isBetterThan(otherStraightFlush!, straightFlush!), true);
   });
 
-  test("four-of-a-kind is better with higher cards", () => {
+  it("four-of-a-kind is better with higher cards", () => {
     const fourOfAKind = getBestHand(
       cards("Js", "Jc", "Ts", "Qs", "Jd", "5s", "Jh")
     );
-    expect(fourOfAKind!.type).toEqual(HandType.FourOfAKind);
+    assert.deepEqual(fourOfAKind!.type, HandType.FourOfAKind);
     const otherFourOfAKind = getBestHand(
       cards("Ks", "Kc", "Ts", "Qs", "Kd", "5s", "Kh")
     );
-    expect(otherFourOfAKind!.type).toEqual(HandType.FourOfAKind);
-    expect(isBetterThan(otherFourOfAKind!, fourOfAKind!)).toBe(true);
+    assert.deepEqual(otherFourOfAKind!.type, HandType.FourOfAKind);
+    assert.equal(isBetterThan(otherFourOfAKind!, fourOfAKind!), true);
   });
 
-  test("four-of-a-kind is better with higher kicker", () => {
+  it("four-of-a-kind is better with higher kicker", () => {
     const fourOfAKind = getBestHand(
       cards("Js", "Jc", "Ts", "Qs", "Jd", "5s", "Jh")
     );
-    expect(fourOfAKind!.type).toEqual(HandType.FourOfAKind);
+    assert.deepEqual(fourOfAKind!.type, HandType.FourOfAKind);
     const otherFourOfAKind = getBestHand(
       cards("Js", "Jc", "Ts", "Ks", "Jd", "5s", "Jh")
     );
-    expect(otherFourOfAKind!.type).toEqual(HandType.FourOfAKind);
-    expect(isBetterThan(otherFourOfAKind!, fourOfAKind!)).toBe(true);
+    assert.deepEqual(otherFourOfAKind!.type, HandType.FourOfAKind);
+    assert.equal(isBetterThan(otherFourOfAKind!, fourOfAKind!), true);
   });
 
-  test("full house is better with higher card values", () => {
+  it("full house is better with higher card values", () => {
     const fullHouse = getBestHand(
       cards("Js", "Jc", "Jd", "Qs", "Qd", "5s", "2s")
     );
-    expect(fullHouse!.type).toEqual(HandType.FullHouse);
+    assert.deepEqual(fullHouse!.type, HandType.FullHouse);
     const otherFullHouse = getBestHand(
       cards("Ks", "Kc", "Kd", "Qs", "Qd", "5s", "2s")
     );
-    expect(otherFullHouse!.type).toEqual(HandType.FullHouse);
-    expect(isBetterThan(otherFullHouse!, fullHouse!)).toBe(true);
+    assert.deepEqual(otherFullHouse!.type, HandType.FullHouse);
+    assert.equal(isBetterThan(otherFullHouse!, fullHouse!), true);
   });
-  test("full house is better with higher sub values", () => {
+  it("full house is better with higher sub values", () => {
     const fullHouse = getBestHand(
       cards("Js", "Jc", "Jd", "Qs", "Qd", "5s", "2s")
     );
-    expect(fullHouse!.type).toEqual(HandType.FullHouse);
+    assert.deepEqual(fullHouse!.type, HandType.FullHouse);
     const otherFullHouse = getBestHand(
       cards("Js", "Jc", "Jd", "Ks", "Kd", "5s", "2s")
     );
-    expect(otherFullHouse!.type).toEqual(HandType.FullHouse);
-    expect(isBetterThan(otherFullHouse!, fullHouse!)).toBe(true);
+    assert.deepEqual(otherFullHouse!.type, HandType.FullHouse);
+    assert.equal(isBetterThan(otherFullHouse!, fullHouse!), true);
   });
 
-  test("a flush is better with higher first card", () => {
+  it("a flush is better with higher first card", () => {
     const flush = getBestHand(cards("Ks", "Ts", "5s", "3s", "2s"));
-    expect(flush!.type).toEqual(HandType.Flush);
+    assert.deepEqual(flush!.type, HandType.Flush);
     const otherFlush = getBestHand(cards("Ah", "Th", "5h", "3h", "2h"));
-    expect(otherFlush!.type).toEqual(HandType.Flush);
-    expect(isBetterThan(otherFlush!, flush!)).toBe(true);
+    assert.deepEqual(otherFlush!.type, HandType.Flush);
+    assert.equal(isBetterThan(otherFlush!, flush!), true);
   });
 
-  test("a flush is better with higher second card", () => {
+  it("a flush is better with higher second card", () => {
     const flush = getBestHand(cards("As", "Ts", "5s", "3s", "2s"));
-    expect(flush!.type).toEqual(HandType.Flush);
+    assert.deepEqual(flush!.type, HandType.Flush);
     const otherFlush = getBestHand(cards("Ah", "Qh", "5h", "3h", "2h"));
-    expect(otherFlush!.type).toEqual(HandType.Flush);
-    expect(isBetterThan(otherFlush!, flush!)).toBe(true);
+    assert.deepEqual(otherFlush!.type, HandType.Flush);
+    assert.equal(isBetterThan(otherFlush!, flush!), true);
   });
 
-  test("a flush is better with higher third card", () => {
+  it("a flush is better with higher third card", () => {
     const flush = getBestHand(cards("As", "Ts", "5s", "3s", "2s"));
-    expect(flush!.type).toEqual(HandType.Flush);
+    assert.deepEqual(flush!.type, HandType.Flush);
     const otherFlush = getBestHand(cards("Ah", "Th", "6h", "3h", "2h"));
-    expect(otherFlush!.type).toEqual(HandType.Flush);
-    expect(isBetterThan(otherFlush!, flush!)).toBe(true);
+    assert.deepEqual(otherFlush!.type, HandType.Flush);
+    assert.equal(isBetterThan(otherFlush!, flush!), true);
   });
 
-  test("a flush is better with higher fourth card", () => {
+  it("a flush is better with higher fourth card", () => {
     const flush = getBestHand(cards("As", "Ts", "6s", "3s", "2s"));
-    expect(flush!.type).toEqual(HandType.Flush);
+    assert.deepEqual(flush!.type, HandType.Flush);
     const otherFlush = getBestHand(cards("Ah", "Th", "6h", "4h", "2h"));
-    expect(otherFlush!.type).toEqual(HandType.Flush);
-    expect(isBetterThan(otherFlush!, flush!)).toBe(true);
+    assert.deepEqual(otherFlush!.type, HandType.Flush);
+    assert.equal(isBetterThan(otherFlush!, flush!), true);
   });
 
-  test("a flush is better with higher fifth card", () => {
+  it("a flush is better with higher fifth card", () => {
     const flush = getBestHand(cards("As", "Ts", "6s", "4s", "2s"));
-    expect(flush!.type).toEqual(HandType.Flush);
+    assert.deepEqual(flush!.type, HandType.Flush);
     const otherFlush = getBestHand(cards("Ah", "Th", "6h", "4h", "3h"));
-    expect(otherFlush!.type).toEqual(HandType.Flush);
-    expect(isBetterThan(otherFlush!, flush!)).toBe(true);
+    assert.deepEqual(otherFlush!.type, HandType.Flush);
+    assert.equal(isBetterThan(otherFlush!, flush!), true);
   });
 
-  test("a straight is better with higher first card", () => {
+  it("a straight is better with higher first card", () => {
     const straight = getBestHand(cards("7d", "5c", "6s", "4s", "3s"));
-    expect(straight!.type).toEqual(HandType.Straight);
+    assert.deepEqual(straight!.type, HandType.Straight);
     const otherStraight = getBestHand(cards("7c", "5s", "6s", "4d", "8s"));
-    expect(otherStraight!.type).toEqual(HandType.Straight);
-    expect(isBetterThan(otherStraight!, straight!)).toBe(true);
+    assert.deepEqual(otherStraight!.type, HandType.Straight);
+    assert.equal(isBetterThan(otherStraight!, straight!), true);
   });
 
-  test("three-of-a-kind is better with higher cards", () => {
+  it("three-of-a-kind is better with higher cards", () => {
     const threeOfAKind = getBestHand(cards("3h", "3d", "3c"));
-    expect(threeOfAKind!.type).toEqual(HandType.ThreeOfAKind);
+    assert.deepEqual(threeOfAKind!.type, HandType.ThreeOfAKind);
     const otherThreeOfAKind = getBestHand(cards("4h", "4d", "4c"));
-    expect(otherThreeOfAKind!.type).toEqual(HandType.ThreeOfAKind);
-    expect(isBetterThan(otherThreeOfAKind!, threeOfAKind!)).toBe(true);
+    assert.deepEqual(otherThreeOfAKind!.type, HandType.ThreeOfAKind);
+    assert.equal(isBetterThan(otherThreeOfAKind!, threeOfAKind!), true);
   });
-  test("three-of-a-kind is better with higher kicker", () => {
+  it("three-of-a-kind is better with higher kicker", () => {
     const threeOfAKind = getBestHand(cards("3h", "3d", "3c", "4c"));
-    expect(threeOfAKind!.type).toEqual(HandType.ThreeOfAKind);
+    assert.deepEqual(threeOfAKind!.type, HandType.ThreeOfAKind);
     const otherThreeOfAKind = getBestHand(cards("3h", "3d", "3c", "5c"));
-    expect(otherThreeOfAKind!.type).toEqual(HandType.ThreeOfAKind);
-    expect(isBetterThan(otherThreeOfAKind!, threeOfAKind!)).toBe(true);
+    assert.deepEqual(otherThreeOfAKind!.type, HandType.ThreeOfAKind);
+    assert.equal(isBetterThan(otherThreeOfAKind!, threeOfAKind!), true);
   });
-  test("three-of-a-kind is better with higher second kicker", () => {
+  it("three-of-a-kind is better with higher second kicker", () => {
     const threeOfAKind = getBestHand(cards("3h", "3d", "3c", "4c", "2d"));
-    expect(threeOfAKind!.type).toEqual(HandType.ThreeOfAKind);
+    assert.deepEqual(threeOfAKind!.type, HandType.ThreeOfAKind);
     const otherThreeOfAKind = getBestHand(cards("3h", "3d", "3c", "5c", "7h"));
-    expect(otherThreeOfAKind!.type).toEqual(HandType.ThreeOfAKind);
-    expect(isBetterThan(otherThreeOfAKind!, threeOfAKind!)).toBe(true);
+    assert.deepEqual(otherThreeOfAKind!.type, HandType.ThreeOfAKind);
+    assert.equal(isBetterThan(otherThreeOfAKind!, threeOfAKind!), true);
   });
 
-  test("two pair is better with higher cards", () => {
+  it("two pair is better with higher cards", () => {
     const twoPair = getBestHand(cards("7h", "7d", "9c", "9d", "2d"));
-    expect(twoPair!.type).toEqual(HandType.TwoPair);
+    assert.deepEqual(twoPair!.type, HandType.TwoPair);
     const otherTwoPair = getBestHand(cards("Th", "Td", "4c", "4d", "2d"));
-    expect(otherTwoPair!.type).toEqual(HandType.TwoPair);
-    expect(isBetterThan(otherTwoPair!, twoPair!)).toBe(true);
+    assert.deepEqual(otherTwoPair!.type, HandType.TwoPair);
+    assert.equal(isBetterThan(otherTwoPair!, twoPair!), true);
   });
 
-  test("two pair is better with higher sub cards", () => {
+  it("two pair is better with higher sub cards", () => {
     const twoPair = getBestHand(cards("Th", "Td", "8c", "8d", "2d"));
-    expect(twoPair!.type).toEqual(HandType.TwoPair);
+    assert.deepEqual(twoPair!.type, HandType.TwoPair);
     const otherTwoPair = getBestHand(cards("Th", "Td", "9c", "9d", "2d"));
-    expect(otherTwoPair!.type).toEqual(HandType.TwoPair);
-    expect(isBetterThan(otherTwoPair!, twoPair!)).toBe(true);
+    assert.deepEqual(otherTwoPair!.type, HandType.TwoPair);
+    assert.equal(isBetterThan(otherTwoPair!, twoPair!), true);
   });
 
-  test("two pair is better with higher kicker", () => {
+  it("two pair is better with higher kicker", () => {
     const twoPair = getBestHand(cards("Th", "Td", "8c", "8d", "2d"));
-    expect(twoPair!.type).toEqual(HandType.TwoPair);
+    assert.deepEqual(twoPair!.type, HandType.TwoPair);
     const otherTwoPair = getBestHand(cards("Th", "Td", "8c", "8d", "3d"));
-    expect(otherTwoPair!.type).toEqual(HandType.TwoPair);
-    expect(isBetterThan(otherTwoPair!, twoPair!)).toBe(true);
+    assert.deepEqual(otherTwoPair!.type, HandType.TwoPair);
+    assert.equal(isBetterThan(otherTwoPair!, twoPair!), true);
   });
 
-  test("pair is better with higher cards", () => {
+  it("pair is better with higher cards", () => {
     const pair = getBestHand(cards("Th", "Td", "8c", "9d", "2d"));
-    expect(pair!.type).toEqual(HandType.Pair);
+    assert.deepEqual(pair!.type, HandType.Pair);
     const otherPair = getBestHand(cards("Jh", "Jd", "8c", "9d", "3d"));
-    expect(otherPair!.type).toEqual(HandType.Pair);
-    expect(isBetterThan(otherPair!, pair!)).toBe(true);
+    assert.deepEqual(otherPair!.type, HandType.Pair);
+    assert.equal(isBetterThan(otherPair!, pair!), true);
   });
-  test("pair is better with higher kicker", () => {
+  it("pair is better with higher kicker", () => {
     const pair = getBestHand(cards("Th", "Td", "7c", "8d", "2d"));
-    expect(pair!.type).toEqual(HandType.Pair);
+    assert.deepEqual(pair!.type, HandType.Pair);
     const otherPair = getBestHand(cards("Th", "Td", "7c", "9d", "3d"));
-    expect(otherPair!.type).toEqual(HandType.Pair);
-    expect(isBetterThan(otherPair!, pair!)).toBe(true);
+    assert.deepEqual(otherPair!.type, HandType.Pair);
+    assert.equal(isBetterThan(otherPair!, pair!), true);
   });
-  test("pair is better with higher second kicker", () => {
+  it("pair is better with higher second kicker", () => {
     const pair = getBestHand(cards("Th", "Td", "7c", "9d", "2d"));
-    expect(pair!.type).toEqual(HandType.Pair);
+    assert.deepEqual(pair!.type, HandType.Pair);
     const otherPair = getBestHand(cards("Th", "Td", "8c", "9d", "3d"));
-    expect(otherPair!.type).toEqual(HandType.Pair);
-    expect(isBetterThan(otherPair!, pair!)).toBe(true);
+    assert.deepEqual(otherPair!.type, HandType.Pair);
+    assert.equal(isBetterThan(otherPair!, pair!), true);
   });
-  test("pair is better with higher third kicker", () => {
+  it("pair is better with higher third kicker", () => {
     const pair = getBestHand(cards("Th", "Td", "7c", "9d", "2d"));
-    expect(pair!.type).toEqual(HandType.Pair);
+    assert.deepEqual(pair!.type, HandType.Pair);
     const otherPair = getBestHand(cards("Th", "Td", "7c", "9d", "3d"));
-    expect(otherPair!.type).toEqual(HandType.Pair);
-    expect(isBetterThan(otherPair!, pair!)).toBe(true);
+    assert.deepEqual(otherPair!.type, HandType.Pair);
+    assert.equal(isBetterThan(otherPair!, pair!), true);
   });
 
-  test("high card is better with higher card", () => {
+  it("high card is better with higher card", () => {
     const highCard = getBestHand(cards("Ts", "8c", "6h", "4d", "3c"));
-    expect(highCard!.type).toEqual(HandType.HighCard);
+    assert.deepEqual(highCard!.type, HandType.HighCard);
     const otherHighCard = getBestHand(cards("Js", "8c", "6h", "4d", "3c"));
-    expect(otherHighCard!.type).toEqual(HandType.HighCard);
-    expect(isBetterThan(otherHighCard!, highCard!)).toBe(true);
+    assert.deepEqual(otherHighCard!.type, HandType.HighCard);
+    assert.equal(isBetterThan(otherHighCard!, highCard!), true);
   });
-  test("high card is better with higher kicker", () => {
+  it("high card is better with higher kicker", () => {
     const highCard = getBestHand(cards("Js", "8c", "6h", "4d", "3c"));
-    expect(highCard!.type).toEqual(HandType.HighCard);
+    assert.deepEqual(highCard!.type, HandType.HighCard);
     const otherHighCard = getBestHand(cards("Js", "9c", "6h", "4d", "3c"));
-    expect(otherHighCard!.type).toEqual(HandType.HighCard);
-    expect(isBetterThan(otherHighCard!, highCard!)).toBe(true);
+    assert.deepEqual(otherHighCard!.type, HandType.HighCard);
+    assert.equal(isBetterThan(otherHighCard!, highCard!), true);
   });
-  test("high card is better with higher second kicker", () => {
+  it("high card is better with higher second kicker", () => {
     const highCard = getBestHand(cards("Js", "9c", "6h", "4d", "3c"));
-    expect(highCard!.type).toEqual(HandType.HighCard);
+    assert.deepEqual(highCard!.type, HandType.HighCard);
     const otherHighCard = getBestHand(cards("Js", "9c", "7h", "4d", "3c"));
-    expect(otherHighCard!.type).toEqual(HandType.HighCard);
-    expect(isBetterThan(otherHighCard!, highCard!)).toBe(true);
+    assert.deepEqual(otherHighCard!.type, HandType.HighCard);
+    assert.equal(isBetterThan(otherHighCard!, highCard!), true);
   });
-  test("high card is better with higher third kicker", () => {
+  it("high card is better with higher third kicker", () => {
     const highCard = getBestHand(cards("Js", "9c", "7h", "4d", "3c"));
-    expect(highCard!.type).toEqual(HandType.HighCard);
+    assert.deepEqual(highCard!.type, HandType.HighCard);
     const otherHighCard = getBestHand(cards("Js", "9c", "7h", "5d", "3c"));
-    expect(otherHighCard!.type).toEqual(HandType.HighCard);
-    expect(isBetterThan(otherHighCard!, highCard!)).toBe(true);
+    assert.deepEqual(otherHighCard!.type, HandType.HighCard);
+    assert.equal(isBetterThan(otherHighCard!, highCard!), true);
   });
 
-  test("high card is better with higher fourth kicker", () => {
+  it("high card is better with higher fourth kicker", () => {
     const highCard = getBestHand(cards("Js", "9c", "7h", "5d", "3c"));
-    expect(highCard!.type).toEqual(HandType.HighCard);
+    assert.deepEqual(highCard!.type, HandType.HighCard);
     const otherHighCard = getBestHand(cards("Js", "9c", "7h", "5d", "4c"));
-    expect(otherHighCard!.type).toEqual(HandType.HighCard);
-    expect(isBetterThan(otherHighCard!, highCard!)).toBe(true);
+    assert.deepEqual(otherHighCard!.type, HandType.HighCard);
+    assert.equal(isBetterThan(otherHighCard!, highCard!), true);
   });
 
-  test("high cards are equal when their best five cards are", () => {
+  it("high cards are equal when their best five cards are", () => {
     // both play A K Q J 9; the 7 and the 6 don't play
     const highCard = getBestHand(
       cards("As", "Kd", "Qc", "Jh", "9s", "7h", "2c")
@@ -308,10 +302,10 @@ describe("compare hands", () => {
     const otherHighCard = getBestHand(
       cards("As", "Kd", "Qc", "Jh", "9s", "6d", "3s")
     );
-    expect(highCard!.type).toEqual(HandType.HighCard);
-    expect(isBetterThan(highCard!, otherHighCard!)).toBe(false);
-    expect(isBetterThan(otherHighCard!, highCard!)).toBe(false);
-    expect(hasEqualValue(highCard!, otherHighCard!)).toBe(true);
+    assert.deepEqual(highCard!.type, HandType.HighCard);
+    assert.equal(isBetterThan(highCard!, otherHighCard!), false);
+    assert.equal(isBetterThan(otherHighCard!, highCard!), false);
+    assert.equal(hasEqualValue(highCard!, otherHighCard!), true);
   });
 });
 
@@ -325,15 +319,15 @@ describe("compare hands consistently", () => {
     ["three-of-a-kind", ["3h", "3d", "3c", "Kc", "2d"], ["3s", "3d", "3c", "Qc", "Jd"]],
   ];
 
-  test.each(pairs)("%s: higher leading card wins over higher trailing cards", (_, better, worse) => {
+  for (const [label, better, worse] of pairs) it(`${label}: higher leading card wins over higher trailing cards`, () => {
     const a = getBestHand(cards(...better))!;
     const b = getBestHand(cards(...worse))!;
-    expect(a.type).toEqual(b.type);
-    expect(isBetterThan(a, b)).toBe(true);
-    expect(isBetterThan(b, a)).toBe(false);
+    assert.deepEqual(a.type, b.type);
+    assert.equal(isBetterThan(a, b), true);
+    assert.equal(isBetterThan(b, a), false);
   });
 
-  test("exactly one of a > b, b > a or a == b holds for random 7-card hands", () => {
+  it("exactly one of a > b, b > a or a == b holds for random 7-card hands", () => {
     // seeded so failures are reproducible
     const random = seededRandom(42);
     const draw = () => randomCards(random, 7);
@@ -342,7 +336,7 @@ describe("compare hands consistently", () => {
       const a = getBestHand(draw())!;
       const b = getBestHand(draw())!;
       const outcomes = [isBetterThan(a, b), isBetterThan(b, a), hasEqualValue(a, b)];
-      expect(outcomes.filter(Boolean)).toHaveLength(1);
+      assert.equal(outcomes.filter(Boolean).length, 1);
     }
   });
 });

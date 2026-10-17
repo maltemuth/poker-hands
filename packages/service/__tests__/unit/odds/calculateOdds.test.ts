@@ -1,3 +1,5 @@
+import assert from "node:assert/strict";
+import { describe, it } from "node:test";
 import calculateOdds from "../../../src/odds/calculateOdds.js";
 
 describe("calculateOdds", () => {
@@ -10,7 +12,7 @@ describe("calculateOdds", () => {
       board: ["8c", "7d", "5h", "3s", "2c"],
     });
 
-    expect(result).toEqual({
+    assert.deepEqual(result, {
       players: [
         { holeCards: ["As", "Kd"], winChance: 1, tieChance: 0 },
         { holeCards: ["Ah", "9c"], winChance: 0, tieChance: 0 },
@@ -28,11 +30,14 @@ describe("calculateOdds", () => {
       board: ["Ac", "Kc", "7h"],
     });
 
-    expect(result.players.map((player) => player.holeCards)).toEqual([
-      ["2c", "3d"],
-      ["Ah", "As"],
-      ["Kd", "Kh"],
-    ]);
+    assert.deepEqual(
+      result.players.map((player) => player.holeCards),
+      [
+        ["2c", "3d"],
+        ["Ah", "As"],
+        ["Kd", "Kh"],
+      ]
+    );
   });
 
   it("calculates exactly", () => {
@@ -45,8 +50,8 @@ describe("calculateOdds", () => {
     });
 
     // 44 possible rivers
-    expect(Number.isInteger(result.players[0].winChance * 44)).toBe(true);
-    expect(Object.keys(result.players[0])).toEqual([
+    assert.equal(Number.isInteger(result.players[0].winChance * 44), true);
+    assert.deepEqual(Object.keys(result.players[0]), [
       "holeCards",
       "winChance",
       "tieChance",
@@ -54,13 +59,13 @@ describe("calculateOdds", () => {
   });
 
   it("rejects duplicate cards", () => {
-    expect(() =>
+    assert.throws(() =>
       calculateOdds({
         holes: [
           ["Ah", "As"],
           ["Ah", "Kh"],
         ],
       })
-    ).toThrow();
+    );
   });
 });

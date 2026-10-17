@@ -1,29 +1,31 @@
+import assert from "node:assert/strict";
+import { describe, it } from "node:test";
 import combinations from "../../helpers/combinations.js";
 
 describe("ordered combinations of a given length", () => {
-  test("picking nothing yields exactly one empty combination", () => {
-    expect(combinations([], 0)).toEqual([[]]);
-    expect(combinations([0, 1, 2], 0)).toEqual([[]]);
+  it("picking nothing yields exactly one empty combination", () => {
+    assert.deepEqual(combinations([], 0), [[]]);
+    assert.deepEqual(combinations([0, 1, 2], 0), [[]]);
   });
 
-  test("combinations of length 1 are the items themselves", () => {
-    expect(combinations([0, 1, 2], 1)).toEqual([[0], [1], [2]]);
+  it("combinations of length 1 are the items themselves", () => {
+    assert.deepEqual(combinations([0, 1, 2], 1), [[0], [1], [2]]);
   });
 
-  test("combinations of maximum length are the items themselves", () => {
-    expect(combinations([0, 1, 2], 3)).toEqual([[0, 1, 2]]);
+  it("combinations of maximum length are the items themselves", () => {
+    assert.deepEqual(combinations([0, 1, 2], 3), [[0, 1, 2]]);
   });
 
-  test("combinations of length 2 out of 3 elements", () => {
-    expect(combinations([0, 1, 2], 2)).toEqual([
+  it("combinations of length 2 out of 3 elements", () => {
+    assert.deepEqual(combinations([0, 1, 2], 2), [
       [0, 1],
       [0, 2],
       [1, 2],
     ]);
   });
 
-  test("combinations of length 3 out of 4 elements", () => {
-    expect(combinations([0, 1, 2, 3], 3)).toEqual([
+  it("combinations of length 3 out of 4 elements", () => {
+    assert.deepEqual(combinations([0, 1, 2, 3], 3), [
       [0, 1, 2],
       [0, 1, 3],
       [0, 2, 3],
@@ -31,8 +33,8 @@ describe("ordered combinations of a given length", () => {
     ]);
   });
 
-  test("combinations of length 3 out of 5 elements", () => {
-    expect(combinations([0, 1, 2, 3, 4], 3)).toEqual([
+  it("combinations of length 3 out of 5 elements", () => {
+    assert.deepEqual(combinations([0, 1, 2, 3, 4], 3), [
       [0, 1, 2],
       [0, 1, 3],
       [0, 1, 4],
@@ -46,8 +48,8 @@ describe("ordered combinations of a given length", () => {
     ]);
   });
 
-  test("combinations of length 2 out of 6 elements", () => {
-    expect(combinations([0, 1, 2, 3, 4, 5], 2)).toEqual([
+  it("combinations of length 2 out of 6 elements", () => {
+    assert.deepEqual(combinations([0, 1, 2, 3, 4, 5], 2), [
       [0, 1],
       [0, 2],
       [0, 3],

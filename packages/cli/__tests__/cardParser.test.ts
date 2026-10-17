@@ -1,23 +1,25 @@
+import assert from "node:assert/strict";
+import { describe, it } from "node:test";
 import { parseCards } from "../src/utils/cardParser.js";
 import { cards } from "@malte.muth/poker-hands";
 
 describe("parseCards", () => {
   it("parses concatenated cards", () => {
-    expect(parseCards("AhKd2c")).toEqual(cards("Ah", "Kd", "2c"));
+    assert.deepEqual(parseCards("AhKd2c"), cards("Ah", "Kd", "2c"));
   });
 
   it("parses cards separated by whitespace", () => {
-    expect(parseCards("Ah Kd  2c")).toEqual(cards("Ah", "Kd", "2c"));
-    expect(parseCards(" Ah\tKd ")).toEqual(cards("Ah", "Kd"));
+    assert.deepEqual(parseCards("Ah Kd  2c"), cards("Ah", "Kd", "2c"));
+    assert.deepEqual(parseCards(" Ah\tKd "), cards("Ah", "Kd"));
   });
 
   it("parses an empty or blank input as no cards", () => {
-    expect(parseCards("")).toEqual([]);
-    expect(parseCards("  ")).toEqual([]);
+    assert.deepEqual(parseCards(""), []);
+    assert.deepEqual(parseCards("  "), []);
   });
 
   it("rejects anything that is not a card", () => {
-    expect(() => parseCards("AhXx")).toThrow();
-    expect(() => parseCards("Ah, Kd")).toThrow();
+    assert.throws(() => parseCards("AhXx"));
+    assert.throws(() => parseCards("Ah, Kd"));
   });
 });

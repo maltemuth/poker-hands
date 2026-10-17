@@ -1,3 +1,5 @@
+import assert from "node:assert/strict";
+import { describe, it, mock } from "node:test";
 import { readFileSync } from "fs";
 import { join } from "path";
 import { createProgram } from "../src/cli.js";
@@ -5,13 +7,11 @@ import { createProgram } from "../src/cli.js";
 /** Runs the CLI in-process and returns everything written to stdout. */
 const run = (...args: string[]): string => {
   const output: string[] = [];
-  const log = jest
-    .spyOn(console, "log")
-    .mockImplementation((line: string) => output.push(line));
+  const log = mock.method(console, "log", (line: string) => output.push(line));
   try {
     createProgram().exitOverride().parse(args, { from: "user" });
   } finally {
-    log.mockRestore();
+    log.mock.restore();
   }
   return output.join("\n");
 };
@@ -28,12 +28,10 @@ class Exited extends Error {
  */
 const runFailing = (...args: string[]) => {
   const errors: string[] = [];
-  const error = jest
-    .spyOn(console, "error")
-    .mockImplementation((...parts: unknown[]) => {
-      errors.push(parts.join(" "));
-    });
-  const exit = jest.spyOn(process, "exit").mockImplementation((code) => {
+  const error = mock.method(console, "error", (...parts: unknown[]) => {
+    errors.push(parts.join(" "));
+  });
+  const exit = mock.method(process, "exit", (code?: number | string | null) => {
     throw new Exited(code);
   });
   let stdout = "";
@@ -44,8 +42,8 @@ const runFailing = (...args: string[]) => {
     if (!(thrown instanceof Exited)) throw thrown;
     exitCode = thrown.code;
   } finally {
-    error.mockRestore();
-    exit.mockRestore();
+    error.mock.restore();
+    exit.mock.restore();
   }
   return { stdout, stderr: errors.join("\n"), exitCode };
 };
@@ -53,23 +51,24 @@ const runFailing = (...args: string[]) => {
 describe("poker-hands CLI", () => {
   describe("package entry point", () => {
     const manifest = JSON.parse(
-      readFileSync(join(__dirname, "../package.json"), "utf8")
+      readFileSync(join(import.meta.dirname, "../package.json"), "utf8")
     );
 
     it("points the bin at the CLI program, not the type barrel", () => {
-      expect(manifest.bin["poker-hands"]).toBe("dist/cli.js");
-      expect(manifest.main).toBe("dist/index.js");
+      assert.equal(manifest.bin["poker-hands"], "dist/cli.js");
+      assert.equal(manifest.main, "dist/index.js");
     });
 
     it("starts with a node shebang so it is executable", () => {
-      const source = readFileSync(join(__dirname, "../src/cli.ts"), "utf8");
-      expect(source.startsWith("#!/usr/bin/env node\n")).toBe(true);
+      const source = readFileSync(join(import.meta.dirname, "../src/cli.ts"), "utf8");
+      assert.equal(source.startsWith("#!/usr/bin/env node\n"), true);
     });
   });
 
   describe("odds", () => {
     it("prints each player's win chance and the tie chance", () => {
-      expect(run("odds", "AhAs", "KdKc")).toBe(
+      assert.equal(
+        run("odds", "AhAs", "KdKc"),
         [
           "Winning Odds:",
           "Player 1 (AhAs): 81.06% win, 0.38% tie",
@@ -79,7 +78,8 @@ describe("poker-hands CLI", () => {
     });
 
     it("prints every player of a multi-way pot", () => {
-      expect(run("odds", "AhAs", "KdKc", "QhQd")).toBe(
+      assert.equal(
+        run("odds", "AhAs", "KdKc", "QhQd"),
         [
           "Winning Odds:",
           "Player 1 (AhAs): 66.74% win, 0.40% tie",
@@ -95,38 +95,40 @@ describe("poker-hands CLI", () => {
       // the straight on the board, so all three tie
       const output = run("odds", "7h2c", "7d3s", "AsKs", "--board", "8c9dTsJh");
 
-      expect(output).toMatch(/Player 1 \(7h2c\): 0\.00% win, \d+\.\d{2}% tie/);
+      assert.match(output, /Player 1 \(7h2c\): 0\.00% win, \d+\.\d{2}% tie/);
       const ties = [...output.matchAll(/win, (\d+\.\d{2})% tie/g)].map(
         (match) => match[1]
       );
-      expect(ties[0]).toBe(ties[1]);
-      expect(ties[2]).not.toBe(ties[0]);
+      assert.equal(ties[0], ties[1]);
+      assert.notEqual(ties[2], ties[0]);
     });
 
     it("resolves a known river exactly", () => {
       const output = run("odds", "AsKd", "Ah9c", "--board", "8c7d5h3s2c");
 
-      expect(output).toContain("Player 1 (AsKd): 100.00% win, 0.00% tie");
-      expect(output).toContain("Player 2 (Ah9c): 0.00% win, 0.00% tie");
+      assert.ok(output.includes("Player 1 (AsKd): 100.00% win, 0.00% tie"));
+      assert.ok(output.includes("Player 2 (Ah9c): 0.00% win, 0.00% tie"));
     });
 
     it("shows the progress before the result with --progress", () => {
       const writes: string[] = [];
-      const write = jest
-        .spyOn(process.stdout, "write")
-        .mockImplementation((chunk: string | Uint8Array) => {
+      const write = mock.method(
+        process.stdout,
+        "write",
+        (chunk: string | Uint8Array) => {
           writes.push(String(chunk));
           return true;
-        });
+        }
+      );
       let output: string;
       try {
         // 990 remaining boards: progress is reported every 100 and at the end
         output = run("odds", "AhAs", "KdKc", "--board", "2c7d9h", "--progress");
       } finally {
-        write.mockRestore();
+        write.mock.restore();
       }
 
-      expect(writes).toEqual([
+      assert.deepEqual(writes, [
         "\r10",
         "\r20",
         "\r30",
@@ -139,18 +141,18 @@ describe("poker-hands CLI", () => {
         "\r100",
         "\r",
       ]);
-      expect(output).toContain("Player 1 (AhAs):");
+      assert.ok(output.includes("Player 1 (AhAs):"));
     });
 
     it("accepts a space-separated board", () => {
       const output = run("odds", "AsKd", "Ah9c", "--board", "8c 7d 5h 3s 2c");
 
-      expect(output).toContain("Player 1 (AsKd): 100.00% win");
+      assert.ok(output.includes("Player 1 (AsKd): 100.00% win"));
     });
   });
 
   describe("invalid input", () => {
-    it.each([
+    for (const [label, args, message] of [
       [
         "a card used twice in odds",
         ["odds", "AhAs", "AhKh"],
@@ -176,16 +178,18 @@ describe("poker-hands CLI", () => {
         ["percentages", "AhKh", "Zz"],
         "Error: Could not convert string Z to a card value.",
       ],
-    ])("reports %s on stderr and exits with 1", (_, args, message) => {
-      const result = runFailing(...args);
+    ])
+      it(`reports ${label} on stderr and exits with 1`, () => {
+        const result = runFailing(...args);
 
-      expect(result).toEqual({ stdout: "", stderr: message, exitCode: 1 });
-    });
+        assert.deepEqual(result, { stdout: "", stderr: message, exitCode: 1 });
+      });
   });
 
   describe("percentages", () => {
     it("prints the percentage of every hand type", () => {
-      expect(run("percentages", "AhKh", "QhJh2c")).toBe(
+      assert.equal(
+        run("percentages", "AhKh", "QhJh2c"),
         [
           "Hand Type Percentages:",
           "High Card: 17.48%",
@@ -204,8 +208,10 @@ describe("poker-hands CLI", () => {
     });
 
     it("accepts the board as separate arguments", () => {
-      expect(run("percentages", "AhKh", "QhJhTh", "2c", "3d")).toContain(
-        "Royal Flush: 100.00%"
+      assert.ok(
+        run("percentages", "AhKh", "QhJhTh", "2c", "3d").includes(
+          "Royal Flush: 100.00%"
+        )
       );
     });
   });

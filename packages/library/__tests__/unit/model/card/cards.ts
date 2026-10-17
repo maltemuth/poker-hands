@@ -1,9 +1,11 @@
+import assert from "node:assert/strict";
+import { describe, it } from "node:test";
 import cards from "../../../../src/model/card/cards.js";
 import { Suit, Value } from "../../../../src/model/card/Card.js";
 
 describe("convert a list of strings to cards", () => {
-  test("convert 3 cards", () => {
-    expect(cards("Qd", "3c", "As", "7h")).toEqual([
+  it("convert 3 cards", () => {
+    assert.deepEqual(cards("Qd", "3c", "As", "7h"), [
       {
         suit: Suit.diamonds,
         value: Value.queen,

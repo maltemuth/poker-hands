@@ -1,3 +1,5 @@
+import assert from "node:assert/strict";
+import { describe, it } from "node:test";
 import { validateRequestBody } from "../../../src/validation/requestValidator.js";
 
 // the rules come from openapi.yaml; the messages are the service's own
@@ -13,7 +15,7 @@ describe("validateRequestBody", () => {
       };
 
       const result = validateRequestBody("/api/odds", input);
-      expect(result).toBeNull();
+      assert.equal(result, null);
     });
 
     it("should return null for valid input with holes only", () => {
@@ -25,7 +27,7 @@ describe("validateRequestBody", () => {
       };
 
       const result = validateRequestBody("/api/odds", input);
-      expect(result).toBeNull();
+      assert.equal(result, null);
     });
 
     it("should return error when holes is not provided", () => {
@@ -34,7 +36,7 @@ describe("validateRequestBody", () => {
       };
 
       const result = validateRequestBody("/api/odds", input);
-      expect(result).toEqual({
+      assert.deepEqual(result, {
         error: "Holes must be provided as an array with at least 2 players",
       });
     });
@@ -45,7 +47,7 @@ describe("validateRequestBody", () => {
       };
 
       const result = validateRequestBody("/api/odds", input);
-      expect(result).toEqual({
+      assert.deepEqual(result, {
         error: "Holes must be provided as an array with at least 2 players",
       });
     });
@@ -59,7 +61,7 @@ describe("validateRequestBody", () => {
       };
 
       const result = validateRequestBody("/api/odds", input);
-      expect(result).toEqual({
+      assert.deepEqual(result, {
         error: "Player 1 must have exactly 2 hole cards",
       });
     });
@@ -70,7 +72,7 @@ describe("validateRequestBody", () => {
       };
 
       const result = validateRequestBody("/api/odds", input);
-      expect(result).toEqual({
+      assert.deepEqual(result, {
         error: "Player 1 must have exactly 2 hole cards",
       });
     });
@@ -84,7 +86,7 @@ describe("validateRequestBody", () => {
       };
 
       const result = validateRequestBody("/api/odds", input);
-      expect(result).toEqual({
+      assert.deepEqual(result, {
         error: "Invalid card format: Kx",
       });
     });
@@ -98,7 +100,7 @@ describe("validateRequestBody", () => {
       };
 
       const result = validateRequestBody("/api/odds", input);
-      expect(result).toEqual({
+      assert.deepEqual(result, {
         error: "Invalid card format: 123",
       });
     });
@@ -113,7 +115,7 @@ describe("validateRequestBody", () => {
       };
 
       const result = validateRequestBody("/api/odds", input);
-      expect(result).toEqual({
+      assert.deepEqual(result, {
         error: "Invalid board card format: not an array",
       });
     });
@@ -128,7 +130,7 @@ describe("validateRequestBody", () => {
       };
 
       const result = validateRequestBody("/api/odds", input);
-      expect(result).toEqual({
+      assert.deepEqual(result, {
         error: "Maximum 5 board cards allowed",
       });
     });
@@ -143,7 +145,7 @@ describe("validateRequestBody", () => {
       };
 
       const result = validateRequestBody("/api/odds", input);
-      expect(result).toEqual({
+      assert.deepEqual(result, {
         error: "Invalid board card format: 9x",
       });
     });
@@ -158,7 +160,7 @@ describe("validateRequestBody", () => {
       };
 
       const result = validateRequestBody("/api/odds", input);
-      expect(result).toBeNull();
+      assert.equal(result, null);
     });
   });
 
@@ -168,47 +170,51 @@ describe("validateRequestBody", () => {
       .map((value) => [`${value}h`, `${value}d`]);
 
     it("should accept 10 players", () => {
-      expect(validateRequestBody("/api/odds", { holes })).toBeNull();
+      assert.equal(validateRequestBody("/api/odds", { holes }), null);
     });
 
     it("should return error for more than 10 players", () => {
-      expect(
-        validateRequestBody("/api/odds", { holes: [...holes, ["4h", "4d"]] })
-      ).toEqual({ error: "At most 10 players allowed" });
+      assert.deepEqual(
+        validateRequestBody("/api/odds", { holes: [...holes, ["4h", "4d"]] }),
+        { error: "At most 10 players allowed" }
+      );
     });
   });
 
   describe("odds requests from older clients", () => {
     it("should ignore the options of Monte Carlo and auto mode", () => {
-      expect(
+      assert.equal(
         validateRequestBody("/api/odds", {
           holes: [
             ["Ah", "Kh"],
             ["7c", "2d"],
           ],
           options: { mode: "monteCarlo", sampleSize: 50000 },
-        })
-      ).toBeNull();
+        }),
+        null
+      );
     });
   });
 
   describe("percentages requests", () => {
     it("should accept a single player", () => {
-      expect(
-        validateRequestBody("/api/percentages", { holes: [["Ah", "Kh"]] })
-      ).toBeNull();
+      assert.equal(
+        validateRequestBody("/api/percentages", { holes: [["Ah", "Kh"]] }),
+        null
+      );
     });
 
     it("should accept several players and a board", () => {
-      expect(
+      assert.equal(
         validateRequestBody("/api/percentages", {
           holes: [
             ["Ah", "Kh"],
             ["7c", "2d"],
           ],
           board: ["Ts", "9h", "8c"],
-        })
-      ).toBeNull();
+        }),
+        null
+      );
     });
 
     it("should accept at most 10 players", () => {
@@ -216,41 +222,44 @@ describe("validateRequestBody", () => {
         .split("")
         .map((value) => [`${value}h`, `${value}d`]);
 
-      expect(validateRequestBody("/api/percentages", { holes })).toBeNull();
-      expect(
+      assert.equal(validateRequestBody("/api/percentages", { holes }), null);
+      assert.deepEqual(
         validateRequestBody("/api/percentages", {
           holes: [...holes, ["4h", "4d"]],
-        })
-      ).toEqual({ error: "At most 10 players allowed" });
+        }),
+        { error: "At most 10 players allowed" }
+      );
     });
 
     it("should require at least one player", () => {
-      expect(validateRequestBody("/api/percentages", { holes: [] })).toEqual({
+      assert.deepEqual(validateRequestBody("/api/percentages", { holes: [] }), {
         error: "Holes must be provided as an array with at least 1 player",
       });
     });
 
     it("should validate hole cards like odds", () => {
-      expect(
-        validateRequestBody("/api/percentages", { holes: [["Ah", "Xx"]] })
-      ).toEqual({
-        error: "Invalid card format: Xx",
-      });
+      assert.deepEqual(
+        validateRequestBody("/api/percentages", { holes: [["Ah", "Xx"]] }),
+        {
+          error: "Invalid card format: Xx",
+        }
+      );
     });
 
     it("should validate the board like odds", () => {
-      expect(
+      assert.deepEqual(
         validateRequestBody("/api/percentages", {
           holes: [["Ah", "Kh"]],
           board: ["2c", "3c", "4c", "5c", "6c", "7c"],
-        })
-      ).toEqual({ error: "Maximum 5 board cards allowed" });
+        }),
+        { error: "Maximum 5 board cards allowed" }
+      );
     });
   });
 
   describe("requests without a body", () => {
     it("should report the missing holes", () => {
-      expect(validateRequestBody("/api/odds", undefined)).toEqual({
+      assert.deepEqual(validateRequestBody("/api/odds", undefined), {
         error: "Holes must be provided as an array with at least 2 players",
       });
     });

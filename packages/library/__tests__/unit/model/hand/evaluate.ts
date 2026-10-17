@@ -1,10 +1,12 @@
+import assert from "node:assert/strict";
+import { describe, it } from "node:test";
 import evaluate from "../../../../src/model/hand/evaluate.js";
 import handRank from "../../../../src/model/hand/handRank.js";
 import getBestHand from "../../../../src/model/hand/getBestHand.js";
 import cards from "../../../../src/model/card/cards.js";
 
 describe("evaluate", () => {
-  test.each([
+  for (const [label, input, expected] of [
     // one hand of each type
     ["high card", ["As", "Kd", "Qc", "Jh", "9s", "7h", "2c"], 0x1edcb9],
     ["pair", ["Jh", "Jd", "4s", "9c", "2d", "Ac", "3h"], 0x2bbe94],
@@ -55,25 +57,27 @@ describe("evaluate", () => {
       ["7h", "7d", "7s", "7c", "Kd", "Kh", "Ks"],
       0x87777d,
     ],
-  ])("%s", (_, input, expected) => {
-    const hand = getBestHand(cards(...input));
-    if (!hand) throw new Error("no hand");
+  ] as [string, string[], number][])
+    it(label, () => {
+      const hand = getBestHand(cards(...input));
+      if (!hand) throw new Error("no hand");
 
-    expect(evaluate(cards(...input))).toBe(expected);
-    expect(evaluate(cards(...input))).toBe(handRank(hand));
-  });
+      assert.equal(evaluate(cards(...input)), expected);
+      assert.equal(evaluate(cards(...input)), handRank(hand));
+    });
 
-  test("the order of the cards doesn't matter", () => {
-    expect(evaluate(cards("2c", "9d", "Ks", "9c", "Kh", "4h", "Kd"))).toBe(
+  it("the order of the cards doesn't matter", () => {
+    assert.equal(
+      evaluate(cards("2c", "9d", "Ks", "9c", "Kh", "4h", "Kd")),
       0x7ddd99
     );
   });
 
-  test("calls don't affect each other", () => {
+  it("calls don't affect each other", () => {
     const flush = cards("Ah", "3h", "9h", "Kh", "5h");
     const pair = cards("Jh", "Jd", "4s", "9c", "2d");
-    expect(evaluate(flush)).toBe(0x6ed953);
-    expect(evaluate(pair)).toBe(0x2bb942);
-    expect(evaluate(flush)).toBe(0x6ed953);
+    assert.equal(evaluate(flush), 0x6ed953);
+    assert.equal(evaluate(pair), 0x2bb942);
+    assert.equal(evaluate(flush), 0x6ed953);
   });
 });

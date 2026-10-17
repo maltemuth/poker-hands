@@ -29,7 +29,7 @@
     "lint": "eslint src __tests__ index.ts --ext .ts",
     "clean": "rm -rf dist",
     "start": "tsx src/cli.ts",
-    "test": "npm run typecheck && jest",
+    "test": "npm run typecheck && tsx --tsconfig tsconfig.test.json --test \"__tests__/**/*.test.ts\"",
     "typecheck": "tsc -p tsconfig.test.json",
     "prepack": "npm run build"
   },
@@ -38,12 +38,8 @@
     "commander": "^15.0.0"
   },
   "devDependencies": {
-    "@swc/core": "^1.16.2",
-    "@swc/jest": "^0.2.39",
-    "@types/jest": "^30.0.0",
     "@types/node": "^24.19.0",
     "globals": "^17.12.0",
-    "jest": "^30.5.2",
     "jiti": "^2.7.0",
     "tsx": "^4.23.15",
     "typescript": "^6.0.3"

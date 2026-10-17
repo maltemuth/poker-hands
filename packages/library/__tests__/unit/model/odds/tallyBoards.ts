@@ -1,3 +1,6 @@
+import assert from "node:assert/strict";
+import { describe, it } from "node:test";
+import { assertCloseTo } from "../../../helpers/assert.js";
 import tallyBoards from "../../../../src/model/odds/tallyBoards.js";
 import winningHoles from "../../../helpers/winningHoles.js";
 import combinations from "../../../helpers/combinations.js";
@@ -23,7 +26,7 @@ const reference = (holes: Card[][], board: Card[]) => {
 };
 
 describe("tallyBoards", () => {
-  test.each([
+  for (const [label, holeInput, boardInput] of [
     [
       "complete board",
       [
@@ -81,16 +84,18 @@ describe("tallyBoards", () => {
       ],
       ["Jh", "Th"],
     ],
-  ])("%s: same result as building every board", (_, holeInput, boardInput) => {
-    const holes = holeInput.map((hole) => cards(...hole));
-    const board = cards(...boardInput);
+  ] as [string, string[][], string[]][])
+    it(`${label}: same result as building every board`, () => {
+      const holes = holeInput.map((hole) => cards(...hole));
+      const board = cards(...boardInput);
 
-    expect(tallyBoards(holes, board, restOf(holes, board))).toEqual(
-      reference(holes, board)
-    );
-  });
+      assert.deepEqual(
+        tallyBoards(holes, board, restOf(holes, board)),
+        reference(holes, board)
+      );
+    });
 
-  test("reports progress every 100 boards and at the end", () => {
+  it("reports progress every 100 boards and at the end", () => {
     const holes = [cards("Ah", "As"), cards("Td", "Tc")];
     const board = cards("7c", "7d", "6s");
     const progress: number[] = [];
@@ -100,8 +105,8 @@ describe("tallyBoards", () => {
     );
 
     // 990 boards: 9 reports at every 100th board, one at the end
-    expect(progress).toHaveLength(10);
-    expect(progress[0]).toBeCloseTo(100 / 990);
-    expect(progress[progress.length - 1]).toBe(1);
+    assert.equal(progress.length, 10);
+    assertCloseTo(progress[0], 100 / 990);
+    assert.equal(progress[progress.length - 1], 1);
   });
 });

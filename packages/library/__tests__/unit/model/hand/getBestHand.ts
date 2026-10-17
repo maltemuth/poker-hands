@@ -1,3 +1,5 @@
+import assert from "node:assert/strict";
+import { describe, it } from "node:test";
 import getBestHand from "../../../../src/model/hand/getBestHand.js";
 import cards from "../../../../src/model/card/cards.js";
 import toString from "../../../../src/model/card/toString.js";
@@ -13,7 +15,7 @@ const best = (...input: string[]) => {
 };
 
 describe("best hand", () => {
-  test.each([
+  for (const [input, type, made, kickers] of [
     // [input, type, cards, kickers]
     [["As"], "HighCard", ["As"], []],
     [["7s", "5s"], "HighCard", ["7s"], ["5s"]],
@@ -104,43 +106,45 @@ describe("best hand", () => {
       ["Ah", "Kh", "Qh", "Jh", "Th"],
       [],
     ],
-  ])("%j is %s", (input, type, made, kickers) => {
-    expect(best(...input)).toEqual({ type, cards: made, kickers });
-  });
+  ])
+    it(`${JSON.stringify(input)} is ${type}`, () => {
+      assert.deepEqual(best(...input), { type, cards: made, kickers });
+    });
 
-  test.each(["Jd", "Qc", "Ks", "Ad", "Tc"])(
-    "a royal flush with an extra %s stays a royal flush",
-    (extra) => {
-      expect(best("Ah", "Kh", "Qh", "Jh", "Th", extra, "2c").type).toBe(
+  for (const extra of ["Jd", "Qc", "Ks", "Ad", "Tc"])
+    it(`a royal flush with an extra ${extra} stays a royal flush`, () => {
+      assert.equal(
+        best("Ah", "Kh", "Qh", "Jh", "Th", extra, "2c").type,
         "RoyalFlush"
       );
-    }
-  );
+    });
 
-  test("no cards are a high card without cards", () => {
-    expect(best()).toEqual({ type: "HighCard", cards: [], kickers: [] });
+  it("no cards are a high card without cards", () => {
+    assert.deepEqual(best(), { type: "HighCard", cards: [], kickers: [] });
   });
 
-  test("rejects more than seven cards", () => {
-    expect(() =>
-      getBestHand(cards("2h", "3h", "4h", "5h", "6h", "7h", "8h", "9h"))
-    ).toThrow("At most 7 cards can be ranked");
-  });
-
-  test("rejects a card that appears twice", () => {
-    expect(() => getBestHand(cards("Ah", "Ah", "Kd"))).toThrow(
-      "Duplicates found"
+  it("rejects more than seven cards", () => {
+    assert.throws(
+      () => getBestHand(cards("2h", "3h", "4h", "5h", "6h", "7h", "8h", "9h")),
+      { message: "At most 7 cards can be ranked" }
     );
   });
 
-  test.each([
+  it("rejects a card that appears twice", () => {
+    assert.throws(() => getBestHand(cards("Ah", "Ah", "Kd")), {
+      message: "Duplicates found in card list 'Ah,Ah,Kd'",
+    });
+  });
+
+  for (const [label, input] of [
     ["high card", ["Kd", "2c", "Ah", "7s", "9h", "4d", "Jc"]],
     ["straight", ["9d", "Tc", "6h", "8s", "7h", "2d", "Kc"]],
     ["flush", ["Kh", "2h", "Ac", "7h", "9h", "4d", "3h"]],
-  ])("leaves the order of its input unchanged: %s", (_, input) => {
-    const hand = cards(...input);
-    getBestHand(hand);
+  ])
+    it(`leaves the order of its input unchanged: ${label}`, () => {
+      const hand = cards(...input);
+      getBestHand(hand);
 
-    expect(hand.map(toString)).toEqual(input);
-  });
+      assert.deepEqual(hand.map(toString), input);
+    });
 });

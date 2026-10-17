@@ -1,16 +1,8 @@
+import assert from "node:assert/strict";
+import { describe, it, beforeEach, afterEach, mock } from "node:test";
 import request from "supertest";
 import { PokerHandsService } from "../../src/index.js";
-import calculateOdds from "../../src/odds/calculateOdds.js";
-
-// keep validation real, but control when a calculation "finishes"
-jest.mock("../../src/odds/calculateOdds", () => ({
-  __esModule: true,
-  default: jest.fn(),
-}));
-
-// the service calculates synchronously; the mock returns promises instead,
-// so that the test can hold calculations open and fill the slots
-const mockedCalculate = calculateOdds as unknown as jest.Mock;
+import { handlers } from "../../src/routes/handlers.js";
 
 const odds = {
   players: [
@@ -29,15 +21,22 @@ const body = {
 // calculations still held when a test ends; released so no request outlives its test
 let pending: Array<() => void> = [];
 
+// keep validation real, but control when a calculation "finishes": the service
+// calculates synchronously; the mock returns promises instead, so that the test
+// can hold calculations open and fill the slots. Services take their handlers
+// when they're created, so the mock is in place before any is.
+const mockedCalculate = mock.method(
+  handlers,
+  "calculateOdds",
+  () =>
+    new Promise<typeof odds>((resolve) => {
+      pending.push(() => resolve(odds));
+    })
+);
+
 /** Every calculation hangs until `release` is called. */
 const holdCalculations = () => {
   pending = [];
-  mockedCalculate.mockImplementation(
-    () =>
-      new Promise((resolve) => {
-        pending.push(() => resolve(odds));
-      })
-  );
   return {
     started: () => pending.length,
     release: () => pending.splice(0).forEach((resolve) => resolve()),
@@ -48,7 +47,7 @@ const waitFor = async (condition: () => boolean) => {
   for (let i = 0; i < 200 && !condition(); i++) {
     await new Promise((resolve) => setTimeout(resolve, 5));
   }
-  expect(condition()).toBe(true);
+  assert.equal(condition(), true);
 };
 
 type App = ReturnType<PokerHandsService["getApp"]>;
@@ -69,7 +68,7 @@ const statusWhileSaturated = (app: App) =>
 
 describe("Rate Limiting Integration", () => {
   beforeEach(() => {
-    mockedCalculate.mockReset();
+    mockedCalculate.mock.resetCalls();
   });
 
   afterEach(() => {
@@ -83,12 +82,12 @@ describe("Rate Limiting Integration", () => {
     const inFlight = Array.from({ length: 5 }, () => fire(app));
     await waitFor(() => calculations.started() === 5);
 
-    expect(await statusWhileSaturated(app)).toBe(429);
-    expect(mockedCalculate).toHaveBeenCalledTimes(5);
+    assert.equal(await statusWhileSaturated(app), 429);
+    assert.equal(mockedCalculate.mock.callCount(), 5);
 
     calculations.release();
     const responses = await Promise.all(inFlight);
-    responses.forEach((response) => expect(response.status).toBe(200));
+    responses.forEach((response) => assert.equal(response.status, 200));
   });
 
   it("frees slots once requests finish", async () => {
@@ -97,7 +96,7 @@ describe("Rate Limiting Integration", () => {
 
     const first = [fire(app), fire(app)];
     await waitFor(() => calculations.started() === 2);
-    expect(await statusWhileSaturated(app)).toBe(429);
+    assert.equal(await statusWhileSaturated(app), 429);
 
     calculations.release();
     await Promise.all(first);
@@ -105,7 +104,7 @@ describe("Rate Limiting Integration", () => {
     const next = fire(app);
     await waitFor(() => calculations.started() === 1);
     calculations.release();
-    expect((await next).status).toBe(200);
+    assert.equal((await next).status, 200);
   });
 
   it("frees slots for requests rejected by validation", async () => {
@@ -116,7 +115,7 @@ describe("Rate Limiting Integration", () => {
       const invalid = await request(app)
         .post("/api/odds")
         .send({ holes: [["As", "Ah"]] });
-      expect(invalid.status).toBe(400);
+      assert.equal(invalid.status, 400);
     }
   });
 
@@ -128,7 +127,7 @@ describe("Rate Limiting Integration", () => {
     await waitFor(() => calculations.started() === 1);
 
     const health = await request(app).get("/health");
-    expect(health.status).toBe(200);
+    assert.equal(health.status, 200);
 
     calculations.release();
     await inFlight;
@@ -142,9 +141,9 @@ describe("Rate Limiting Integration", () => {
     const inFlight = fire(saturated);
     await waitFor(() => calculations.started() === 1);
 
-    expect(await statusWhileSaturated(other)).toBe("held");
+    assert.equal(await statusWhileSaturated(other), "held");
 
     calculations.release();
-    expect((await inFlight).status).toBe(200);
+    assert.equal((await inFlight).status, 200);
   });
 });

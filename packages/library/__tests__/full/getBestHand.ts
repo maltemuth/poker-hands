@@ -1,12 +1,14 @@
+import assert from "node:assert/strict";
+import { describe, it } from "node:test";
 import { readFileSync } from "fs";
 import getBestHand from "../../src/model/hand/getBestHand.js";
 import { Suit, Value } from "../../src/model/card/Card.js";
 import { HandType } from "../../src/model/hand/Hand.js";
 
 describe("retrieve best hands", () => {
-  test("success on training data", () => {
+  it("success on training data", () => {
     const trainingDataRaw = readFileSync(
-      __dirname + "/poker-hand-testing.data"
+      import.meta.dirname + "/poker-hand-testing.data"
     );
 
     const lineSuitToSuit = (lineSuit: string): Suit => {
@@ -89,7 +91,7 @@ describe("retrieve best hands", () => {
     const before = Date.now().valueOf();
 
     trainingLines.forEach(({ cards, handType }) => {
-      expect(getBestHand(cards)!.type).toEqual(handType);
+      assert.deepEqual(getBestHand(cards)!.type, handType);
     });
 
     const elapsed = Date.now().valueOf() - before;

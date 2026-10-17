@@ -6,6 +6,18 @@ The library, WebAssembly package, CLI and service are versioned together.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Development
+
+- Tests run on Node's test runner, loaded through tsx, instead of Jest and
+  swc. Jest brought in `sprintf-js`, whose advisory GHSA-hp3w-g68c-fv3c has
+  no fix; `npm audit` reports 0 findings. The service's tests of its setup
+  go through its app instead of mocking Express, and its coverage report
+  is Node's (`npm run test:coverage`).
+- `isolatedModules` is on, since tsx compiles each file on its own. The
+  library's entry points export types with `export type`.
+
 ## [0.15.0] - 2026-10-05
 
 ### Changed

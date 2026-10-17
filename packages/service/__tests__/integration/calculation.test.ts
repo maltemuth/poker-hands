@@ -1,3 +1,5 @@
+import assert from "node:assert/strict";
+import { describe, it } from "node:test";
 import request from "supertest";
 import { PokerHandsService } from "../../src/index.js";
 
@@ -16,8 +18,8 @@ describe("calculations", () => {
         board: ["8c", "7d", "5h", "3s", "2c"],
       });
 
-    expect(response.status).toBe(200);
-    expect(response.body).toEqual({
+    assert.equal(response.status, 200);
+    assert.deepEqual(response.body, {
       players: [
         { holeCards: ["As", "Kd"], winChance: 1, tieChance: 0 },
         { holeCards: ["Ah", "9c"], winChance: 0, tieChance: 0 },
@@ -35,8 +37,8 @@ describe("calculations", () => {
         ],
       });
 
-    expect(response.status).toBe(400);
-    expect(response.body).toMatch(/Duplicates found/);
+    assert.equal(response.status, 400);
+    assert.match(response.body, /Duplicates found/);
   });
 
   it("calculates percentages", async () => {
@@ -44,8 +46,8 @@ describe("calculations", () => {
       .post("/api/percentages")
       .send({ holes: [["Ah", "Kh"]], board: ["Qh", "Jh", "2c", "3d"] });
 
-    expect(response.status).toBe(200);
-    expect(response.body.players[0].percentages.royalFlush).toEqual({
+    assert.equal(response.status, 200);
+    assert.deepEqual(response.body.players[0].percentages.royalFlush, {
       count: 1,
       percentage: 1 / 46,
     });

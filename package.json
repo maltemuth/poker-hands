@@ -29,16 +29,14 @@
     "clean:service": "cd packages/service && npm run clean",
     "clean:cli": "cd packages/cli && npm run clean",
     "prepack": "npm run build",
-    "test:watch": "npm run test:library -- --watch",
-    "test:full": "npm run test:library -- --testPathPattern=__tests__/full",
+    "test:watch": "cd packages/library && npm run test:watch",
+    "test:full": "cd packages/library && npm run test:full",
     "cli": "cd packages/cli && npm run start"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/cors": "^2.8.19",
-    "@types/jest": "^30.0.0",
     "eslint": "^10.11.0",
-    "jest": "^30.5.2",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.70.1"
   },

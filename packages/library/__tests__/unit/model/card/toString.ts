@@ -1,22 +1,26 @@
+import assert from "node:assert/strict";
+import { describe, it } from "node:test";
 import toString from "../../../../src/model/card/toString.js";
 import { Suit, Value } from "../../../../src/model/card/Card.js";
 
 describe("convert cards to string", () => {
-  test("ace of spades", () => {
-    expect(
+  it("ace of spades", () => {
+    assert.deepEqual(
       toString({
         suit: Suit.spades,
         value: Value.ace,
-      })
-    ).toEqual("As");
+      }),
+      "As"
+    );
   });
 
-  test("4 of diamonds", () => {
-    expect(
+  it("4 of diamonds", () => {
+    assert.deepEqual(
       toString({
         suit: Suit.diamonds,
         value: Value.four,
-      })
-    ).toEqual("4d");
+      }),
+      "4d"
+    );
   });
 });

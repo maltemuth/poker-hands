@@ -1,89 +1,91 @@
+import assert from "node:assert/strict";
+import { describe, it } from "node:test";
 import getBestHand from "../../../../src/model/hand/getBestHand.js";
 import cards from "../../../../src/model/card/cards.js";
 import { HandType } from "../../../../src/model/hand/Hand.js";
 import hasEqualValue from "../../../../src/model/hand/hasEqualValue.js";
 
 describe("compare equal-value hands", () => {
-  test("a straight flush is equal to another straight flush of different suit", () => {
+  it("a straight flush is equal to another straight flush of different suit", () => {
     const straightFlush = getBestHand(
       cards("Js", "Ts", "9s", "Qs", "Qd", "5s", "8s")
     );
-    expect(straightFlush!.type).toEqual(HandType.StraightFlush);
+    assert.deepEqual(straightFlush!.type, HandType.StraightFlush);
     const otherStraightFlush = getBestHand(
       cards("Jh", "Th", "9h", "Qh", "Qd", "5h", "8h")
     );
-    expect(otherStraightFlush!.type).toEqual(HandType.StraightFlush);
-    expect(hasEqualValue(otherStraightFlush!, straightFlush!)).toBe(true);
+    assert.deepEqual(otherStraightFlush!.type, HandType.StraightFlush);
+    assert.equal(hasEqualValue(otherStraightFlush!, straightFlush!), true);
   });
-  test("four-of-a-kind is equal with same-value kickers", () => {
+  it("four-of-a-kind is equal with same-value kickers", () => {
     const fourOfAKind = getBestHand(
       cards("Js", "Jc", "Ts", "Qs", "Jd", "5s", "Jh")
     );
-    expect(fourOfAKind!.type).toEqual(HandType.FourOfAKind);
+    assert.deepEqual(fourOfAKind!.type, HandType.FourOfAKind);
     const otherFourOfAKind = getBestHand(
       cards("Js", "Jc", "Ts", "Qh", "Jd", "5s", "Jh")
     );
-    expect(otherFourOfAKind!.type).toEqual(HandType.FourOfAKind);
-    expect(hasEqualValue(otherFourOfAKind!, fourOfAKind!)).toBe(true);
+    assert.deepEqual(otherFourOfAKind!.type, HandType.FourOfAKind);
+    assert.equal(hasEqualValue(otherFourOfAKind!, fourOfAKind!), true);
   });
 
-  test("full house is euqal with same values and different suits", () => {
+  it("full house is euqal with same values and different suits", () => {
     const fullHouse = getBestHand(
       cards("Js", "Jh", "Jd", "Qh", "Qd", "5s", "2s")
     );
-    expect(fullHouse!.type).toEqual(HandType.FullHouse);
+    assert.deepEqual(fullHouse!.type, HandType.FullHouse);
     const otherFullHouse = getBestHand(
       cards("Js", "Jc", "Jd", "Qs", "Qd", "5s", "2s")
     );
-    expect(otherFullHouse!.type).toEqual(HandType.FullHouse);
-    expect(hasEqualValue(otherFullHouse!, fullHouse!)).toBe(true);
+    assert.deepEqual(otherFullHouse!.type, HandType.FullHouse);
+    assert.equal(hasEqualValue(otherFullHouse!, fullHouse!), true);
   });
 
-  test("a flush is equal with a different suit", () => {
+  it("a flush is equal with a different suit", () => {
     const flush = getBestHand(cards("Ks", "Ts", "5s", "3s", "2s"));
-    expect(flush!.type).toEqual(HandType.Flush);
+    assert.deepEqual(flush!.type, HandType.Flush);
     const otherFlush = getBestHand(cards("Kh", "Th", "5h", "3h", "2h"));
-    expect(otherFlush!.type).toEqual(HandType.Flush);
-    expect(hasEqualValue(otherFlush!, flush!)).toBe(true);
+    assert.deepEqual(otherFlush!.type, HandType.Flush);
+    assert.equal(hasEqualValue(otherFlush!, flush!), true);
   });
 
-  test("a straight is equal with same first card of diffent suits", () => {
+  it("a straight is equal with same first card of diffent suits", () => {
     const straight = getBestHand(cards("7d", "5c", "6s", "4s", "3s"));
-    expect(straight!.type).toEqual(HandType.Straight);
+    assert.deepEqual(straight!.type, HandType.Straight);
     const otherStraight = getBestHand(cards("7c", "5s", "6s", "4d", "3s"));
-    expect(otherStraight!.type).toEqual(HandType.Straight);
-    expect(hasEqualValue(otherStraight!, straight!)).toBe(true);
+    assert.deepEqual(otherStraight!.type, HandType.Straight);
+    assert.equal(hasEqualValue(otherStraight!, straight!), true);
   });
 
-  test("three-of-a-kind is equal with kickers of the same value and different suit", () => {
+  it("three-of-a-kind is equal with kickers of the same value and different suit", () => {
     const threeOfAKind = getBestHand(cards("3h", "3d", "3c", "7h", "9d"));
-    expect(threeOfAKind!.type).toEqual(HandType.ThreeOfAKind);
+    assert.deepEqual(threeOfAKind!.type, HandType.ThreeOfAKind);
     const otherThreeOfAKind = getBestHand(cards("3h", "3d", "3c", "7c", "9s"));
-    expect(otherThreeOfAKind!.type).toEqual(HandType.ThreeOfAKind);
-    expect(hasEqualValue(otherThreeOfAKind!, threeOfAKind!)).toBe(true);
+    assert.deepEqual(otherThreeOfAKind!.type, HandType.ThreeOfAKind);
+    assert.equal(hasEqualValue(otherThreeOfAKind!, threeOfAKind!), true);
   });
 
-  test("two pair is equal with same values and same-value kicker", () => {
+  it("two pair is equal with same values and same-value kicker", () => {
     const twoPair = getBestHand(cards("7h", "7d", "4c", "4d", "2d"));
-    expect(twoPair!.type).toEqual(HandType.TwoPair);
+    assert.deepEqual(twoPair!.type, HandType.TwoPair);
     const otherTwoPair = getBestHand(cards("7h", "7d", "4c", "4d", "2s"));
-    expect(otherTwoPair!.type).toEqual(HandType.TwoPair);
-    expect(hasEqualValue(otherTwoPair!, twoPair!)).toBe(true);
+    assert.deepEqual(otherTwoPair!.type, HandType.TwoPair);
+    assert.equal(hasEqualValue(otherTwoPair!, twoPair!), true);
   });
 
-  test("high card is equal with same value and same-value kickers", () => {
+  it("high card is equal with same value and same-value kickers", () => {
     const highCard = getBestHand(cards("Ts", "8c", "6h", "4d", "3c"));
-    expect(highCard!.type).toEqual(HandType.HighCard);
+    assert.deepEqual(highCard!.type, HandType.HighCard);
     const otherHighCard = getBestHand(cards("Td", "8c", "6h", "4d", "3c"));
-    expect(otherHighCard!.type).toEqual(HandType.HighCard);
-    expect(hasEqualValue(otherHighCard!, highCard!)).toBe(true);
+    assert.deepEqual(otherHighCard!.type, HandType.HighCard);
+    assert.equal(hasEqualValue(otherHighCard!, highCard!), true);
   });
 
-  test("pair is equal with same cards and same-value kickers", () => {
+  it("pair is equal with same cards and same-value kickers", () => {
     const pair = getBestHand(cards("Th", "Td", "8c", "9d", "2d"));
-    expect(pair!.type).toEqual(HandType.Pair);
+    assert.deepEqual(pair!.type, HandType.Pair);
     const otherPair = getBestHand(cards("Tc", "Td", "8c", "9d", "2d"));
-    expect(otherPair!.type).toEqual(HandType.Pair);
-    expect(hasEqualValue(otherPair!, pair!)).toBe(true);
+    assert.deepEqual(otherPair!.type, HandType.Pair);
+    assert.equal(hasEqualValue(otherPair!, pair!), true);
   });
 });

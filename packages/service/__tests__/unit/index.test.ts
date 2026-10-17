@@ -1,175 +1,81 @@
+import assert from "node:assert/strict";
+import { describe, it, mock } from "node:test";
+import request from "supertest";
 import { PokerHandsService } from "../../src/index.js";
-import express from "express";
-import cors from "cors";
 
-// Mock express and cors
-const mockExpress = {
-  use: jest.fn(),
-  listen: jest.fn(),
-  post: jest.fn(),
-  get: jest.fn(),
-};
-
-jest.mock("express", () => {
-  const mockJson = jest.fn(
-    () =>
-      (
-        req: express.Request,
-        res: express.Response,
-        next: express.NextFunction
-      ) =>
-        next()
-  );
-  const mockExpressFn = jest.fn(() => mockExpress);
-
-  return {
-    express: mockExpressFn,
-    json: mockJson,
-    __esModule: true,
-    default: mockExpressFn,
-  };
-});
-
-jest.mock("cors", () => jest.fn(() => jest.fn()));
-
-// Mock the json function directly for testing
-const mockJsonForTesting = jest.requireMock("express").json;
-
+// The service's setup, seen through its app: CORS, the body limit and the routes
 describe("PokerHandsService", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
   describe("constructor", () => {
-    it("should create service with default port", () => {
-      const defaultService = new PokerHandsService();
-      expect(defaultService).toBeInstanceOf(PokerHandsService);
-    });
-
-    it("should create service with custom port", () => {
-      const customService = new PokerHandsService(8080);
-      expect(customService).toBeInstanceOf(PokerHandsService);
-    });
-
-    it("should setup express app", () => {
-      new PokerHandsService();
-      expect(express).toHaveBeenCalled();
-    });
-
-    it("should setup CORS middleware", () => {
-      new PokerHandsService();
-      expect(cors).toHaveBeenCalled();
-    });
-
-    it("should setup JSON middleware with limit", () => {
-      const mockApp = {
-        use: jest.fn(),
-        listen: jest.fn(),
-        post: jest.fn(),
-        get: jest.fn(),
-      };
-
-      // Mock the app returned by express
-      (express as unknown as jest.Mock).mockReturnValue(mockApp);
-
-      new PokerHandsService();
-      expect(mockApp.use).toHaveBeenCalledWith(expect.any(Function));
-      expect(mockJsonForTesting).toHaveBeenCalledWith({ limit: "1kb" });
-    });
-
-    it("should setup routes", () => {
-      const mockApp = {
-        use: jest.fn(),
-        post: jest.fn(),
-        get: jest.fn(),
-      };
-
-      // Mock the app returned by express
-      (express as unknown as jest.Mock).mockReturnValue(mockApp);
-
-      new PokerHandsService();
-      // validation middleware, then the handler
-      expect(mockApp.post).toHaveBeenCalledWith(
-        "/api/odds",
-        expect.any(Function),
-        expect.any(Function)
+    it("should setup CORS middleware", async () => {
+      const response = await request(new PokerHandsService().getApp()).get(
+        "/health"
       );
+      assert.equal(response.headers["access-control-allow-origin"], "*");
+    });
+
+    it("should leave CORS out when disabled", async () => {
+      const response = await request(
+        new PokerHandsService(3000, false).getApp()
+      ).get("/health");
+      assert.equal(response.headers["access-control-allow-origin"], undefined);
+    });
+
+    it("should setup JSON middleware with limit", async () => {
+      // Express logs the rejected body's error outside NODE_ENV=test
+      const error = mock.method(console, "error", () => {});
+      try {
+        const response = await request(new PokerHandsService().getApp())
+          .post("/api/odds")
+          .send({ padding: "x".repeat(1024) });
+        assert.equal(response.status, 413);
+      } finally {
+        error.mock.restore();
+      }
+    });
+
+    it("should setup routes", async () => {
+      const app = new PokerHandsService().getApp();
       // validation middleware, then the handler
-      expect(mockApp.post).toHaveBeenCalledWith(
-        "/api/percentages",
-        expect.any(Function),
-        expect.any(Function)
-      );
-      expect(mockApp.get).toHaveBeenCalledWith("/health", expect.any(Function));
+      for (const path of ["/api/odds", "/api/percentages"]) {
+        const response = await request(app).post(path).send({});
+        assert.equal(response.status, 400);
+      }
+      assert.equal((await request(app).get("/health")).status, 200);
     });
   });
 
   describe("start", () => {
-    it("should start the server on specified port", () => {
-      const mockApp = {
-        use: jest.fn(),
-        listen: jest.fn(),
-        post: jest.fn(),
-        get: jest.fn(),
-      };
-
-      // Mock the app returned by express
-      (express as unknown as jest.Mock).mockReturnValue(mockApp);
-
+    it("should start the server on specified port, and log it", () => {
       const service = new PokerHandsService(3000);
-      service.start();
-
-      expect(mockApp.listen).toHaveBeenCalledWith(3000, expect.any(Function));
-    });
-
-    it("should log message when server starts", () => {
-      const mockApp = {
-        use: jest.fn(),
-        listen: jest.fn((port, callback) => {
-          callback();
-        }),
-        post: jest.fn(),
-        get: jest.fn(),
-      };
-
-      // Mock the app returned by express
-      (express as unknown as jest.Mock).mockReturnValue(mockApp);
-
-      const consoleSpy = jest.spyOn(console, "log").mockImplementation();
-
-      const service = new PokerHandsService(3000);
-      service.start();
-
-      expect(consoleSpy).toHaveBeenCalledWith(
-        "Poker Hands Service running on port 3000"
+      const listen = mock.method(
+        service.getApp(),
+        "listen",
+        (_port: number, callback: () => void) => callback()
       );
-      consoleSpy.mockRestore();
+      const log = mock.method(console, "log", () => {});
+      try {
+        service.start();
+        assert.equal(listen.mock.callCount(), 1);
+        assert.equal(listen.mock.calls[0].arguments[0], 3000);
+        assert.deepEqual(log.mock.calls[0].arguments, [
+          "Poker Hands Service running on port 3000",
+        ]);
+      } finally {
+        log.mock.restore();
+      }
     });
   });
 
   describe("getApp", () => {
     it("should return the express app", () => {
-      const mockApp = {
-        use: jest.fn(),
-        post: jest.fn(),
-        get: jest.fn(),
-      };
-
-      // Mock the app returned by express
-      (express as unknown as jest.Mock).mockReturnValue(mockApp);
-
       const service = new PokerHandsService();
-      const app = service.getApp();
-
-      expect(app).toBe(mockApp);
+      assert.equal(service.getApp(), service.getApp());
+      assert.equal(typeof service.getApp().listen, "function");
     });
   });
 });
 
 describe("Direct execution", () => {
-  it("should start service when run directly", () => {
-    // Skip this test as import.meta.main cannot be reliably mocked in Jest
-    // This test would require integration testing approach
-    expect(true).toBe(true);
-  });
+  // import.meta.main can't be set from a test; this needs an integration test
+  it.todo("should start service when run directly");
 });

@@ -1,3 +1,5 @@
+import assert from "node:assert/strict";
+import { describe, it } from "node:test";
 import handRank from "../../src/model/hand/handRank.js";
 import getBestHand from "../../src/model/hand/getBestHand.js";
 import isBetterThan from "../../src/model/hand/isBetterThan.js";
@@ -35,7 +37,7 @@ const compareHands = (a: HandInterface, b: HandInterface): number => {
 };
 
 describe("handRank", () => {
-  test("orders hands like isBetterThan and hasEqualValue", () => {
+  it("orders hands like isBetterThan and hasEqualValue", () => {
     const mismatches: string[] = [];
     let ties = 0;
 
@@ -60,8 +62,8 @@ describe("handRank", () => {
       }
     }
 
-    expect(mismatches.slice(0, 10)).toEqual([]);
+    assert.deepEqual(mismatches.slice(0, 10), []);
     // the shared board makes ties common; make sure they are tested
-    expect(ties).toBeGreaterThan(1000);
+    assert.ok(ties > 1000);
   });
 });

@@ -1,3 +1,6 @@
+import assert from "node:assert/strict";
+import { describe, it, beforeEach, mock } from "node:test";
+import { isDeepStrictEqual } from "node:util";
 import express from "express";
 import request from "supertest";
 import { setupRoutes } from "../../../src/routes/index.js";
@@ -5,12 +8,8 @@ import { handlers, Handlers } from "../../../src/routes/handlers.js";
 import { CalculationError } from "../../../src/odds/CalculationError.js";
 
 // the calculations are replaced; routing, validation and responses are real
-const calculateOdds = jest.fn() as jest.MockedFunction<
-  Handlers["calculateOdds"]
->;
-const calculatePercentages = jest.fn() as jest.MockedFunction<
-  Handlers["calculatePercentages"]
->;
+const calculateOdds = mock.fn<Handlers["calculateOdds"]>();
+const calculatePercentages = mock.fn<Handlers["calculatePercentages"]>();
 
 const odds = {
   players: [
@@ -23,7 +22,8 @@ describe("Routes", () => {
   let app: express.Application;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    calculateOdds.mock.resetCalls();
+    calculatePercentages.mock.resetCalls();
     app = express();
     app.use(express.json());
     setupRoutes(app, { ...handlers, calculateOdds, calculatePercentages });
@@ -43,51 +43,59 @@ describe("Routes", () => {
         .post("/api/odds")
         .send({ holes: [["Ah", "Kh"]] });
 
-      expect(response.status).toBe(400);
-      expect(response.body).toBe(
+      assert.equal(response.status, 400);
+      assert.equal(
+        response.body,
         "Holes must be provided as an array with at least 2 players"
       );
-      expect(calculateOdds).not.toHaveBeenCalled();
+      assert.equal(calculateOdds.mock.callCount(), 0);
     });
 
     it("should calculate the request and return the odds", async () => {
-      calculateOdds.mockResolvedValue(odds);
+      calculateOdds.mock.mockImplementation(async () => odds);
 
       const response = await request(app).post("/api/odds").send(validInput);
 
-      expect(response.status).toBe(200);
-      expect(response.body).toEqual(odds);
-      expect(calculateOdds).toHaveBeenCalledWith(validInput);
+      assert.equal(response.status, 200);
+      assert.deepEqual(response.body, odds);
+      assert.ok(
+        calculateOdds.mock.calls.some((call) =>
+          isDeepStrictEqual(call.arguments, [validInput])
+        )
+      );
     });
 
     it("should return 400 when the library rejects the cards", async () => {
-      calculateOdds.mockRejectedValue(
-        new CalculationError("Duplicate card: Ah")
-      );
+      calculateOdds.mock.mockImplementation(async () => {
+        throw new CalculationError("Duplicate card: Ah");
+      });
 
       const response = await request(app).post("/api/odds").send(validInput);
 
-      expect(response.status).toBe(400);
-      expect(response.body).toBe("Duplicate card: Ah");
+      assert.equal(response.status, 400);
+      assert.equal(response.body, "Duplicate card: Ah");
     });
 
     it("should return 500 when the calculation fails otherwise", async () => {
-      calculateOdds.mockRejectedValue(new Error("Something went wrong"));
+      calculateOdds.mock.mockImplementation(async () => {
+        throw new Error("Something went wrong");
+      });
 
       const response = await request(app).post("/api/odds").send(validInput);
 
-      expect(response.status).toBe(500);
-      expect(response.body).toBe("Something went wrong");
+      assert.equal(response.status, 500);
+      assert.equal(response.body, "Something went wrong");
     });
 
     it("should return 400 for a request without a body", async () => {
       const response = await request(app).post("/api/odds");
 
-      expect(response.status).toBe(400);
-      expect(response.body).toBe(
+      assert.equal(response.status, 400);
+      assert.equal(
+        response.body,
         "Holes must be provided as an array with at least 2 players"
       );
-      expect(calculateOdds).not.toHaveBeenCalled();
+      assert.equal(calculateOdds.mock.callCount(), 0);
     });
   });
 
@@ -124,41 +132,46 @@ describe("Routes", () => {
         .post("/api/percentages")
         .send({ holes: [["Ah"]] });
 
-      expect(response.status).toBe(400);
-      expect(response.body).toBe("Player 1 must have exactly 2 hole cards");
-      expect(calculatePercentages).not.toHaveBeenCalled();
+      assert.equal(response.status, 400);
+      assert.equal(response.body, "Player 1 must have exactly 2 hole cards");
+      assert.equal(calculatePercentages.mock.callCount(), 0);
     });
 
     it("should calculate the request and return the percentages", async () => {
-      calculatePercentages.mockResolvedValue(percentages);
+      calculatePercentages.mock.mockImplementation(async () => percentages);
 
       const response = await request(app)
         .post("/api/percentages")
         .send(validInput);
 
-      expect(response.status).toBe(200);
-      expect(response.body).toEqual(percentages);
-      expect(calculatePercentages).toHaveBeenCalledWith(validInput);
+      assert.equal(response.status, 200);
+      assert.deepEqual(response.body, percentages);
+      assert.ok(
+        calculatePercentages.mock.calls.some((call) =>
+          isDeepStrictEqual(call.arguments, [validInput])
+        )
+      );
     });
 
     it("should return 400 when the library rejects the cards", async () => {
-      calculatePercentages.mockRejectedValue(
-        new CalculationError("Duplicates found in card list 'Ah,Kh,Ah'")
-      );
+      calculatePercentages.mock.mockImplementation(async () => {
+        throw new CalculationError("Duplicates found in card list 'Ah,Kh,Ah'");
+      });
 
       const response = await request(app)
         .post("/api/percentages")
         .send(validInput);
 
-      expect(response.status).toBe(400);
-      expect(response.body).toBe("Duplicates found in card list 'Ah,Kh,Ah'");
+      assert.equal(response.status, 400);
+      assert.equal(response.body, "Duplicates found in card list 'Ah,Kh,Ah'");
     });
 
     it("should return 400 for a request without a body", async () => {
       const response = await request(app).post("/api/percentages");
 
-      expect(response.status).toBe(400);
-      expect(response.body).toBe(
+      assert.equal(response.status, 400);
+      assert.equal(
+        response.body,
         "Holes must be provided as an array with at least 1 player"
       );
     });
@@ -168,8 +181,8 @@ describe("Routes", () => {
     it("should return 200 with healthy status", async () => {
       const response = await request(app).get("/health");
 
-      expect(response.status).toBe(200);
-      expect(response.body).toEqual({ status: "healthy" });
+      assert.equal(response.status, 200);
+      assert.deepEqual(response.body, { status: "healthy" });
     });
   });
 
@@ -180,15 +193,15 @@ describe("Routes", () => {
         healthCheck: undefined,
       } as unknown as Handlers;
 
-      expect(() => setupRoutes(express(), incomplete)).toThrow(
-        "No handler for healthCheck (GET /health)"
-      );
+      assert.throws(() => setupRoutes(express(), incomplete), {
+        message: "No handler for healthCheck (GET /health)",
+      });
     });
 
     it("should answer 404 for paths the spec doesn't define", async () => {
       const response = await request(app).post("/api/unknown");
 
-      expect(response.status).toBe(404);
+      assert.equal(response.status, 404);
     });
   });
 });

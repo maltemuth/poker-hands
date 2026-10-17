@@ -1,22 +1,25 @@
+import assert from "node:assert/strict";
+import { describe, it } from "node:test";
 import valueToString from "../../../../src/model/card/valueToString.js";
 import { Value } from "../../../../src/model/card/Card.js";
 
 describe("convert card values to strings", () => {
-  test("valid value", () => {
-    expect(valueToString(Value.jack)).toEqual("J");
+  it("valid value", () => {
+    assert.deepEqual(valueToString(Value.jack), "J");
   });
 
-  test("valid number value", () => {
-    expect(valueToString(Value.two)).toEqual("2");
+  it("valid number value", () => {
+    assert.deepEqual(valueToString(Value.two), "2");
   });
 
-  test("ace value", () => {
-    expect(valueToString(Value.ace)).toEqual("A");
+  it("ace value", () => {
+    assert.deepEqual(valueToString(Value.ace), "A");
   });
 
-  test.each([1, 15])("rejects %p", (value) => {
-    expect(() => valueToString(value as Value)).toThrow(
-      `Could not convert value ${value}`
-    );
-  });
+  for (const value of [1, 15])
+    it(`rejects ${JSON.stringify(value)}`, () => {
+      assert.throws(() => valueToString(value as Value), {
+        message: `Could not convert value ${value} to a string representation.`,
+      });
+    });
 });

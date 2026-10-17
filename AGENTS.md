@@ -163,8 +163,9 @@ packages/
 
 ### Test Patterns
 
-- **Jest Framework**: Used for all testing
-- **Mocking**: External dependencies are mocked
+- **Node's test runner**: `node:test` and `node:assert/strict`, with TypeScript loaded by tsx (`tsx --tsconfig tsconfig.test.json --test`); the library's `__tests__/helpers/assert.ts` adds `assertMatchObject` and `assertCloseTo`
+- **Mocking**: `mock.fn` and `mock.method` from `node:test`; modules aren't replaced, so code takes what tests replace as a parameter or reads it from an object, like the service's `handlers`
+- **Expected errors**: `assert.throws` compares the whole message
 - **Edge Cases**: Tests cover edge cases and error conditions
 - **Property Testing**: Tests verify mathematical properties
 

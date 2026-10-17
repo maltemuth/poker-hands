@@ -1,15 +1,18 @@
+import assert from "node:assert/strict";
+import { describe, it } from "node:test";
 import fromString from "../../../../src/model/card/fromString.js";
 import { Suit, Value } from "../../../../src/model/card/Card.js";
 
 describe("convert strings to cards", () => {
-  test("ace of spades", () => {
-    expect(fromString("As")).toEqual({
+  it("ace of spades", () => {
+    assert.deepEqual(fromString("As"), {
       suit: Suit.spades,
       value: Value.ace,
     });
   });
 
-  test.each(["", "A", "Ahx", "10h", "Ax"])("rejects %p", (input) => {
-    expect(() => fromString(input)).toThrow(/Could not convert/);
-  });
+  for (const input of ["", "A", "Ahx", "10h", "Ax"])
+    it(`rejects ${JSON.stringify(input)}`, () => {
+      assert.throws(() => fromString(input), /Could not convert/);
+    });
 });

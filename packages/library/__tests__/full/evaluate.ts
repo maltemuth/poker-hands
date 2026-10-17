@@ -1,3 +1,5 @@
+import assert from "node:assert/strict";
+import { describe, it } from "node:test";
 import evaluate from "../../src/model/hand/evaluate.js";
 import handRank from "../../src/model/hand/handRank.js";
 import getBestHand from "../../src/model/hand/getBestHand.js";
@@ -11,13 +13,12 @@ const random = seededRandom(7);
 const randomHand = (size: number): Card[] => randomCards(random, size);
 
 describe("evaluate", () => {
-  test.each([
+  for (const [size, count] of [
     [5, 50_000],
     [6, 50_000],
     [7, 200_000],
-  ])(
-    "agrees with handRank(getBestHand()) on random %i-card hands",
-    (size, count) => {
+  ])
+    it(`agrees with handRank(getBestHand()) on random ${size}-card hands`, () => {
       const mismatches: string[] = [];
       const types = new Set<HandType>();
 
@@ -38,9 +39,8 @@ describe("evaluate", () => {
         }
       }
 
-      expect(mismatches.slice(0, 10)).toEqual([]);
+      assert.deepEqual(mismatches.slice(0, 10), []);
       // every hand type except the rare royal flush comes up
-      expect(types.size).toBeGreaterThanOrEqual(9);
-    }
-  );
+      assert.ok(types.size >= 9);
+    });
 });
