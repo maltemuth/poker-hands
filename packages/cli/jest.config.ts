@@ -9,8 +9,10 @@ const config: Config = {
       "@swc/jest",
       { jsc: { parser: { syntax: "typescript" }, target: "es2022" } },
     ],
-    // commander is ESM-only; compile it to CommonJS for Jest's module loader
-    "/node_modules/commander/.+\\.js$": [
+    // commander is ESM-only; compile it to CommonJS for Jest's module loader.
+    // `.` for the path separators, since Jest matches these against Windows
+    // paths as they are.
+    "node_modules.commander..+\\.js$": [
       "@swc/jest",
       { jsc: { target: "es2022" }, module: { type: "commonjs" } },
     ],
