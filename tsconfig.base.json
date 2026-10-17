@@ -8,6 +8,8 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
+    // Each file must compile on its own: tsx compiles them one by one in tests
+    "isolatedModules": true,
     "declaration": true,
     "declarationMap": false,
     "sourceMap": false,

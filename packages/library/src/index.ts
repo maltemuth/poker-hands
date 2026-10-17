@@ -2,7 +2,7 @@ import getBestHand from "./model/hand/getBestHand.js";
 import handRank from "./model/hand/handRank.js";
 import hasEqualValue from "./model/hand/hasEqualValue.js";
 import isBetterThan from "./model/hand/isBetterThan.js";
-import odds, { ProgressCallback } from "./model/odds/odds.js";
+import odds, { type ProgressCallback } from "./model/odds/odds.js";
 import cards from "./model/card/cards.js";
 import toString from "./model/card/toString.js";
 import create from "./model/deck/create.js";
@@ -20,5 +20,5 @@ export {
   create,
   shuffle,
   toString,
-  ProgressCallback,
 };
+export type { ProgressCallback };
